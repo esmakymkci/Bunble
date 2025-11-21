@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "437368426604",
+    "project_id": "bunbly",
+    "storage_bucket": "bunbly.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:437368426604:android:2167a33fb45a3acac90849",
+        "android_client_info": {
+          "package_name": "com.esma.bunble"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2AsjyAWqA-jkhRJBuQ9AmBGLmAYVwJ98"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

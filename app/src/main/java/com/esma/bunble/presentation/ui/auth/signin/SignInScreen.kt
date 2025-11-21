@@ -1,0 +1,160 @@
+package com.esma.bunble.presentation.ui.auth.signin
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.esma.bunble.R
+import com.esma.bunble.presentation.base.components.auth.AuthButton
+import com.esma.bunble.presentation.base.components.auth.AuthTextField
+
+
+@Composable
+fun SignInScreen(navController: NavController) {
+
+    var email by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
+    var isPasswordVisible by rememberSaveable { mutableStateOf(false) }
+
+    val focusManager = LocalFocusManager.current
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFF7F7F7)),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp)
+                .imePadding() // Klavye açıldığında içeriği yukarı iter
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+
+            Image(
+                painter = painterResource(id = R.drawable.logo_tras),
+                contentDescription = "Bunble Logo",
+                modifier = Modifier.size(150.dp)
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+
+            AuthTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = "Email",
+                leadingIcon = Icons.Default.Email,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                )
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            AuthTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = "Password",
+                leadingIcon = Icons.Default.Lock,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = { focusManager.clearFocus() }
+                ),
+                visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    val eyeIcon = if (isPasswordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility
+                    IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
+                        Icon(imageVector = eyeIcon, contentDescription = "Toggle password visibility")
+                    }
+                }
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            AuthButton(
+                text = "Sign In",
+                onClick = {
+                    navController.navigate("home_screen")
+                }
+            )
+
+            // TODO: "Şifremi Unuttum?" seçeneğini buraya ekleyebilirsiniz.
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(text = buildAnnotatedString {
+                withStyle(style = SpanStyle(textDecoration = TextDecoration.Underline)) {
+                    append("Forgot Password?")
+                }
+            },
+                fontSize = 12.sp,
+                modifier = Modifier.align(Alignment.CenterHorizontally).clickable {  }
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+
+            Row {
+                Text(text = "Don't have an account? ")
+                Text(
+                    text = "Sign Up",
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.clickable {
+                        navController.navigate("signup_screen")
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true, device = "spec:width=411dp,height=891dp")
+@Composable
+fun SignInScreenPreview() {
+    SignInScreen(navController = rememberNavController())
+}
+
+
