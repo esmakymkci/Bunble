@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("com.google.gms.google-services")
+    kotlin("kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -80,5 +82,10 @@ dependencies {
 
     // Coil (URL'den resim yüklemek için)
     implementation("io.coil-kt:coil-compose:2.6.0")
+
+    implementation("com.google.dagger:hilt-android:2.57.2")
+    kapt("com.google.dagger:hilt-android-compiler:2.57.2")
+    // Hilt-ViewModel entegrasyonu için
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
 }
