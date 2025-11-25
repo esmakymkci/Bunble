@@ -21,11 +21,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
 
 
 // Tek bir kategori kartı
 @Composable
-fun CategoryCard(title: String, imageRes: Int, onClick: () -> Unit) {
+fun CategoryCard(title: String, imageUrl: String, onClick: () -> Unit) {
     Card(
         modifier = Modifier.aspectRatio(1f),
         shape = RoundedCornerShape(24.dp),
@@ -33,7 +34,7 @@ fun CategoryCard(title: String, imageRes: Int, onClick: () -> Unit) {
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Image(
-                painter = painterResource(id = imageRes),
+                painter = rememberAsyncImagePainter(imageUrl),
                 contentDescription = title,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()

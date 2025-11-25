@@ -11,7 +11,9 @@ import com.esma.bunble.presentation.ui.auth.signup.SignUpScreen
 import com.esma.bunble.presentation.ui.auth.splash.SplashScreen
 import com.esma.bunble.presentation.ui.category_detail.CategoryDetailScreen
 import com.esma.bunble.presentation.ui.home.HomeScreen
+import com.esma.bunble.presentation.ui.language_selection.LanguageSelectionScreen
 import com.esma.bunble.presentation.ui.learn.LearningScreen
+import com.esma.bunble.presentation.ui.quiz.QuizScreen
 
 @Composable
 fun Navigation(){
@@ -20,6 +22,10 @@ fun Navigation(){
     NavHost(navController = navController, startDestination = "splash_screen"){
         composable("splash_screen"){
             SplashScreen(navController = navController)
+        }
+
+        composable("language_selection_screen") {
+            LanguageSelectionScreen(navController = navController)
         }
 
         composable("signup_screen") {
@@ -36,30 +42,24 @@ fun Navigation(){
         }
 
         composable(
-            route = "category_detail_screen/{categoryTitle}/{categoryImageRes}",
-            arguments = listOf(
-                navArgument("categoryTitle") { type = NavType.StringType },
-                navArgument("categoryImageRes") { type = NavType.IntType }
-            )
-        ) { backStackEntry ->
-            val title = backStackEntry.arguments?.getString("categoryTitle")
-            val imageRes = backStackEntry.arguments?.getInt("categoryImageRes")
-            CategoryDetailScreen(
-                // categoryId parametresi kaldırıldı.
-                categoryTitle = title,
-                categoryImageRes = imageRes,
-                navController = navController
-            )
+            route = "category_detail_screen/{categoryId}",
+            arguments = listOf(navArgument("categoryId") { type = NavType.StringType })
+        ) {
+            CategoryDetailScreen(navController = navController)
         }
 
-        // --- ÖĞRENME EKRANI ROTASI ESKİ HALİNE DÖNDÜRÜLDÜ ---
         composable(
-            route = "learning_screen/{categoryTitle}",
-            arguments = listOf(navArgument("categoryTitle") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val title = backStackEntry.arguments?.getString("categoryTitle")
-            // categoryId parametresi kaldırıldı.
-            LearningScreen(navController = navController, categoryTitle = title)
+            route = "learning_screen/{categoryId}?type={type}",
+            arguments = listOf(
+                navArgument("categoryId") { type = NavType.StringType },
+                navArgument("type") {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                }
+            )
+        ) {
+            LearningScreen(navController = navController)
         }
 
 
@@ -71,8 +71,11 @@ fun Navigation(){
             //ListsScreen(navController = navController)
         }
 
-        composable("quiz_screen"){
-            //QuizScreen(navController = navController)
+        composable(
+            route = "quiz_screen/{categoryId}",
+            arguments = listOf(navArgument("categoryId") { type = NavType.StringType })
+        ) {
+            QuizScreen(navController = navController)
         }
 
         composable("chat_screen"){

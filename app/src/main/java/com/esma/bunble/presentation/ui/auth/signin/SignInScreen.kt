@@ -1,5 +1,6 @@
 package com.esma.bunble.presentation.ui.auth.signin
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -34,6 +36,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.esma.bunble.R
@@ -42,13 +45,35 @@ import com.esma.bunble.presentation.base.components.auth.AuthTextField
 
 
 @Composable
-fun SignInScreen(navController: NavController) {
+fun SignInScreen(
+    navController: NavController,
+    viewModel: SignInViewModel = hiltViewModel()
+) {
 
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var isPasswordVisible by rememberSaveable { mutableStateOf(false) }
 
     val focusManager = LocalFocusManager.current
+    val context = LocalContext.current
+    val signInState = viewModel.signInState.value
+
+    LaunchedEffect(signInState.error) {
+        signInState.error?.let {
+            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+            viewModel.errorShown()
+        }
+    }
+
+    // Giriş başarılıysa Home ekranına yönlendir
+    LaunchedEffect(signInState.signInSuccess) {
+        if (signInState.signInSuccess) {
+            navController.navigate("home_screen") {
+                // Geri yığınını temizle ki kullanıcı Home'dan geri gelmesin
+                popUpTo(navController.graph.startDestinationId) { inclusive = true }
+            }
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -117,8 +142,9 @@ fun SignInScreen(navController: NavController) {
             AuthButton(
                 text = "Sign In",
                 onClick = {
-                    navController.navigate("home_screen")
-                }
+                    viewModel.signInUser(email, password)
+                },
+                isLoading = signInState.isLoading
             )
 
             // TODO: "Şifremi Unuttum?" seçeneğini buraya ekleyebilirsiniz.
@@ -130,7 +156,9 @@ fun SignInScreen(navController: NavController) {
                 }
             },
                 fontSize = 12.sp,
-                modifier = Modifier.align(Alignment.CenterHorizontally).clickable {  }
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .clickable { }
             )
 
             Spacer(modifier = Modifier.height(24.dp))

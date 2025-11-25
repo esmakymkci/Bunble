@@ -87,5 +87,8 @@ dependencies {
     kapt("com.google.dagger:hilt-android-compiler:2.57.2")
     // Hilt-ViewModel entegrasyonu için
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    // DataStore
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+
 
 }
