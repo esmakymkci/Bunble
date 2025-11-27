@@ -5,10 +5,9 @@ data class Language(
     val name: String,       // "German"
     val flagEmoji: String   // "🇩🇪"
 )
-// Desteklediğimiz ve öğreteceğimiz dillerin listesi
 val supportedLanguages = listOf(
     Language("es", "Spanish", "🇪🇸"),
-    Language("fr", "French", "🇫🇷"),
+    Language("es", "Spanish", "🇪🇸") ,
     Language("de", "German", "🇩🇪"),
     Language("tr", "Turkish", "🇹🇷")
 )

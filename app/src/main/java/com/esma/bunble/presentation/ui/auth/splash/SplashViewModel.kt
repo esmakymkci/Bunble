@@ -11,17 +11,16 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-// 2. Yeni bir hedef ekle: Home
 sealed class StartDestination {
     object LanguageSelection : StartDestination()
     object Authentication : StartDestination()
-    object Home : StartDestination() // <-- YENİ
+    object Home : StartDestination()
 }
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
     private val userPrefsRepo: UserPreferencesRepository,
-    private val firebaseAuth: FirebaseAuth // <-- 3. FirebaseAuth'u enjekte et
+    private val firebaseAuth: FirebaseAuth
 ) : ViewModel() {
 
     private val _startDestination = MutableStateFlow<StartDestination?>(null)
@@ -29,19 +28,14 @@ class SplashViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            // DataStore'dan ilk açılış durumunu SADECE BİR KEZ oku
             val isFirstLaunch = userPrefsRepo.isFirstLaunch.first()
 
             if (isFirstLaunch) {
-                // Her zaman olduğu gibi, ilk açılışsa dil seçimine yönlendir.
                 _startDestination.value = StartDestination.LanguageSelection
             } else {
-                // 4. İlk açılış değilse, giriş durumunu kontrol et.
                 if (firebaseAuth.currentUser != null) {
-                    // Kullanıcı zaten giriş yapmışsa, DOĞRUDAN ana ekrana yönlendir.
                     _startDestination.value = StartDestination.Home
                 } else {
-                    // Kullanıcı giriş yapmamışsa, kimlik doğrulama ekranına yönlendir.
                     _startDestination.value = StartDestination.Authentication
                 }
             }

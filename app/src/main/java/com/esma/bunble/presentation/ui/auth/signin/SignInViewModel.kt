@@ -10,7 +10,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-// SignIn UI'ının durumunu temsil edecek bir data class
 data class SignInState(
     val isLoading: Boolean = false,
     val signInSuccess: Boolean = false,
@@ -26,7 +25,6 @@ class SignInViewModel @Inject constructor(
     val signInState: State<SignInState> = _signInState
 
     fun signInUser(email: String, pass: String) {
-        // Basit validasyonlar
         if (email.isBlank() || pass.isBlank()) {
             _signInState.value = SignInState(error = "Email and password cannot be empty.")
             return
@@ -35,20 +33,16 @@ class SignInViewModel @Inject constructor(
         viewModelScope.launch {
             _signInState.value = SignInState(isLoading = true)
             try {
-                // 1. Firebase Authentication ile kullanıcı girişi yapmayı dene
                 firebaseAuth.signInWithEmailAndPassword(email, pass).await()
 
-                // 2. Giriş başarılıysa, UI'a bildir
                 _signInState.value = SignInState(signInSuccess = true)
 
             } catch (e: Exception) {
-                // 3. Hata durumunda (yanlış şifre vb.), UI'a bildir
                 _signInState.value = SignInState(error = e.localizedMessage ?: "Invalid email or password.")
             }
         }
     }
 
-    // Hata mesajı gösterildikten sonra state'i sıfırlamak için
     fun errorShown() {
         _signInState.value = _signInState.value.copy(error = null)
     }

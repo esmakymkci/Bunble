@@ -31,7 +31,6 @@ fun HomeScreen(
 ) {
 
 
-    // ViewModel'den state'i al
     val state = viewModel.state.value
 
     Scaffold(

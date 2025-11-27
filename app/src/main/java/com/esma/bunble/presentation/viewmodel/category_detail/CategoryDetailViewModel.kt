@@ -15,15 +15,15 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 data class CategoryDetailState(
-    val category: LearningCategory? = null, // State'i tek bir modelle yönetelim
+    val category: LearningCategory? = null,
     val isLoading: Boolean = true,
     val error: String? = null
 )
 
 @HiltViewModel
 class CategoryDetailViewModel @Inject constructor(
-    private val repository: ILearningRepository, // Firestore yerine Repository
-    private val firestore: FirebaseFirestore, // Kullanıcı verisi için hala gerekli
+    private val repository: ILearningRepository,
+    private val firestore: FirebaseFirestore,
     private val firebaseAuth: FirebaseAuth,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -31,14 +31,12 @@ class CategoryDetailViewModel @Inject constructor(
     private val _state = mutableStateOf(CategoryDetailState())
     val state: State<CategoryDetailState> = _state
 
-    // Category ID'yi al, bu kısım doğru
     private val categoryId: String? = savedStateHandle.get("categoryId")
 
     init {
         if (categoryId != null) {
             loadCategoryDetails(categoryId)
         } else {
-            // ID yoksa, hata durumu oluştur
             _state.value = CategoryDetailState(isLoading = false, error = "Category ID not found.")
         }
     }
@@ -47,7 +45,6 @@ class CategoryDetailViewModel @Inject constructor(
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoading = true)
 
-            // En iyi pratik: Kullanıcının dil tercihini Firebase profilinden oku
             val currentUser = firebaseAuth.currentUser
             if (currentUser == null) {
                 _state.value = CategoryDetailState(isLoading = false, error = "User not logged in.")
@@ -55,12 +52,10 @@ class CategoryDetailViewModel @Inject constructor(
             }
 
             try {
-                // 1. Kullanıcının dil yolunu Firestore'dan al
                 val userDoc = firestore.collection("users").document(currentUser.uid).get().await()
                 val languagePath = userDoc.getString("languagePath")
 
                 if (languagePath != null) {
-                    // 2. Repository'i dinamik dil yolu ve kategori ID'si ile çağır
                     val categoryDetails = repository.getCategoryDetails(languagePath, categoryId)
                     _state.value = CategoryDetailState(
                         isLoading = false,
@@ -76,3 +71,10 @@ class CategoryDetailViewModel @Inject constructor(
         }
     }
 }
+
+/*
+
+savedStateHandle: SavedStateHandle: Navigasyon yoluyla gelen argümanları (categoryId gibi) güvenli bir şekilde yakalamak için kullanılır.
+savedStateHandle.get("categoryId"): Navigasyon rotasındaki (.../{categoryId}) categoryId argümanını yakalar.
+
+ */

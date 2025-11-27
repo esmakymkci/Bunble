@@ -14,7 +14,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-// UI'ın durumunu temsil edecek bir data class
 data class SignUpState(
     val isLoading: Boolean = false,
     val signUpSuccess: Boolean = false,
@@ -32,7 +31,6 @@ class SignUpViewModel @Inject constructor(
     val signUpState: State<SignUpState> = _signUpState
 
     fun signUpUser(fullName: String, email: String, pass: String, confirmPass: String) {
-        // Basit validasyonlar
         if (fullName.isBlank() || email.isBlank() || pass.isBlank()) {
             _signUpState.value = SignUpState(error = "All fields are required.")
             return
@@ -45,7 +43,6 @@ class SignUpViewModel @Inject constructor(
         viewModelScope.launch {
             _signUpState.value = SignUpState(isLoading = true)
             try {
-                // 1. Firebase Authentication ile kullanıcı oluştur
                 val result = firebaseAuth.createUserWithEmailAndPassword(email, pass).await()
                 val user = result.user
 
@@ -55,36 +52,30 @@ class SignUpViewModel @Inject constructor(
                         displayName = fullName
                     }
                     user.updateProfile(profileUpdates).await()
-                    // 2. DataStore'dan dil yolunu (örn: "tr-de") oku
                     val langPath = userPrefsRepo.languagePath.first()
 
-                    // 3. Firestore için kullanıcı profili verisini hazırla
                     val userProfile = hashMapOf(
                         "uid" to user.uid,
                         "displayName" to fullName,
                         "email" to email,
-                        "languagePath" to langPath, // Dil seçimini kaydet
+                        "languagePath" to langPath,
                         "createdAt" to System.currentTimeMillis()
                     )
 
-                    // 4. Firestore'da 'users' koleksiyonuna kullanıcı profilini yaz
                     firestore.collection("users").document(user.uid)
                         .set(userProfile)
                         .await()
 
-                    // 5. Başarılı durumu UI'a bildir
                     _signUpState.value = SignUpState(signUpSuccess = true)
                 } else {
                     _signUpState.value = SignUpState(error = "User could not be created.")
                 }
             } catch (e: Exception) {
-                // Hata durumunu UI'a bildir
                 _signUpState.value = SignUpState(error = e.localizedMessage ?: "An unexpected error occurred.")
             }
         }
     }
 
-    // Hata mesajı gösterildikten sonra state'i sıfırlamak için
     fun errorShown() {
         _signUpState.value = _signUpState.value.copy(error = null)
     }

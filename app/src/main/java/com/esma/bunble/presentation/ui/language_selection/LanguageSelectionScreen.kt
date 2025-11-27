@@ -40,12 +40,11 @@ fun LanguageSelectionScreen(
 
     var selectedLanguage by remember { mutableStateOf<Language?>(null) }
 
-    // --- DEĞİŞİKLİK 1: TAM EKRAN TASARIM ---
-    // Box kaldırıldı, doğrudan Column kullanılıyor ve padding eklendi.
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surface) // Arka plan artık tam ekran
+            .background(MaterialTheme.colorScheme.surface)
             .padding(horizontal = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -59,7 +58,6 @@ fun LanguageSelectionScreen(
         }
         Spacer(modifier = Modifier.height(16.dp))
 
-        // LazyColumn artık Column içinde olduğu için bir weight almalı
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
@@ -103,11 +101,9 @@ fun LanguageSelectionScreen(
 
 @Composable
 fun LanguageItem(language: Language, isSelected: Boolean, onLanguageSelected: (Language) -> Unit) {
-    // --- DEĞİŞİKLİK 2: YENİ SEÇİM STİLİ ---
     val brandYellow = Color(0xFFFDD835)
     val lightYellowTransparent = brandYellow.copy(alpha = 0.2f)
 
-    // Seçim durumuna göre arka plan ve kenarlık rengini belirle
     val backgroundColor = if (isSelected) lightYellowTransparent else Color.Transparent
     val borderColor = if (isSelected) brandYellow else Color.LightGray
 

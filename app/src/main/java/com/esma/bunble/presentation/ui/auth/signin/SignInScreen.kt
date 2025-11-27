@@ -65,11 +65,9 @@ fun SignInScreen(
         }
     }
 
-    // Giriş başarılıysa Home ekranına yönlendir
     LaunchedEffect(signInState.signInSuccess) {
         if (signInState.signInSuccess) {
             navController.navigate("home_screen") {
-                // Geri yığınını temizle ki kullanıcı Home'dan geri gelmesin
                 popUpTo(navController.graph.startDestinationId) { inclusive = true }
             }
         }
@@ -186,3 +184,13 @@ fun SignInScreenPreview() {
 }
 
 
+/*
+
+focusManager: Klavyedeki "ileri" tuşuna basıldığında odağı bir sonraki metin
+alanına kaydırmak gibi klavye etkileşimlerini yönetmek için kullanılır.
+
+context: Toast mesajı (hata mesajı gibi) göstermek için gereklidir.
+
+
+
+ */

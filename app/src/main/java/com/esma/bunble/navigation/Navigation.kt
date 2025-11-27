@@ -13,7 +13,6 @@ import com.esma.bunble.presentation.ui.category_detail.CategoryDetailScreen
 import com.esma.bunble.presentation.ui.home.HomeScreen
 import com.esma.bunble.presentation.ui.language_selection.LanguageSelectionScreen
 import com.esma.bunble.presentation.ui.learn.LearningScreen
-import com.esma.bunble.presentation.ui.quiz.QuizScreen
 
 @Composable
 fun Navigation(){
@@ -71,12 +70,12 @@ fun Navigation(){
             //ListsScreen(navController = navController)
         }
 
-        composable(
+        /*composable(
             route = "quiz_screen/{categoryId}",
             arguments = listOf(navArgument("categoryId") { type = NavType.StringType })
         ) {
             QuizScreen(navController = navController)
-        }
+        }*/
 
         composable("chat_screen"){
             //ChatScreen(navController = navController)

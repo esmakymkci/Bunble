@@ -6,5 +6,5 @@ data class LearnItem(
     val meaning: String,
     val translation: String,
     val imageUrl: String,
-    val audioUrl: String? = null
+    val audioUrl: String? = null,
 )

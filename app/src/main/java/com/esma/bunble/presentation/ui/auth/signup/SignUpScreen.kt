@@ -52,9 +52,8 @@ fun SignUpScreen(
 
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
-    val signUpState = viewModel.signUpState.value // ViewModel'den gelen state'i dinle
+    val signUpState = viewModel.signUpState.value
 
-    // Hata mesajlarını Toast ile göster
     LaunchedEffect(signUpState.error) {
         signUpState.error?.let {
             Toast.makeText(context, it, Toast.LENGTH_LONG).show()
@@ -62,7 +61,6 @@ fun SignUpScreen(
         }
     }
 
-    // Kayıt başarılıysa Home ekranına yönlendir
     LaunchedEffect(signUpState.signUpSuccess) {
         if (signUpState.signUpSuccess) {
             navController.navigate("home_screen") {
@@ -179,7 +177,7 @@ fun SignUpScreen(
                 onClick = {
                     viewModel.signUpUser(fullName, email, password, confirmPassword)
                 },
-                isLoading = signUpState.isLoading // Butonun yüklenme durumunu state'e bağla
+                isLoading = signUpState.isLoading
             )
 
             Spacer(modifier = Modifier.height(24.dp))

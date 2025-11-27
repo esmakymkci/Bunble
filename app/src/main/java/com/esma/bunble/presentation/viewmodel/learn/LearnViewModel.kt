@@ -1,12 +1,15 @@
 package com.esma.bunble.presentation.viewmodel.learn
 
-
+import android.app.Application
+import android.media.MediaPlayer
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import coil.ImageLoader
 import com.esma.bunble.domain.model.LearnItem
+import com.esma.bunble.domain.model.QuizItem
 import com.esma.bunble.domain.repository.ILearningRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -14,120 +17,207 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
-import android.media.MediaPlayer
+import coil.request.ImageRequest
+import coil.request.CachePolicy
 
-// State class'ını mevcut öğeyi ve ilerlemeyi de içerecek şekilde güncelleyelim
-data class LearningScreenState(
+data class LearnState(
     val items: List<LearnItem> = emptyList(),
     val currentItemIndex: Int = 0,
     val isLoading: Boolean = true,
     val error: String? = null
 ) {
-    // Mevcut öğrenme kartını kolayca almak için bir yardımcı özellik
-    val currentItem: LearnItem?
-        get() = items.getOrNull(currentItemIndex)
-
-    // Öğrenme sürecinin bitip bitmediğini kontrol etmek için bir yardımcı özellik
-    val isFinished: Boolean
-        get() = currentItemIndex >= items.size - 1 && items.isNotEmpty()
+    val currentItem: LearnItem? get() = items.getOrNull(currentItemIndex)
+    val isFinished: Boolean get() = currentItemIndex >= items.size - 1 && items.isNotEmpty()
 }
+
+enum class AnswerState { UNANSWERED, CORRECT, INCORRECT }
+
+data class QuizState(
+    val isLoading: Boolean = true,
+    val questions: List<QuizItem> = emptyList(),
+    val currentQuestionIndex: Int = 0,
+    val score: Int = 0,
+    val selectedAnswer: Any? = null,
+    val answerState: AnswerState = AnswerState.UNANSWERED,
+    val isQuizFinished: Boolean = false,
+    val error: String? = null
+) {
+    val currentQuestion: QuizItem? get() = questions.getOrNull(currentQuestionIndex)
+}
+
 
 @HiltViewModel
 class LearnViewModel @Inject constructor(
     private val repository: ILearningRepository,
     private val firestore: FirebaseFirestore,
     private val firebaseAuth: FirebaseAuth,
+    private val application: Application,
+    private val imageLoader: ImageLoader,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _state = mutableStateOf(LearningScreenState())
-    val state: State<LearningScreenState> = _state
+    private val _learnState = mutableStateOf(LearnState())
+    val learnState: State<LearnState> = _learnState
+
+    private val _quizState = mutableStateOf(QuizState())
+    val quizState: State<QuizState> = _quizState
+
+    val contentType: String?
+
     private var mediaPlayer: MediaPlayer? = null
 
     init {
-        // Navigasyondan gelen argümanları al
         val categoryId: String? = savedStateHandle.get("categoryId")
-        // "phrases" mi "words" mü olduğunu belirleyen type argümanını al
-        val type: String? = savedStateHandle.get("type")
+        contentType = savedStateHandle.get("type")
 
         if (categoryId != null) {
-            loadItems(categoryId, type)
+            when (contentType) {
+                "words" -> loadLearnItems(categoryId, "words")
+                "phrases" -> loadLearnItems(categoryId, "phrases")
+                "quiz" -> loadQuizItems(categoryId)
+                else -> loadLearnItems(categoryId, "words") // Varsayılan
+            }
         } else {
-            _state.value = LearningScreenState(isLoading = false, error = "Category ID not found.")
+            val errorMsg = "Category ID not found."
+            _learnState.value = LearnState(isLoading = false, error = errorMsg)
+            _quizState.value = QuizState(isLoading = false, error = errorMsg)
         }
     }
 
-    private fun loadItems(categoryId: String, type: String?) {
+    private fun loadLearnItems(categoryId: String, type: String) {
         viewModelScope.launch {
-            _state.value = _state.value.copy(isLoading = true)
-
-            // Kullanıcı profilinden dil yolunu dinamik olarak al
+            _learnState.value = _learnState.value.copy(isLoading = true)
             val currentUser = firebaseAuth.currentUser
             if (currentUser == null) {
-                _state.value = LearningScreenState(isLoading = false, error = "User not logged in.")
+                _learnState.value = LearnState(isLoading = false, error = "User not logged in.")
                 return@launch
             }
-
             try {
                 val userDoc = firestore.collection("users").document(currentUser.uid).get().await()
                 val languagePath = userDoc.getString("languagePath")
-
                 if (languagePath != null) {
-                    // "type" argümanına göre ya kelimeleri ya da ifadeleri çek
-                    val itemsResult = when (type) {
-                        "words" -> repository.getWords(languagePath, categoryId)
-                        else -> repository.getPhrases(languagePath, categoryId) // Varsayılan olarak ifadeleri al
+                    val itemsResult = if (type == "words") repository.getWords(languagePath, categoryId) else repository.getPhrases(languagePath, categoryId)
+
+                    itemsResult.forEach { learnItem ->
+                        val request = ImageRequest.Builder(application)
+                            .data(learnItem.imageUrl)
+                            .memoryCachePolicy(CachePolicy.ENABLED)
+                            .diskCachePolicy(CachePolicy.ENABLED)
+                            .build()
+                        imageLoader.enqueue(request)
                     }
-                    _state.value = LearningScreenState(items = itemsResult, isLoading = false)
+
+                    _learnState.value = LearnState(items = itemsResult.shuffled(), isLoading = false)
                 } else {
-                    _state.value = LearningScreenState(isLoading = false, error = "Language path not found.")
+                    _learnState.value = LearnState(isLoading = false, error = "Language path not found.")
                 }
             } catch (e: Exception) {
-                _state.value = LearningScreenState(isLoading = false, error = e.localizedMessage)
+                _learnState.value = LearnState(isLoading = false, error = e.localizedMessage)
             }
         }
     }
 
-    // "Continue" butonuna basıldığında bir sonraki öğeye geç
     fun onContinueClicked() {
-        val currentState = _state.value
+        val currentState = _learnState.value
         if (!currentState.isFinished) {
-            _state.value = currentState.copy(currentItemIndex = currentState.currentItemIndex + 1)
+            _learnState.value = currentState.copy(currentItemIndex = currentState.currentItemIndex + 1)
         }
     }
 
-    fun playAudio(audioUrl: String?) {
-        if (audioUrl.isNullOrBlank()) {
-            // Ses URL'si boşsa hiçbir şey yapma
-            return
+    private fun loadQuizItems(categoryId: String) {
+        viewModelScope.launch {
+            _quizState.value = _quizState.value.copy(isLoading = true)
+            val currentUser = firebaseAuth.currentUser
+            if (currentUser == null) {
+                _quizState.value = QuizState(isLoading = false, error = "User not logged in.")
+                return@launch
+            }
+            try {
+                val userDoc = firestore.collection("users").document(currentUser.uid).get().await()
+                val languagePath = userDoc.getString("languagePath")
+                if (languagePath != null) {
+                    val quizItemsResult = repository.getQuizItems(languagePath, categoryId)
+
+                    quizItemsResult.forEach { quizItem ->
+                        if (quizItem is QuizItem.ImageChoice) {
+                            quizItem.options.forEach { imageUrl ->
+                                val request = ImageRequest.Builder(application)
+                                    .data(imageUrl)
+                                    .build()
+                                imageLoader.enqueue(request)
+                            }
+                        }
+                    }
+                    _quizState.value = QuizState(questions = quizItemsResult.shuffled(), isLoading = false)
+                } else {
+                    _quizState.value = QuizState(isLoading = false, error = "Language path not found.")
+                }
+            } catch (e: Exception) {
+                _quizState.value = QuizState(isLoading = false, error = e.localizedMessage)
+            }
+        }
+    }
+
+    fun onAnswerSelected(answer: Any) {
+        if (_quizState.value.answerState != AnswerState.UNANSWERED) return
+        _quizState.value = _quizState.value.copy(selectedAnswer = answer)
+    }
+
+    fun onCheckOrNextClicked() {
+        if (_quizState.value.answerState == AnswerState.UNANSWERED) {
+            checkAnswer()
+        } else {
+            goToNextQuestion()
+        }
+    }
+
+    private fun checkAnswer() {
+        val currentQuestion = _quizState.value.currentQuestion ?: return
+        val correctAnswer = when (currentQuestion) {
+            is QuizItem.ImageChoice -> currentQuestion.correctAnswer
+            is QuizItem.MultipleChoice -> currentQuestion.correctAnswer
+            is QuizItem.TrueFalse -> currentQuestion.correctAnswer
+            is QuizItem.Unsupported -> null
         }
 
-        // Eğer başka bir ses çalıyorsa, önce onu durdur ve kaynakları serbest bırak
+        if (_quizState.value.selectedAnswer == correctAnswer) {
+            _quizState.value = _quizState.value.copy(
+                answerState = AnswerState.CORRECT,
+                score = _quizState.value.score + 1
+            )
+        } else {
+            _quizState.value = _quizState.value.copy(answerState = AnswerState.INCORRECT)
+        }
+    }
+
+    private fun goToNextQuestion() {
+        val nextIndex = _quizState.value.currentQuestionIndex + 1
+        if (nextIndex < _quizState.value.questions.size) {
+            _quizState.value = _quizState.value.copy(
+                currentQuestionIndex = nextIndex,
+                selectedAnswer = null,
+                answerState = AnswerState.UNANSWERED
+            )
+        } else {
+            _quizState.value = _quizState.value.copy(isQuizFinished = true)
+        }
+    }
+
+    // --- ORTAK MANTIK ---
+    fun playAudio(audioUrl: String?) {
+        if (audioUrl.isNullOrBlank()) return
         mediaPlayer?.release()
         mediaPlayer = null
-
         viewModelScope.launch {
             try {
                 mediaPlayer = MediaPlayer().apply {
-                    setDataSource(audioUrl) // 3. İnternetten ses dosyasını hazırla
-                    prepareAsync() // 4. Asenkron olarak hazırla (UI'ı bloklamaz)
-                    setOnPreparedListener { mp ->
-                        mp.start() // 5. Hazır olduğunda çalmaya başla
-                    }
-                    setOnCompletionListener { mp ->
-                        mp.release() // 6. Ses bittiğinde kaynakları serbest bırak
-                        mediaPlayer = null
-                    }
-                    setOnErrorListener { mp, _, _ ->
-                        mp.release()
-                        mediaPlayer = null
-                        true // Hatayı işlediğimizi belirtir
-                    }
+                    setDataSource(audioUrl)
+                    prepareAsync()
+                    setOnPreparedListener { it.start() }
+                    setOnCompletionListener { it.release(); mediaPlayer = null }
+                    setOnErrorListener { mp, _, _ -> mp.release(); mediaPlayer = null; true }
                 }
             } catch (e: Exception) {
-                // Hata olursa (örn. geçersiz URL), kaynakları serbest bırak
-                mediaPlayer?.release()
-                mediaPlayer = null
                 e.printStackTrace()
             }
         }
@@ -135,7 +225,6 @@ class LearnViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        mediaPlayer?.release() // 7. ViewModel ölürken MediaPlayer'ı temizle
-        mediaPlayer = null
+        mediaPlayer?.release()
     }
 }

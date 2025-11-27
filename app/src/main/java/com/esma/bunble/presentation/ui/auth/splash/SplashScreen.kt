@@ -41,7 +41,7 @@ fun SplashScreen(
     val composition by rememberLottieComposition(LottieCompositionSpec.Asset("sari_kenar.json"))
     val progress by animateLottieCompositionAsState(
         composition = composition,
-        iterations = 1, // Animasyon 1 kere oynasın
+        iterations = 1,
         speed = 1f)
 
     LaunchedEffect(progress, startDestination) {
@@ -50,7 +50,7 @@ fun SplashScreen(
                 val route = when (destination) {
                     is StartDestination.LanguageSelection -> "language_selection_screen"
                     is StartDestination.Authentication -> "authentication_screen"
-                    is StartDestination.Home -> "home_screen" // <-- YENİ ROTAYI EKLE
+                    is StartDestination.Home -> "home_screen"
                 }
                 navController.navigate(route) {
                     popUpTo("splash_screen") { inclusive = true }

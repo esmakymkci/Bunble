@@ -64,6 +64,9 @@ bunları Flow olarak ekranlarda kullanmana izin veriyor.
 Extension property = Var olan bir tipe yeni bir property ekliyormuş gibi yazabildiğin,
 ama aslında o tipin kaynağını değiştirmeyen, derleme zamanlı bir yardımcı özellik.
 
+preferencesDataStore, "user_preferences" ismiyle cihazda bir dosya oluşturur ve tüm ayarlar bu dosyanın içine kaydedilir.
 
+•Flow<...>:  Veriyi sadece bir kez okumak yerine, ona bir "akış" (Flow) olarak abone oluruz.
+Bu şu anlama gelir: DataStore'daki bu veri her değiştiğinde, bu Flow'u dinleyen her yer otomatik olarak yeni değeri alır ve arayüz kendini günceller.
 
  */
