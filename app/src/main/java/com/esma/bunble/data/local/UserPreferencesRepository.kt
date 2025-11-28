@@ -3,9 +3,7 @@ package com.esma.bunble.data.local
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
@@ -17,12 +15,6 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 
 @Singleton
 class UserPreferencesRepository @Inject constructor(@ApplicationContext private val context: Context){
-    // Anahtarlarımızı tanımlayalım
-    private object Keys {
-        val IS_FIRST_LAUNCH = booleanPreferencesKey("is_first_launch")
-        val SOURCE_LANGUAGE = stringPreferencesKey("source_language")
-        val TARGET_LANGUAGE = stringPreferencesKey("target_language")
-    }
 
     // İlk açılış durumunu kaydet
     suspend fun setFirstLaunchCompleted() {

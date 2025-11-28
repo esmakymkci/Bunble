@@ -16,7 +16,6 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -34,7 +33,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.esma.bunble.presentation.base.components.auth.AuthButton
 import com.esma.bunble.presentation.base.components.auth.AuthTextField
-
+import com.esma.bunble.presentation.theme.ui.BrandYellow
+import com.esma.bunble.presentation.theme.ui.SurfaceLight
 
 @Composable
 fun SignUpScreen(
@@ -55,8 +55,9 @@ fun SignUpScreen(
     val signUpState = viewModel.signUpState.value
 
     LaunchedEffect(signUpState.error) {
-        signUpState.error?.let {
-            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+        signUpState.error?.let { errorId ->
+            val errorMessage = context.getString(errorId)
+            Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
             viewModel.errorShown() // Hata gösterildikten sonra state'i temizle
         }
     }
@@ -73,7 +74,7 @@ fun SignUpScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF7F7F7)),
+            .background(SurfaceLight),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -186,7 +187,7 @@ fun SignUpScreen(
                 Text(text = "Already have an account? ")
                 Text(
                     text = "Sign In",
-                    color = MaterialTheme.colorScheme.primary,
+                    color = BrandYellow,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.clickable {
                         navController.navigate("signin_screen")

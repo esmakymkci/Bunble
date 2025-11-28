@@ -1,10 +1,12 @@
 package com.esma.bunble.presentation.viewmodel.category_detail
 
+import androidx.annotation.StringRes
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.esma.bunble.R
 import com.esma.bunble.domain.model.LearningCategory
 import com.esma.bunble.domain.repository.ILearningRepository
 import com.google.firebase.auth.FirebaseAuth
@@ -13,12 +15,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
-
-data class CategoryDetailState(
-    val category: LearningCategory? = null,
-    val isLoading: Boolean = true,
-    val error: String? = null
-)
 
 @HiltViewModel
 class CategoryDetailViewModel @Inject constructor(
@@ -37,7 +33,7 @@ class CategoryDetailViewModel @Inject constructor(
         if (categoryId != null) {
             loadCategoryDetails(categoryId)
         } else {
-            _state.value = CategoryDetailState(isLoading = false, error = "Category ID not found.")
+            _state.value = CategoryDetailState(isLoading = false, error =  R.string.error_category_id_not_found)
         }
     }
 
@@ -47,7 +43,7 @@ class CategoryDetailViewModel @Inject constructor(
 
             val currentUser = firebaseAuth.currentUser
             if (currentUser == null) {
-                _state.value = CategoryDetailState(isLoading = false, error = "User not logged in.")
+                _state.value = CategoryDetailState(isLoading = false, error = R.string.error_user_not_logged_in)
                 return@launch
             }
 
@@ -60,13 +56,12 @@ class CategoryDetailViewModel @Inject constructor(
                     _state.value = CategoryDetailState(
                         isLoading = false,
                         category = categoryDetails,
-                        error = if (categoryDetails == null) "Category not found." else null
-                    )
+                        error = if (categoryDetails == null) R.string.error_category_not_found else null                    )
                 } else {
-                    _state.value = CategoryDetailState(isLoading = false, error = "Language path not found in user profile.")
+                    _state.value = CategoryDetailState(isLoading = false, error = R.string.error_language_path_not_found)
                 }
             } catch (e: Exception) {
-                _state.value = CategoryDetailState(isLoading = false, error = e.localizedMessage)
+                _state.value = CategoryDetailState(isLoading = false, error = R.string.error_unknown)
             }
         }
     }

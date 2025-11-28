@@ -8,7 +8,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil.ImageLoader
-import com.esma.bunble.domain.model.LearnItem
 import com.esma.bunble.domain.model.QuizItem
 import com.esma.bunble.domain.repository.ILearningRepository
 import com.google.firebase.auth.FirebaseAuth
@@ -19,32 +18,7 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import coil.request.ImageRequest
 import coil.request.CachePolicy
-
-data class LearnState(
-    val items: List<LearnItem> = emptyList(),
-    val currentItemIndex: Int = 0,
-    val isLoading: Boolean = true,
-    val error: String? = null
-) {
-    val currentItem: LearnItem? get() = items.getOrNull(currentItemIndex)
-    val isFinished: Boolean get() = currentItemIndex >= items.size - 1 && items.isNotEmpty()
-}
-
-enum class AnswerState { UNANSWERED, CORRECT, INCORRECT }
-
-data class QuizState(
-    val isLoading: Boolean = true,
-    val questions: List<QuizItem> = emptyList(),
-    val currentQuestionIndex: Int = 0,
-    val score: Int = 0,
-    val selectedAnswer: Any? = null,
-    val answerState: AnswerState = AnswerState.UNANSWERED,
-    val isQuizFinished: Boolean = false,
-    val error: String? = null
-) {
-    val currentQuestion: QuizItem? get() = questions.getOrNull(currentQuestionIndex)
-}
-
+import com.esma.bunble.R
 
 @HiltViewModel
 class LearnViewModel @Inject constructor(
@@ -78,9 +52,9 @@ class LearnViewModel @Inject constructor(
                 else -> loadLearnItems(categoryId, "words") // Varsayılan
             }
         } else {
-            val errorMsg = "Category ID not found."
-            _learnState.value = LearnState(isLoading = false, error = errorMsg)
-            _quizState.value = QuizState(isLoading = false, error = errorMsg)
+            val errorId = R.string.error_category_id_not_found
+            _learnState.value = LearnState(isLoading = false, error = errorId)
+            _quizState.value = QuizState(isLoading = false, error = errorId)
         }
     }
 
@@ -89,7 +63,7 @@ class LearnViewModel @Inject constructor(
             _learnState.value = _learnState.value.copy(isLoading = true)
             val currentUser = firebaseAuth.currentUser
             if (currentUser == null) {
-                _learnState.value = LearnState(isLoading = false, error = "User not logged in.")
+                _learnState.value = LearnState(isLoading = false, error = R.string.error_user_not_logged_in)
                 return@launch
             }
             try {
@@ -109,10 +83,10 @@ class LearnViewModel @Inject constructor(
 
                     _learnState.value = LearnState(items = itemsResult.shuffled(), isLoading = false)
                 } else {
-                    _learnState.value = LearnState(isLoading = false, error = "Language path not found.")
+                    _learnState.value = LearnState(isLoading = false, error =  R.string.error_language_path_not_found)
                 }
             } catch (e: Exception) {
-                _learnState.value = LearnState(isLoading = false, error = e.localizedMessage)
+                _learnState.value = LearnState(isLoading = false, error = R.string.error_unknown)
             }
         }
     }
@@ -129,7 +103,7 @@ class LearnViewModel @Inject constructor(
             _quizState.value = _quizState.value.copy(isLoading = true)
             val currentUser = firebaseAuth.currentUser
             if (currentUser == null) {
-                _quizState.value = QuizState(isLoading = false, error = "User not logged in.")
+                _quizState.value = QuizState(isLoading = false, error = R.string.error_user_not_logged_in)
                 return@launch
             }
             try {
@@ -150,10 +124,10 @@ class LearnViewModel @Inject constructor(
                     }
                     _quizState.value = QuizState(questions = quizItemsResult.shuffled(), isLoading = false)
                 } else {
-                    _quizState.value = QuizState(isLoading = false, error = "Language path not found.")
+                    _quizState.value = QuizState(isLoading = false, error = R.string.error_language_path_not_found)
                 }
             } catch (e: Exception) {
-                _quizState.value = QuizState(isLoading = false, error = e.localizedMessage)
+                _quizState.value = QuizState(isLoading = false, error = R.string.error_unknown)
             }
         }
     }
@@ -203,7 +177,6 @@ class LearnViewModel @Inject constructor(
         }
     }
 
-    // --- ORTAK MANTIK ---
     fun playAudio(audioUrl: String?) {
         if (audioUrl.isNullOrBlank()) return
         mediaPlayer?.release()

@@ -1,26 +1,19 @@
 package com.esma.bunble.presentation.ui.category_detail
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
 import com.esma.bunble.R
 import com.esma.bunble.presentation.base.components.category_detail.DetailSection
 import com.esma.bunble.presentation.base.components.category_detail.HeaderSection
+import com.esma.bunble.presentation.theme.ui.SurfaceLight
 import com.esma.bunble.presentation.viewmodel.category_detail.CategoryDetailViewModel
 
 @Composable
@@ -31,7 +24,7 @@ fun CategoryDetailScreen(
     val state = viewModel.state.value
 
     Scaffold(
-        containerColor = Color(0xFFF7F7F7),
+        containerColor = SurfaceLight,
     ) { innerPadding ->
         if (state.isLoading) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -40,7 +33,7 @@ fun CategoryDetailScreen(
         }
         else if (state.error != null) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(text = "Error: ${state.error}")
+                Text(text = stringResource(id = state.error))
             }
         }
         else if (state.category != null) {

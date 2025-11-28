@@ -4,17 +4,13 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.esma.bunble.R
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-data class SignInState(
-    val isLoading: Boolean = false,
-    val signInSuccess: Boolean = false,
-    val error: String? = null
-)
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(
@@ -26,7 +22,7 @@ class SignInViewModel @Inject constructor(
 
     fun signInUser(email: String, pass: String) {
         if (email.isBlank() || pass.isBlank()) {
-            _signInState.value = SignInState(error = "Email and password cannot be empty.")
+            _signInState.value = SignInState(error = R.string.error_email_password_empty)
             return
         }
 
@@ -38,7 +34,7 @@ class SignInViewModel @Inject constructor(
                 _signInState.value = SignInState(signInSuccess = true)
 
             } catch (e: Exception) {
-                _signInState.value = SignInState(error = e.localizedMessage ?: "Invalid email or password.")
+                _signInState.value = SignInState(error = R.string.error_invalid_credentials)
             }
         }
     }

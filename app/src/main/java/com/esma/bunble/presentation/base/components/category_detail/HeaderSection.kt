@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.HelpOutline
@@ -14,14 +13,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberAsyncImagePainter // <-- YENİ: Coil import edildi
+import coil.compose.rememberAsyncImagePainter
+import com.esma.bunble.presentation.theme.ui.BrandBlack
+import com.esma.bunble.presentation.theme.ui.BrandWhite
+
 
 @Composable
 fun HeaderSection(
@@ -49,14 +50,13 @@ fun HeaderSection(
                 .fillMaxSize()
                 .background(
                     Brush.verticalGradient(
-                        colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.7f)),
-                        startY = 400f
+                        colors = listOf(Color.Transparent, BrandBlack.copy(alpha = 0.7f)),                         startY = 400f
                     )
                 )
         )
         Text(
             text = title,
-            color = Color.White,
+            color = BrandWhite,
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(start = 24.dp, end = 24.dp, bottom = 24.dp)
@@ -71,7 +71,7 @@ fun HeaderSection(
             IconButton(
                 onClick = onBackClicked,
                 modifier = Modifier
-                    .background(Color.White.copy(alpha = 0.7f), CircleShape)
+                    .background(BrandWhite.copy(alpha = 0.7f), CircleShape)
             ) {
                 Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
             }

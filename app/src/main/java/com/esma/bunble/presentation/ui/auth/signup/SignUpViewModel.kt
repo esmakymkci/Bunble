@@ -1,9 +1,11 @@
 package com.esma.bunble.presentation.ui.auth.signup
 
+import androidx.annotation.StringRes
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.esma.bunble.R
 import com.esma.bunble.data.local.UserPreferencesRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.userProfileChangeRequest
@@ -13,12 +15,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
-
-data class SignUpState(
-    val isLoading: Boolean = false,
-    val signUpSuccess: Boolean = false,
-    val error: String? = null
-)
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
@@ -32,11 +28,11 @@ class SignUpViewModel @Inject constructor(
 
     fun signUpUser(fullName: String, email: String, pass: String, confirmPass: String) {
         if (fullName.isBlank() || email.isBlank() || pass.isBlank()) {
-            _signUpState.value = SignUpState(error = "All fields are required.")
+            _signUpState.value = SignUpState(error = R.string.error_all_fields_required)
             return
         }
         if (pass != confirmPass) {
-            _signUpState.value = SignUpState(error = "Passwords do not match.")
+            _signUpState.value = SignUpState(error = R.string.error_passwords_do_not_match)
             return
         }
 
@@ -68,10 +64,10 @@ class SignUpViewModel @Inject constructor(
 
                     _signUpState.value = SignUpState(signUpSuccess = true)
                 } else {
-                    _signUpState.value = SignUpState(error = "User could not be created.")
+                    _signUpState.value = SignUpState(error = R.string.error_user_creation_failed)
                 }
             } catch (e: Exception) {
-                _signUpState.value = SignUpState(error = e.localizedMessage ?: "An unexpected error occurred.")
+                _signUpState.value = SignUpState(error =  R.string.error_unknown)
             }
         }
     }

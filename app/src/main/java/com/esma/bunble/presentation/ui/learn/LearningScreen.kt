@@ -1,5 +1,6 @@
 package com.esma.bunble.presentation.ui.learn
 
+import androidx.compose.animation.core.copy
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -25,6 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -34,6 +36,19 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.esma.bunble.R
 import com.esma.bunble.domain.model.QuizItem
+import com.esma.bunble.presentation.theme.ui.BorderGray
+import com.esma.bunble.presentation.theme.ui.BrandBlack
+import com.esma.bunble.presentation.theme.ui.BrandWhite
+import com.esma.bunble.presentation.theme.ui.BrandYellow
+import com.esma.bunble.presentation.theme.ui.BrandYellowDark
+import com.esma.bunble.presentation.theme.ui.BrandYellowLight
+import com.esma.bunble.presentation.theme.ui.CorrectGreen
+import com.esma.bunble.presentation.theme.ui.DarkPurple
+import com.esma.bunble.presentation.theme.ui.GrayText
+import com.esma.bunble.presentation.theme.ui.IncorrectRed
+import com.esma.bunble.presentation.theme.ui.LightCorrectGreen
+import com.esma.bunble.presentation.theme.ui.LightIncorrectRed
+import com.esma.bunble.presentation.theme.ui.SurfaceLight
 import com.esma.bunble.presentation.viewmodel.learn.AnswerState
 import com.esma.bunble.presentation.viewmodel.learn.LearnState
 import com.esma.bunble.presentation.viewmodel.learn.LearnViewModel
@@ -94,7 +109,7 @@ fun LearnContent(
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         },
-        containerColor = Color(0xFFF7F7F7)
+        containerColor = SurfaceLight
     ) { innerPadding ->
         when {
             state.isLoading -> {
@@ -103,12 +118,16 @@ fun LearnContent(
                 }
             }
             state.error != null -> {
-                Box(modifier = Modifier.fillMaxSize().padding(16.dp), contentAlignment = Alignment.Center) {
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp), contentAlignment = Alignment.Center) {
                     Text(text = "Error: ${state.error}", textAlign = TextAlign.Center)
                 }
             }
             state.items.isEmpty() && !state.isLoading -> {
-                Box(modifier = Modifier.fillMaxSize().padding(16.dp), contentAlignment = Alignment.Center) {
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp), contentAlignment = Alignment.Center) {
                     Text(text = "Bu kategoride öğrenilecek içerik bulunamadı.", textAlign = TextAlign.Center)
                 }
             }
@@ -150,7 +169,7 @@ fun LearnContent(
                             Text(
                                 text = currentItem.meaning,
                                 fontSize = 14.sp,
-                                color = Color.Gray,
+                                color = GrayText,
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier.padding(horizontal = 16.dp)
                             )
@@ -174,11 +193,11 @@ fun LearnContent(
                             .fillMaxWidth()
                             .height(50.dp),
                         shape = RoundedCornerShape(50),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFDD835))
+                        colors = ButtonDefaults.buttonColors(containerColor = BrandYellow)
                     ) {
                         Text(
                             text = if (!state.isFinished) "Continue" else "Finish",
-                            color = Color.Black,
+                            color = BrandBlack,
                             fontSize = 16.sp
                         )
                     }
@@ -199,7 +218,7 @@ fun TranslationCard(
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = BrandWhite)
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
@@ -219,19 +238,19 @@ fun TranslationCard(
                         contentDescription = "Pronounce",
                         modifier = Modifier
                             .size(40.dp)
-                            .background(Color(0xFFFFC107).copy(alpha = 0.2f), CircleShape)
+                            .background(BrandYellowLight.copy(alpha = 0.2f), CircleShape)
                             .padding(8.dp),
-                        tint = if (!audioUrl.isNullOrBlank()) Color(0xFFD4A000) else Color.Gray
+                        tint = if (!audioUrl.isNullOrBlank()) BrandYellowDark else GrayText
                     )
                 }
                 Spacer(Modifier.width(16.dp))
                 Column {
                     Text(text = phonetic, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                    Text(text = "Phonetic", color = Color.Gray, fontSize = 12.sp)
+                    Text(text = "Phonetic", color = GrayText, fontSize = 12.sp)
                 }
             }
             IconButton(onClick = { /* TODO: Bookmark action */ }) {
-                Icon(Icons.Default.BookmarkBorder, contentDescription = "Bookmark", tint = Color.Gray)
+                Icon(Icons.Default.BookmarkBorder, contentDescription = "Bookmark", tint = GrayText)
             }
         }
     }
@@ -239,19 +258,13 @@ fun TranslationCard(
 
 // QUIZ
 
-val brandYellow = Color(0xFFFDD835)
-val correctGreen = Color(0xFF4CAF50)
-val incorrectRed = Color(0xFFF44336)
-val lightGreen = correctGreen.copy(alpha = 0.1f)
-val lightRed = incorrectRed.copy(alpha = 0.1f)
-
 @Composable
 fun QuizContent(
     navController: NavController,
     state: QuizState,
     viewModel: LearnViewModel
 ) {
-    Scaffold(containerColor = MaterialTheme.colorScheme.background) { innerPadding ->
+    Scaffold(containerColor = SurfaceLight) { innerPadding ->
         if (state.isQuizFinished) {
             QuizResultScreen(
                 score = state.score,
@@ -303,7 +316,7 @@ fun QuizContent(
                     } else if (state.error == null) {
                         Text(text = "Bu kategori için henüz quiz sorusu bulunmuyor.")
                     } else {
-                        Text(text = "Error: ${state.error}")
+                        Text(text = stringResource(id = state.error))
                     }
                 }
                 QuizBottomBar(
@@ -334,7 +347,7 @@ fun QuizTopAppBar(current: Int, total: Int, onClose: () -> Unit) {
                 .weight(1f)
                 .height(10.dp)
                 .clip(CircleShape),
-            color = brandYellow
+            color = BrandYellow
         )
     }
 }
@@ -365,7 +378,7 @@ fun QuizBottomBar(
                 .fillMaxWidth()
                 .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 24.dp), // Alt boşluğu koru
             enabled = selectedAnswer != null,
-            colors = ButtonDefaults.buttonColors(containerColor = brandYellow),
+            colors = ButtonDefaults.buttonColors(containerColor = BrandYellow),
             shape = RoundedCornerShape(50)
         ) {
             Text(
@@ -375,7 +388,7 @@ fun QuizBottomBar(
                     else -> "Next"
                 },
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = BrandBlack
             )
         }
     }
@@ -384,22 +397,26 @@ fun QuizBottomBar(
 @Composable
 fun ImageChoiceQuestionUI(question: QuizItem.ImageChoice, state: QuizState, onAnswerSelected: (String) -> Unit) {
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-        Text("Which image represents", fontSize = 20.sp, color = Color.Gray)
+        Text("Which image represents", fontSize = 20.sp, color = GrayText)
         Spacer(Modifier.height(8.dp))
         Text("'${question.questionText}'?", fontSize = 28.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
         Spacer(Modifier.height(32.dp))
         LazyVerticalGrid(columns = GridCells.Fixed(2), verticalArrangement = Arrangement.spacedBy(12.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             items(question.options) { imageUrl ->
                 val isSelected = state.selectedAnswer == imageUrl
-                var borderColor = if (isSelected) brandYellow else Color.Transparent
+                var borderColor = if (isSelected) BrandYellow else Color.Transparent
                 if (state.answerState != AnswerState.UNANSWERED) {
                     borderColor = when {
-                        imageUrl == question.correctAnswer -> correctGreen
-                        isSelected && imageUrl != question.correctAnswer -> incorrectRed
+                        imageUrl == question.correctAnswer -> CorrectGreen
+                        isSelected && imageUrl != question.correctAnswer -> IncorrectRed
                         else -> Color.Transparent
                     }
                 }
-                Box(modifier = Modifier.aspectRatio(1f).border(4.dp, borderColor, RoundedCornerShape(16.dp)).clip(RoundedCornerShape(16.dp)).clickable { onAnswerSelected(imageUrl) }) {
+                Box(modifier = Modifier
+                    .aspectRatio(1f)
+                    .border(4.dp, borderColor, RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(16.dp))
+                    .clickable { onAnswerSelected(imageUrl) }) {
                     Image(painter = rememberAsyncImagePainter(imageUrl), contentDescription = null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize())
                 }
             }
@@ -423,7 +440,7 @@ fun MultipleChoiceQuestionUI(question: QuizItem.MultipleChoice, state: QuizState
 @Composable
 fun TrueFalseQuestionUI(question: QuizItem.TrueFalse, state: QuizState, onAnswerSelected: (Boolean) -> Unit) {
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-        Text("True or False?", fontSize = 20.sp, color = Color.Gray)
+        Text("True or False?", fontSize = 20.sp, color = GrayText)
         Spacer(Modifier.height(16.dp))
         Text(question.questionText, fontSize = 24.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
         Spacer(Modifier.height(48.dp))
@@ -436,10 +453,17 @@ fun TrueFalseQuestionUI(question: QuizItem.TrueFalse, state: QuizState, onAnswer
 
 @Composable
 fun OptionRow(text: String, isSelected: Boolean, answerState: AnswerState, isCorrect: Boolean, onClick: () -> Unit) {
-    val borderColor = when { !isSelected -> Color.LightGray; answerState == AnswerState.UNANSWERED -> brandYellow; isCorrect -> correctGreen; else -> incorrectRed }
-    val backgroundColor = when { answerState == AnswerState.UNANSWERED -> Color.Transparent; isCorrect -> lightGreen; isSelected && !isCorrect -> lightRed; else -> Color.Transparent }
+    val borderColor = when { !isSelected -> BorderGray; answerState == AnswerState.UNANSWERED -> BrandYellow; isCorrect -> CorrectGreen; else -> IncorrectRed }
+    val backgroundColor = when { answerState == AnswerState.UNANSWERED -> Color.Transparent; isCorrect -> LightCorrectGreen; isSelected && !isCorrect -> LightIncorrectRed; else -> Color.Transparent }
     val icon = when { answerState == AnswerState.UNANSWERED -> null; isCorrect -> Icons.Default.Check; isSelected && !isCorrect -> Icons.Default.Close; else -> null }
-    Row(modifier = Modifier.fillMaxWidth().height(56.dp).border(2.dp, borderColor, RoundedCornerShape(16.dp)).background(backgroundColor, RoundedCornerShape(16.dp)).clip(RoundedCornerShape(16.dp)).clickable(onClick = onClick).padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .height(56.dp)
+        .border(2.dp, borderColor, RoundedCornerShape(16.dp))
+        .background(backgroundColor, RoundedCornerShape(16.dp))
+        .clip(RoundedCornerShape(16.dp))
+        .clickable(onClick = onClick)
+        .padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
         Text(text, modifier = Modifier.weight(1f), fontWeight = FontWeight.SemiBold)
         if (icon != null) { Icon(icon, contentDescription = null, tint = borderColor) }
     }
@@ -464,8 +488,8 @@ fun QuizResultScreen(
         R.drawable.sad_bunny
     }
 
-    val titleColor = Color(0xFF4A148C)
-    val successColor = Color(0xFF4CAF50)
+    val titleColor = DarkPurple
+    val successColor = CorrectGreen
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -502,7 +526,7 @@ fun QuizResultScreen(
             Text(
                 text = "$score/$totalQuestions Questions Correct",
                 fontSize = 16.sp,
-                color = Color.Gray
+                color = GrayText
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -519,18 +543,18 @@ fun QuizResultScreen(
                         .height(12.dp)
                         .clip(CircleShape),
                     color = successColor,
-                    trackColor = Color.White.copy(alpha = 0.5f)
+                    trackColor = BrandWhite.copy(alpha = 0.5f)
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 Button(
                     onClick = onFinish,
                     shape = RoundedCornerShape(50),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFE082)),
+                    colors = ButtonDefaults.buttonColors(containerColor = BrandYellow),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
                         "Back to Category",
-                        color = Color.Black,
+                        color = BrandBlack,
                         modifier = Modifier.padding(vertical = 8.dp),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold

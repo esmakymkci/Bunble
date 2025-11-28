@@ -22,6 +22,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.esma.bunble.data.local.UserPreferencesRepository
+import com.esma.bunble.presentation.theme.ui.BorderGray
+import com.esma.bunble.presentation.theme.ui.BrandBlack
+import com.esma.bunble.presentation.theme.ui.BrandYellow
+import com.esma.bunble.presentation.theme.ui.BrandYellowTransparent
+import com.esma.bunble.presentation.theme.ui.GrayText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.util.*
@@ -52,7 +57,7 @@ fun LanguageSelectionScreen(
         Column(modifier = Modifier.fillMaxWidth()) {
             Text("Select Your Language", fontSize = 28.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(16.dp))
-            Text("Your language: $deviceLanguageName", color = Color.Gray)
+            Text("Your language: $deviceLanguageName", color = GrayText)
             Spacer(modifier = Modifier.height(32.dp))
             Text("I want to learn...", fontSize = 22.sp, fontWeight = FontWeight.Bold)
         }
@@ -91,21 +96,19 @@ fun LanguageSelectionScreen(
                 .fillMaxWidth()
                 .height(50.dp),
             shape = RoundedCornerShape(50),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFDD835)),
+            colors = ButtonDefaults.buttonColors(containerColor = BrandYellow),
             enabled = selectedLanguage != null
         ) {
-            Text("Confirm Selection", color = Color.Black, fontWeight = FontWeight.Bold)
+            Text("Confirm Selection", color = BrandBlack, fontWeight = FontWeight.Bold)
         }
     }
 }
 
 @Composable
 fun LanguageItem(language: Language, isSelected: Boolean, onLanguageSelected: (Language) -> Unit) {
-    val brandYellow = Color(0xFFFDD835)
-    val lightYellowTransparent = brandYellow.copy(alpha = 0.2f)
 
-    val backgroundColor = if (isSelected) lightYellowTransparent else Color.Transparent
-    val borderColor = if (isSelected) brandYellow else Color.LightGray
+    val backgroundColor = if (isSelected) BrandYellowTransparent else Color.Transparent
+    val borderColor = if (isSelected) BrandYellow else BorderGray
 
     Row(
         modifier = Modifier
@@ -124,7 +127,7 @@ fun LanguageItem(language: Language, isSelected: Boolean, onLanguageSelected: (L
         RadioButton(
             selected = isSelected,
             onClick = { onLanguageSelected(language) },
-            colors = RadioButtonDefaults.colors(selectedColor = brandYellow)
+            colors = RadioButtonDefaults.colors(selectedColor = BrandYellow)
         )
     }
 }

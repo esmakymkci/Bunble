@@ -14,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,7 +26,10 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.esma.bunble.R
-import kotlinx.coroutines.delay
+import com.esma.bunble.presentation.theme.ui.BrandWhite
+import com.esma.bunble.presentation.theme.ui.GradientBlue
+import com.esma.bunble.presentation.theme.ui.GradientPink
+
 
 
 @Composable
@@ -64,9 +66,9 @@ fun SplashScreen(
         .background(
             brush = Brush.radialGradient(
                 colors = listOf(
-                    Color(0xFFFFFFFF),
-                    Color(0xFFE3F2FD).copy(alpha = 0.8f),
-                    Color(0xFFF8BBD0).copy(alpha = 0.6f)
+                    BrandWhite,
+                    GradientBlue.copy(alpha = 0.8f),
+                    GradientPink.copy(alpha = 0.6f)
                 )
             )
         ),

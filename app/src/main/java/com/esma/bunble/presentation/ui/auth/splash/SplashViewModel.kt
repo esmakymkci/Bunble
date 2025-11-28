@@ -11,11 +11,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-sealed class StartDestination {
-    object LanguageSelection : StartDestination()
-    object Authentication : StartDestination()
-    object Home : StartDestination()
-}
+
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
