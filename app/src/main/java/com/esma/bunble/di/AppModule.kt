@@ -9,6 +9,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
+import android.app.Application
+import coil.ImageLoader
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -31,6 +33,15 @@ object AppModule {
     fun provideLeanrRepository(
         firestore: FirebaseFirestore): ILearningRepository {
         return LearningRepositoryImpl(firestore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideImageLoader(app: Application): ImageLoader {
+        return ImageLoader.Builder(app)
+            .crossfade(true) // Resimler yüklenirken yumuşak bir geçiş efekti
+            .respectCacheHeaders(false) // Önbellek kontrolünü basitleştirir
+            .build()
     }
 
 

@@ -1,5 +1,6 @@
 package com.esma.bunble.presentation.ui.auth.signup
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,7 +16,6 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -27,14 +27,20 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.esma.bunble.R
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.esma.bunble.presentation.base.components.auth.AuthButton
 import com.esma.bunble.presentation.base.components.auth.AuthTextField
-
+import com.esma.bunble.presentation.theme.ui.BrandYellow
+import com.esma.bunble.presentation.theme.ui.SurfaceLight
 
 @Composable
-fun SignUpScreen(navController: NavController) {
+fun SignUpScreen(
+    navController: NavController,
+    viewModel: SignUpViewModel = hiltViewModel()
+    ) {
 
     var fullName by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
@@ -45,11 +51,30 @@ fun SignUpScreen(navController: NavController) {
     var isConfirmPasswordVisible by rememberSaveable { mutableStateOf(false) }
 
     val focusManager = LocalFocusManager.current
+    val context = LocalContext.current
+    val signUpState = viewModel.signUpState.value
+
+    LaunchedEffect(signUpState.error) {
+        signUpState.error?.let { errorId ->
+            val errorMessage = context.getString(errorId)
+            Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
+            viewModel.errorShown() // Hata gösterildikten sonra state'i temizle
+        }
+    }
+
+    LaunchedEffect(signUpState.signUpSuccess) {
+        if (signUpState.signUpSuccess) {
+            navController.navigate("home_screen") {
+                // Geri yığınını temizle ki kullanıcı Home'dan geri gelmesin
+                popUpTo(navController.graph.startDestinationId) { inclusive = true }
+            }
+        }
+    }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF7F7F7)),
+            .background(SurfaceLight),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -151,7 +176,9 @@ fun SignUpScreen(navController: NavController) {
             AuthButton(
                 text = "Sign Up",
                 onClick = {
-                }
+                    viewModel.signUpUser(fullName, email, password, confirmPassword)
+                },
+                isLoading = signUpState.isLoading
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -160,7 +187,7 @@ fun SignUpScreen(navController: NavController) {
                 Text(text = "Already have an account? ")
                 Text(
                     text = "Sign In",
-                    color = MaterialTheme.colorScheme.primary,
+                    color = BrandYellow,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.clickable {
                         navController.navigate("signin_screen")

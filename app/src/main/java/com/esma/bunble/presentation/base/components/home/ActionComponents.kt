@@ -12,8 +12,11 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.esma.bunble.presentation.theme.ui.BrandBlack
+import com.esma.bunble.presentation.theme.ui.BrandYellow
+import com.esma.bunble.presentation.theme.ui.BrandYellowLighter
+
 
 
 // Yatay Kaydırılabilir Butonlar
@@ -39,8 +42,8 @@ fun ActionButton(text: String, isPrimary: Boolean = false, onClick: () -> Unit =
         onClick = onClick,
         shape = RoundedCornerShape(24.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (isPrimary) Color(0xFFFDD835) else Color(0xFFFFFBEB),
-            contentColor = Color.Black
+            containerColor = if (isPrimary) BrandYellow else BrandYellowLighter,
+            contentColor = BrandBlack
         ),
         elevation = ButtonDefaults.buttonElevation(0.dp)
     ) {

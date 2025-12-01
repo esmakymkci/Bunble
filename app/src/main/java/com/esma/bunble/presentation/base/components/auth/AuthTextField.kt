@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import com.esma.bunble.presentation.theme.ui.AuthFieldBackground
 
 @Composable
 fun AuthTextField(
@@ -42,9 +43,9 @@ fun AuthTextField(
         visualTransformation = visualTransformation,
         shape = RoundedCornerShape(16.dp),
         colors = TextFieldDefaults.colors(
-            focusedContainerColor = Color(0xFFFAF8F2),
-            unfocusedContainerColor = Color(0xFFFAF8F2),
-            disabledContainerColor = Color(0xFFFAF8F2),
+            focusedContainerColor = AuthFieldBackground,
+            unfocusedContainerColor = AuthFieldBackground,
+            disabledContainerColor = AuthFieldBackground,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent
         )

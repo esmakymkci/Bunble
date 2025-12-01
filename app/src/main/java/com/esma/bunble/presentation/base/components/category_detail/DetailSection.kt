@@ -19,11 +19,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.esma.bunble.presentation.theme.ui.BrandBlack
+import com.esma.bunble.presentation.theme.ui.BrandWhite
+import com.esma.bunble.presentation.theme.ui.BrandYellow
+import com.esma.bunble.presentation.theme.ui.GrayText
 
 
 @Composable
@@ -40,7 +43,7 @@ fun DetailSection(
         Spacer(modifier = Modifier.height(16.dp))
         Card(
             shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
+            colors = CardDefaults.cardColors(containerColor = BrandWhite),
             modifier = Modifier.fillMaxWidth()
         ) {
             Row(
@@ -50,15 +53,15 @@ fun DetailSection(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(text = cardTitle, fontSize = 18.sp, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text(text = cardDescription, color = Color.Gray, fontSize = 14.sp)
+                    Text(text = cardDescription, color = GrayText, fontSize = 14.sp)
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
                         onClick = onButtonClick,
                         shape = RoundedCornerShape(50),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFDD835)),
+                        colors = ButtonDefaults.buttonColors(containerColor = BrandYellow),
                         elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp)
                     ) {
-                        Text(text = buttonText, color = Color.Black)
+                        Text(text = buttonText, color = BrandBlack)
                     }
                 }
                 Image(

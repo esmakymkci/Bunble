@@ -21,10 +21,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.esma.bunble.R
+import com.esma.bunble.presentation.theme.ui.SurfaceLight
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,7 +54,7 @@ fun HomeTopBar() {
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color(0xFFF7F7F7)
+            containerColor = SurfaceLight
         ),
         modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))
     )

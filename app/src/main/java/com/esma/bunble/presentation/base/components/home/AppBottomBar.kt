@@ -12,6 +12,10 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.esma.bunble.presentation.theme.ui.BrandBlack
+import com.esma.bunble.presentation.theme.ui.BrandWhite
+import com.esma.bunble.presentation.theme.ui.BrandYellow
+import com.esma.bunble.presentation.theme.ui.GrayText
 
 data class BottomNavItem(
     val label: String,
@@ -35,8 +39,8 @@ fun AppBottomBar(navController: NavController) {
 
     NavigationBar(
         modifier = Modifier,
-        containerColor = Color.White,
-        contentColor = Color.Gray
+        containerColor = BrandWhite,
+        contentColor = GrayText
     ) {
         navItems.forEach { item ->
             val selected = currentDestination?.hierarchy?.any { it.route == item.route } == true
@@ -56,10 +60,10 @@ fun AppBottomBar(navController: NavController) {
                 label = { Text(text = item.label) },
                 alwaysShowLabel = true,
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = Color(0xFFFDD835),
-                    selectedTextColor = Color.Black,
-                    unselectedIconColor = Color.Gray,
-                    unselectedTextColor = Color.Gray,
+                    selectedIconColor = BrandYellow,
+                    selectedTextColor = BrandBlack,
+                    unselectedIconColor = GrayText,
+                    unselectedTextColor = GrayText,
                     indicatorColor = Color.Transparent
                 )
             )

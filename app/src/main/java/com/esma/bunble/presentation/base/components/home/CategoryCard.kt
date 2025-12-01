@@ -15,17 +15,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
+import com.esma.bunble.presentation.theme.ui.BrandBlack
+import com.esma.bunble.presentation.theme.ui.BrandWhite
+
 
 
 // Tek bir kategori kartı
 @Composable
-fun CategoryCard(title: String, imageRes: Int, onClick: () -> Unit) {
+fun CategoryCard(title: String, imageUrl: String, onClick: () -> Unit) {
     Card(
         modifier = Modifier.aspectRatio(1f),
         shape = RoundedCornerShape(24.dp),
@@ -33,7 +35,7 @@ fun CategoryCard(title: String, imageRes: Int, onClick: () -> Unit) {
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Image(
-                painter = painterResource(id = imageRes),
+                painter = rememberAsyncImagePainter(imageUrl),
                 contentDescription = title,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
@@ -44,12 +46,12 @@ fun CategoryCard(title: String, imageRes: Int, onClick: () -> Unit) {
                     .align(Alignment.TopCenter)
                     .fillMaxWidth()
                     .height(60.dp)
-                    .background(Color.Black.copy(alpha = 0.3f), shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
+                    .background(BrandBlack.copy(alpha = 0.3f), shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
                     .padding(8.dp)
             ) {
                 Column {
-                    Text(text = title, color = Color.White, fontWeight = FontWeight.Bold)
-                    Text(text = "${(20..80).random()}% complete", color = Color.White.copy(alpha = 0.8f), fontSize = 12.sp)
+                    Text(text = title, color = BrandWhite, fontWeight = FontWeight.Bold)
+                    Text(text = "${(20..80).random()}% complete", color = BrandWhite.copy(alpha = 0.8f), fontSize = 12.sp)
                 }
             }
         }

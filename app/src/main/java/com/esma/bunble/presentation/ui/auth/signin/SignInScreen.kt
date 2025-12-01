@@ -1,5 +1,6 @@
 package com.esma.bunble.presentation.ui.auth.signin
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,7 +20,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -34,26 +35,50 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.esma.bunble.R
 import com.esma.bunble.presentation.base.components.auth.AuthButton
 import com.esma.bunble.presentation.base.components.auth.AuthTextField
+import com.esma.bunble.presentation.theme.ui.BrandYellow
+import com.esma.bunble.presentation.theme.ui.SurfaceLight
 
 
 @Composable
-fun SignInScreen(navController: NavController) {
+fun SignInScreen(
+    navController: NavController,
+    viewModel: SignInViewModel = hiltViewModel()
+) {
 
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var isPasswordVisible by rememberSaveable { mutableStateOf(false) }
 
     val focusManager = LocalFocusManager.current
+    val context = LocalContext.current
+    val signInState = viewModel.signInState.value
+
+    LaunchedEffect(signInState.error) {
+        signInState.error?.let { errorId ->
+            val errorMessage = context.getString(errorId)
+            Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
+            viewModel.errorShown() // Hata gösterildikten sonra state'i temizle
+        }
+    }
+
+    LaunchedEffect(signInState.signInSuccess) {
+        if (signInState.signInSuccess) {
+            navController.navigate("home_screen") {
+                popUpTo(navController.graph.startDestinationId) { inclusive = true }
+            }
+        }
+    }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF7F7F7)),
+            .background(SurfaceLight),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -117,8 +142,9 @@ fun SignInScreen(navController: NavController) {
             AuthButton(
                 text = "Sign In",
                 onClick = {
-                    navController.navigate("home_screen")
-                }
+                    viewModel.signInUser(email, password)
+                },
+                isLoading = signInState.isLoading
             )
 
             // TODO: "Şifremi Unuttum?" seçeneğini buraya ekleyebilirsiniz.
@@ -130,7 +156,9 @@ fun SignInScreen(navController: NavController) {
                 }
             },
                 fontSize = 12.sp,
-                modifier = Modifier.align(Alignment.CenterHorizontally).clickable {  }
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .clickable { }
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -140,7 +168,7 @@ fun SignInScreen(navController: NavController) {
                 Text(text = "Don't have an account? ")
                 Text(
                     text = "Sign Up",
-                    color = MaterialTheme.colorScheme.primary,
+                    color = BrandYellow,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.clickable {
                         navController.navigate("signup_screen")
@@ -158,3 +186,13 @@ fun SignInScreenPreview() {
 }
 
 
+/*
+
+focusManager: Klavyedeki "ileri" tuşuna basıldığında odağı bir sonraki metin
+alanına kaydırmak gibi klavye etkileşimlerini yönetmek için kullanılır.
+
+context: Toast mesajı (hata mesajı gibi) göstermek için gereklidir.
+
+
+
+ */

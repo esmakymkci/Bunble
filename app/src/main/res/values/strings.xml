@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">Bunble</string>
+    <!-- CategoryDetailViewModel Hataları -->
+    <string name="error_category_id_not_found">Category ID not found.</string>
+    <string name="error_user_not_logged_in">User not logged in. Please sign in again.</string>
+    <string name="error_category_not_found">Category could not be found.</string>
+    <string name="error_language_path_not_found">Could not find user language settings. Please select a language.</string>
+    <string name="error_unknown">An unexpected error occurred.</string>
+
+    <!-- SignUpViewModel Hataları -->
+    <string name="error_all_fields_required">All fields are required.</string>
+    <string name="error_passwords_do_not_match">Passwords do not match.</string>
+    <string name="error_user_creation_failed">User could not be created. Please try again.</string>
+
+    <!-- SignInViewModel Hataları -->
+    <string name="error_email_password_empty">Email and password cannot be empty.</string>
+    <string name="error_invalid_credentials">Invalid email or password. Please try again.</string>
+
 </resources>

@@ -1,5 +1,4 @@
-package com.esma.bunble.ui.theme
-
+package com.esma.bunble.presentation.theme.ui
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
