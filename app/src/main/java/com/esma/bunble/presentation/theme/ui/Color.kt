@@ -9,6 +9,7 @@ val BrandYellowLighter = Color(0xFFFFFBEB) // İkincil butonlar, kart arkaplanla
 val BrandYellowTransparent = BrandYellow.copy(alpha = 0.2f) // Seçili item arka planı için
 val BrandBlack = Color.Black
 val BrandWhite = Color.White
+val GrayLight = Color(0xFFC4BFBF)
 
 // --- Nötr Renkler ---
 val GrayText = Color.Gray // Genel gri metinler, ikonlar

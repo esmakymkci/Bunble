@@ -16,4 +16,5 @@
     <string name="error_email_password_empty">Email and password cannot be empty.</string>
     <string name="error_invalid_credentials">Invalid email or password. Please try again.</string>
 
+
 </resources>
