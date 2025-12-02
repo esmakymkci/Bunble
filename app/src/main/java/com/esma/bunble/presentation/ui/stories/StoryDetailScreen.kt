@@ -4,7 +4,6 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -13,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,11 +32,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.esma.bunble.presentation.base.components.stories.TranslationPopup
+import com.esma.bunble.presentation.base.extension.findSentenceForChar
 import com.esma.bunble.presentation.theme.ui.BrandYellow
 import com.esma.bunble.presentation.theme.ui.SurfaceLight
 import com.esma.bunble.presentation.viewmodel.story.StoryDetailViewModel
-import com.google.mlkit.nl.translate.Translation
-import com.google.mlkit.nl.translate.TranslatorOptions
+
 
 
 @Composable
@@ -155,20 +153,7 @@ fun TappableStoryText(
     )
 }
 
-// Cümleyi bulan yardımcı bir extension fonksiyon
-fun String.findSentenceForChar(charIndex: Int): String {
-    if (charIndex < 0 || charIndex >= this.length) return ""
 
-    // Basılan karakterden geriye doğru cümlenin başlangıcını bul
-    var start = this.lastIndexOfAny(charArrayOf('.', '!', '?'), startIndex = charIndex)
-    start = if (start == -1) 0 else start + 1 // Cümle başı veya noktalama işaretinden sonrası
-
-    // Basılan karakterden ileriye doğru cümlenin sonunu bul
-    var end = this.indexOfAny(charArrayOf('.', '!', '?'), startIndex = charIndex)
-    end = if (end == -1) this.length else end + 1 // Cümle sonu veya metin sonu
-
-    return this.substring(start, end).trim()
-}
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -268,6 +253,17 @@ fun StoryDetailScreen(
 1.buildAnnotatedString: Bu, metnin farklı kısımlarına farklı stiller (renk, kalınlık) veya "notlar" (StringAnnotation) eklememizi sağlar.
 2.Regex (Regular Expression): "\\w+" ifadesi ile metindeki sadece kelimeleri buluruz.
 3.addStyle: ViewModel'den gelen selectedWord ile eşleşen kelimeyi BrandYellow (sarı) renkte ve kalın (Bold) yapar.
-4.addStringAnnotation: Görünmez bir şekilde, her kelimenin üzerine "word_tap" etiketli bir not ekleriz. Bu not, kelimenin kendisini (annotation = word) içerir. ClickableText'in onClick'i bu notları okuyabilir.
+4.addStringAnnotation: Görünmez bir şekilde, her kelimenin üzerine "word_tap" etiketli bir not ekleriz. Bu not, kelimenin kendisini (annotation = word) içerir.
+ClickableText'in onClick'i bu notları okuyabilir.
+
+
+
+onTextLayout: Compose, metni çizdiğinde bize TextLayoutResult bilgisini verir, biz de bunu değişkenimize atarız.
+.onGloballyPositioned: Text bileşeni ekrana yerleştirildiğinde bize ekran koordinatlarını (LayoutCoordinates) verir, biz de bunu değişkenimize atarız.
+
+
+.pointerInput ve detectTapGestures: Burası tüm dokunma sihrinin gerçekleştiği yerdir.
+Bu değiştirici, basit bir tıklamayı (onTap) ve uzun basmayı (onLongPress) ayırt etmemizi sağlar.
+
 
  */
