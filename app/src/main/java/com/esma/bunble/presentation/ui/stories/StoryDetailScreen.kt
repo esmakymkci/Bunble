@@ -1,5 +1,6 @@
 package com.esma.bunble.presentation.ui.stories
 
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -43,30 +45,53 @@ import com.google.mlkit.nl.translate.TranslatorOptions
 fun TappableStoryText(
     storyText: String,
     selectedWord: String,
-    onWordClicked: (word: String, position: Offset) -> Unit
+    onWordClicked: (word: String, position: Offset) -> Unit,
+    onSentenceSelected: (sentence: String, position: Offset) -> Unit
 ) {
     val annotatedString = buildAnnotatedString {
         append(storyText)
-        // Regex ile metni kelimelere ve aralarındaki boşluklara/noktalama işaretlerine ayır
-        // Bu, kelimelerin pozisyonlarını doğru hesaplamamızı sağlar.
-        // Regex ile metni kelimelere ve aralarındaki boşluklara/noktalama işaretlerine ayır
+
+        if (selectedWord.isNotBlank()) {
+            // Seçili metin bir cümle mi yoksa tek kelime mi olduğuna karar ver.
+            // Boşluk içeriyorsa veya sonunda noktalama işareti varsa, bunu bir cümle olarak kabul edebiliriz.
+            val isSentence = selectedWord.contains(" ") || selectedWord.endsWith(".") || selectedWord.endsWith("!") || selectedWord.endsWith("?")
+
+            if (isSentence) {
+                // Eğer bir cümle ise, sadece ilk bulduğun eşleşmeyi renklendir.
+                val startIndex = storyText.indexOf(selectedWord, ignoreCase = true)
+                if (startIndex != -1) {
+                    val endIndex = startIndex + selectedWord.length
+                    addStyle(
+                        style = SpanStyle(
+                            color = BrandYellow,
+                            fontWeight = FontWeight.Bold
+                        ),
+                        start = startIndex,
+                        end = endIndex
+                    )
+                }
+            } else {
+                // Eğer tek bir kelime ise, metindeki TÜM eşleşmelerini bul ve renklendir.
+                val wordRegex = Regex(Regex.escape(selectedWord), RegexOption.IGNORE_CASE)
+                wordRegex.findAll(storyText).forEach { matchResult ->
+                    addStyle(
+                        style = SpanStyle(
+                            color = BrandYellow,
+                            fontWeight = FontWeight.Bold
+                        ),
+                        start = matchResult.range.first,
+                        end = matchResult.range.last + 1
+                    )
+                }
+            }
+        }
+
+        // Bu kısım, kelime bazında tıklamayı algılamak için.
         val wordRegex = "\\w+".toRegex()
         wordRegex.findAll(storyText).forEach { matchResult ->
             val word = matchResult.value
             val startIndex = matchResult.range.first
             val endIndex = matchResult.range.last + 1
-
-            // Bu kelime, ViewModel'den gelen seçili kelime ise sarı yap
-            if (word.equals(selectedWord, ignoreCase = true)) {
-                addStyle(
-                    style = SpanStyle(
-                        color = BrandYellow,
-                        fontWeight = FontWeight.Bold
-                    ),
-                    start = startIndex,
-                    end = endIndex
-                )
-            }
             addStringAnnotation(
                 tag = "word_tap",
                 annotation = word,
@@ -76,37 +101,75 @@ fun TappableStoryText(
         }
     }
 
+
     var textLayoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
     var rootCoordinates by remember { mutableStateOf<LayoutCoordinates?>(null) }
 
-    ClickableText(
-        modifier = Modifier.onGloballyPositioned { coordinates ->
-            rootCoordinates = coordinates
-        },
+    Text(
         text = annotatedString,
         style = LocalTextStyle.current.copy(fontSize = 16.sp, lineHeight = 28.sp, color = LocalContentColor.current),
         onTextLayout = { layoutResult ->
             textLayoutResult = layoutResult
         },
-        onClick = { offset ->
-            textLayoutResult?.let { layout ->
-                rootCoordinates?.let { root ->
-                    annotatedString.getStringAnnotations("word_tap", offset, offset).firstOrNull()?.let { annotation ->
-                        // Kelimenin, içinde bulunduğu Text bloğuna göre YEREL pozisyonunu bulduk.
-                        val boundingBox = layout.getBoundingBox(annotation.start)
+        modifier = Modifier
+            .onGloballyPositioned { coordinates ->
+                rootCoordinates = coordinates
+            }
+            .pointerInput(Unit) {
+            detectTapGestures(
+                onTap = { offset ->
+                    // --- KELİME ÇEVİRİSİ (TIKLAMA)  ---
+                    textLayoutResult?.let { layout ->
+                        rootCoordinates?.let { root ->
+                            // Tıklanan X,Y pozisyonunu (Offset) doğru karakter indeksine çevir.
+                            val clickedCharIndex = layout.getOffsetForPosition(offset)
 
-                        // Text bloğunun, EKRANA göre EVRENSEL pozisyonunu bulduk.
-                        // Bu ikisini birleştirerek kelimenin EKRANDAKİ GERÇEK pozisyonunu hesapladık.
-                        val globalPosition = root.localToWindow(boundingBox.topLeft)
-
-                        // Bu doğru pozisyonu ViewModel'e gönderdik.
-                        onWordClicked(annotation.item, globalPosition)
+                            // Bu indeksi kullanarak doğru kelimeyi (annotation) bul.
+                            annotatedString.getStringAnnotations("word_tap", clickedCharIndex, clickedCharIndex).firstOrNull()?.let { annotation ->
+                                // Kelimenin pozisyonunu hesapla ve ViewModel'e gönder.
+                                val boundingBox = layout.getBoundingBox(annotation.start)
+                                val globalPosition = root.localToWindow(boundingBox.topLeft)
+                                onWordClicked(annotation.item, globalPosition)
+                            }
+                        }
+                    }
+                },
+                onLongPress = { offset ->
+                    // --- CÜMLE ÇEVİRİSİ (BASILI TUTMA) ---
+                    textLayoutResult?.let { layout ->
+                        rootCoordinates?.let { root ->
+                            val pressedCharIndex = layout.getOffsetForPosition(offset)
+                            // Basılan karakterin içinde bulunduğu cümleyi bul
+                            val sentence = storyText.findSentenceForChar(pressedCharIndex)
+                            if (sentence.isNotBlank()) {
+                                // Pozisyon olarak tıklanan yerin pozisyonunu gönderelim
+                                val globalPosition = root.localToWindow(offset)
+                                // ViewModel'e bulunan cümleyi ve pozisyonu bildir
+                                onSentenceSelected(sentence, globalPosition)
+                            }
+                        }
                     }
                 }
+            )
             }
-        }
     )
 }
+
+// Cümleyi bulan yardımcı bir extension fonksiyon
+fun String.findSentenceForChar(charIndex: Int): String {
+    if (charIndex < 0 || charIndex >= this.length) return ""
+
+    // Basılan karakterden geriye doğru cümlenin başlangıcını bul
+    var start = this.lastIndexOfAny(charArrayOf('.', '!', '?'), startIndex = charIndex)
+    start = if (start == -1) 0 else start + 1 // Cümle başı veya noktalama işaretinden sonrası
+
+    // Basılan karakterden ileriye doğru cümlenin sonunu bul
+    var end = this.indexOfAny(charArrayOf('.', '!', '?'), startIndex = charIndex)
+    end = if (end == -1) this.length else end + 1 // Cümle sonu veya metin sonu
+
+    return this.substring(start, end).trim()
+}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -116,10 +179,9 @@ fun StoryDetailScreen(
 ) {
 
     val state = viewModel.state.value
-    //val sheetState = rememberModalBottomSheetState()
-
 
     Scaffold(
+        modifier = Modifier.statusBarsPadding(),
         containerColor = SurfaceLight,
         topBar = {
             TopAppBar(
@@ -180,6 +242,9 @@ fun StoryDetailScreen(
                         selectedWord = state.selectedWord,
                         onWordClicked = { word, position ->
                             viewModel.onWordClicked(word, position)
+                        },
+                        onSentenceSelected = { sentence, position ->
+                            viewModel.onSentenceSelected(sentence, position)
                         }
                     )
                 }

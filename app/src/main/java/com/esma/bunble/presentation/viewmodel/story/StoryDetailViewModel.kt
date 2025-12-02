@@ -105,6 +105,38 @@ class StoryDetailViewModel @Inject constructor(
         }
     }
 
+    fun onSentenceSelected(sentence: String, position: Offset) {
+        val sourceLang = currentTargetLanguage.value ?: return
+        val targetLang = currentSourceLanguage.value ?: return
+
+        // State'i güncelle, bu sefer seçilen metin bir cümle
+        _state.value = _state.value.copy(
+            isSheetVisible = true,
+            selectedWord = sentence, // 'selectedWord' alanı artık hem kelime hem cümle tutabilir
+            wordPosition = position, // Popup'ın nerede çıkacağını belirle
+            translatedWord = "Translating..."
+        )
+
+        // ML Kit çeviri mantığı (kelime yerine cümleyi çevir)
+        val options = TranslatorOptions.Builder()
+            .setSourceLanguage(sourceLang)
+            .setTargetLanguage(targetLang)
+            .build()
+        val translator = Translation.getClient(options)
+
+        translator.downloadModelIfNeeded().addOnSuccessListener {
+            translator.translate(sentence)
+                .addOnSuccessListener { translation ->
+                    _state.value = _state.value.copy(translatedWord = translation)
+                }
+                .addOnFailureListener {
+                    _state.value = _state.value.copy(translatedWord = "Error")
+                }
+        }.addOnFailureListener {
+            _state.value = _state.value.copy(translatedWord = "Model download failed")
+        }
+    }
+
     // onSheetDismiss fonksiyonu Popup'ı kapatmak için kullanılacak
     fun onSheetDismiss() {
         _state.value = _state.value.copy(
