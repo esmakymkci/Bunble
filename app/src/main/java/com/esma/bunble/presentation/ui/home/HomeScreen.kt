@@ -75,7 +75,7 @@ fun HomeScreen(
                 }
 
                 item {
-                    ActionButtonsRow()
+                    ActionButtonsRow(navController = navController)
                     Spacer(modifier = Modifier.height(24.dp))
                 }
 

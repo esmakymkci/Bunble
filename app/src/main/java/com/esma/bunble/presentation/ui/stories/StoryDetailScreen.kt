@@ -260,6 +260,10 @@ ClickableText'in onClick'i bu notları okuyabilir.
 
 onTextLayout: Compose, metni çizdiğinde bize TextLayoutResult bilgisini verir, biz de bunu değişkenimize atarız.
 .onGloballyPositioned: Text bileşeni ekrana yerleştirildiğinde bize ekran koordinatlarını (LayoutCoordinates) verir, biz de bunu değişkenimize atarız.
+Bu, metnin ekran üzerindeki konumunu takip eder. rootCoordinates'u günceller.
+
+
+detectTapGestures: Bu, tıklama ve uzun basma olaylarını yakalar.
 
 
 .pointerInput ve detectTapGestures: Burası tüm dokunma sihrinin gerçekleştiği yerdir.

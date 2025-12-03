@@ -41,7 +41,7 @@ fun TranslationPopup(
     val popupPositionProvider = remember(popupPosition) {
         TooltipPositionProvider(
             position = popupPosition,
-            verticalOffset = with(density) { 16.dp.toPx() }.roundToInt()
+            verticalOffset = with(density) { 4.dp.toPx() }.roundToInt()
         )
     }
 

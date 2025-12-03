@@ -156,6 +156,7 @@ Bu akışlardan herhangi biri değiştiğinde, combine bloğu yeniden çalışı
 collect: Bu birleştirilmiş akışı dinlemeye başlar. Dil ayarları geldiğinde, storyRepository aracılığıyla
 Firebase'den hikaye verisini çeker, StoryDetail modeline dönüştürür ve _state.value'yu güncelleyerek UI'ın yeniden çizilmesini tetikler.
 
-
+return@collect: collect fonksiyonu, bir veri akışını (flow) dinlerken kullanılır. Bu return@collect ifadesi, akışı daha fazla işlem yapmadan terk eder.
+Akışta bir hata durumu tespit edildiği için, bu noktada işlemin devam etmesi engellenir.
 
  */
