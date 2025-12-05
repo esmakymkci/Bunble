@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.esma.bunble.presentation.ui.my_lists.CreateListScreen
 import com.esma.bunble.presentation.ui.auth.signin.SignInScreen
 import com.esma.bunble.presentation.ui.auth.signup.SignUpScreen
 import com.esma.bunble.presentation.ui.auth.splash.SplashScreen
@@ -13,6 +14,8 @@ import com.esma.bunble.presentation.ui.category_detail.CategoryDetailScreen
 import com.esma.bunble.presentation.ui.home.HomeScreen
 import com.esma.bunble.presentation.ui.language_selection.LanguageSelectionScreen
 import com.esma.bunble.presentation.ui.learn.LearningScreen
+import com.esma.bunble.presentation.ui.my_lists.ListDetailScreen
+import com.esma.bunble.presentation.ui.my_lists.WordListsScreen
 import com.esma.bunble.presentation.ui.stories.StoriesScreen
 import com.esma.bunble.presentation.ui.stories.StoryDetailScreen
 
@@ -77,7 +80,18 @@ fun Navigation(){
         }
 
         composable("lists_screen"){
-            //ListsScreen(navController = navController)
+            WordListsScreen(navController = navController)
+        }
+
+        composable("create_list_screen") {
+            CreateListScreen(navController = navController)
+        }
+
+        composable(
+            route = "list_detail_screen/{listId}",
+            arguments = listOf(navArgument("listId") { type = NavType.StringType })
+        ) {
+            ListDetailScreen(navController = navController)
         }
 
         composable( "quiz_screen") {

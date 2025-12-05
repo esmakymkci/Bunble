@@ -11,8 +11,14 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import android.app.Application
 import coil.ImageLoader
+import com.esma.bunble.data.remote.openai.OpenAIApi
+import com.esma.bunble.data.remote.openai.OpenAIRepository
 import com.esma.bunble.data.repository.StoryRepositoryImpl
+import com.esma.bunble.data.repository.WordListRepositoryImpl
 import com.esma.bunble.domain.repository.IStoryRepository
+import com.esma.bunble.domain.repository.IWordListRepository
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -50,6 +56,32 @@ object AppModule {
     @Singleton
     fun provideStoryRepository(firestore: FirebaseFirestore): IStoryRepository {
         return StoryRepositoryImpl(firestore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideWordListRepository(
+        firestore: FirebaseFirestore,
+        auth: FirebaseAuth
+    ): IWordListRepository {
+        return WordListRepositoryImpl(firestore, auth)
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideOpenAIApi(): OpenAIApi {
+        return Retrofit.Builder()
+            .baseUrl("https://api.openai.com/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(OpenAIApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideOpenAIRepository(api: OpenAIApi): OpenAIRepository {
+        return OpenAIRepository(api)
     }
 
 

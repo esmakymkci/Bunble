@@ -9,6 +9,7 @@ val BrandYellowLighter = Color(0xFFFFFBEB) // İkincil butonlar, kart arkaplanla
 val BrandYellowTransparent = BrandYellow.copy(alpha = 0.2f) // Seçili item arka planı için
 val BrandBlack = Color.Black
 val BrandWhite = Color.White
+val BrandDarkGray = Color.DarkGray
 val GrayLight = Color(0xFFC4BFBF)
 
 // --- Nötr Renkler ---
@@ -25,6 +26,7 @@ val IncorrectRed = Color(0xFFF44336)
 val LightCorrectGreen = CorrectGreen.copy(alpha = 0.1f)
 val LightIncorrectRed = IncorrectRed.copy(alpha = 0.1f)
 val DarkPurple = Color(0xFF4A148C)
+
 
 // --- Degrade Renkleri (Gradient) ---
 // Bu renkleri doğrudan Brush içinde tanımlamak daha mantıklı olabilir,
