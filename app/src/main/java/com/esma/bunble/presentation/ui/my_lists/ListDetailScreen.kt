@@ -71,12 +71,9 @@ fun ListDetailScreen(
         topBar = {
             ListDetailTopBar(
                 title = uiState.listDetails?.title ?: "...",
-                isSearchActive = isSearchActive,
-                searchQuery = searchQuery,
-                onSearchQueryChange = { searchQuery = it },
                 onToggleSearch = {
                     isSearchActive = !isSearchActive
-                    if (!isSearchActive) searchQuery = "" // Aramayı kapatınca temizle
+                    if (!isSearchActive) searchQuery = ""
                 },
                 onNavigateUp = { navController.navigateUp() }
             )
@@ -87,32 +84,64 @@ fun ListDetailScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 16.dp)
         ) {
-            // İlerleme Çubuğu ve Diller
-            uiState.listDetails?.let { list ->
-                Spacer(modifier = Modifier.height(8.dp))
-                ProgressSection(list = list)
-                Spacer(modifier = Modifier.height(16.dp))
+            AnimatedVisibility(
+                visible = isSearchActive,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                OutlinedTextField(
+                    value = searchQuery,
+                    onValueChange = { searchQuery = it },
+                    label = { Text("Search in this list...") },
+                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                    trailingIcon = {
+                        IconButton(onClick = {
+                            isSearchActive = false
+                            searchQuery = ""
+                        }) {
+                            Icon(Icons.Default.Close, contentDescription = "Close search")
+                        }
+                    },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = BrandYellow,
+                        focusedLabelColor = BrandYellow,
+                        cursorColor = BrandYellow,
+                        unfocusedBorderColor = Color.LightGray,
+                    ),
+                    shape = RoundedCornerShape(16.dp),
+                    singleLine = true,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                )
             }
 
-            // Yeni Kelime Ekleme Alanı
-            AddWordInput(
-                text = textToAdd,
-                onTextChange = { textToAdd = it },
-                onAddClick = {
-                    if (textToAdd.isNotBlank()) {
-                        viewModel.addWord(textToAdd)
-                        textToAdd = "" // Ekleme sonrası metni temizle
-                    }
-                },
-                isLoading = uiState.isTranslating
-            )
+            uiState.listDetails?.let { list ->
+                Column(Modifier.padding(horizontal = 16.dp)) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    ProgressSection(list = list)
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+            }
 
+            Box(Modifier.padding(horizontal = 16.dp)) {
+                AddWordInput(
+                    text = textToAdd,
+                    onTextChange = { textToAdd = it },
+                    onAddClick = {
+                        if (textToAdd.isNotBlank()) {
+                            viewModel.addWord(textToAdd)
+                            textToAdd = ""
+                        }
+                    },
+                    isLoading = uiState.isTranslating
+                )
+            }
             Spacer(modifier = Modifier.height(24.dp))
 
             // Kelime Listesi
-            if (uiState.isLoading) {
+            if (uiState.isLoading && uiState.words.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator(color = BrandYellow)
                 }
@@ -120,11 +149,11 @@ fun ListDetailScreen(
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text("Error: ${uiState.error}", color = Color.Red, textAlign = TextAlign.Center)
                 }
-            }
-            else {
+            } else {
                 LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    contentPadding = PaddingValues(bottom = 16.dp)
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     items(items = filteredWords, key = { it.id }) { word ->
                         NewWordItemCard(
@@ -143,9 +172,6 @@ fun ListDetailScreen(
 @Composable
 fun ListDetailTopBar(
     title: String,
-    isSearchActive: Boolean,
-    searchQuery: String,
-    onSearchQueryChange: (String) -> Unit,
     onToggleSearch: () -> Unit,
     onNavigateUp: () -> Unit
 ) {
@@ -156,28 +182,12 @@ fun ListDetailTopBar(
             }
         },
         title = {
-            AnimatedVisibility(visible = !isSearchActive, enter = fadeIn(), exit = fadeOut()) {
-                Text(title, fontWeight = FontWeight.Bold)
-            }
-            AnimatedVisibility(visible = isSearchActive, enter = fadeIn(), exit = fadeOut()) {
-                TextField(
-                    value = searchQuery,
-                    onValueChange = onSearchQueryChange,
-                    placeholder = { Text("Search words...") },
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        focusedIndicatorColor = BrandYellow,
-                        cursorColor = BrandYellow
-                    ),
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
+            Text(title, fontWeight = FontWeight.Bold)
         },
         actions = {
             IconButton(onClick = onToggleSearch) {
                 Icon(
-                    imageVector = if (isSearchActive) Icons.Default.Close else Icons.Default.Search,
+                    imageVector = Icons.Default.Search ,
                     contentDescription = "Search"
                 )
             }

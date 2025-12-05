@@ -50,15 +50,7 @@ fun WordListsScreen(
     Scaffold(
         topBar = {
             WordListsTopBar(
-                isSearchActive = isSearchActive,
-                searchQuery = searchQuery,
-                onSearchQueryChange = { searchQuery = it },
-                onToggleSearch = {
-                    isSearchActive = !isSearchActive
-                    if (!isSearchActive) {
-                        searchQuery = "" // Aramayı kapattığında metni temizle
-                    }
-                }
+                onToggleSearch = { isSearchActive = !isSearchActive }
             )
         },
         floatingActionButton = {
@@ -74,34 +66,73 @@ fun WordListsScreen(
         bottomBar = { AppBottomBar(navController = navController) },
         containerColor = SurfaceLight
     ) { innerPadding ->
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            if (uiState.isLoading) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            } else if (uiState.error != null) {
-                Text(
-                    text = "An error occurred: ${uiState.error}",
-                    color = Color.Red,
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            } else {
-                LazyColumn(
+            // `AnimatedVisibility` sayesinde yumuşak bir şekilde görünüp kaybolacak.
+            AnimatedVisibility(
+                visible = isSearchActive,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                OutlinedTextField(
+                    value = searchQuery,
+                    onValueChange = { searchQuery = it },
+                    label = { Text("Search in your lists...") },
+                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                    trailingIcon = {
+                        IconButton(onClick = {
+                            isSearchActive = false
+                            searchQuery = ""
+                        }) {
+                            Icon(Icons.Default.Close, contentDescription = "Close search")
+                        }
+                    },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = BrandYellow,
+                        focusedLabelColor = BrandYellow,
+                        cursorColor = BrandYellow,
+                        unfocusedBorderColor = Color.LightGray,
+                    ),
+                    shape = RoundedCornerShape(16.dp),
+                    singleLine = true,
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 16.dp),
-                    contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    items(filteredLists, key = { it.id }) { list ->
-                        WordListCard(
-                            list = list,
-                            onClick = {
-                                navController.navigate("list_detail_screen/${list.id}")
-                            }
-                        )
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                )
+
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+
+            ) {
+                if (uiState.isLoading) {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                } else if (uiState.error != null) {
+                    Text(
+                        text = "An error occurred: ${uiState.error}",
+                        color = Color.Red,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                } else {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp),
+                        contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        items(filteredLists, key = { it.id }) { list ->
+                            WordListCard(
+                                list = list,
+                                onClick = {
+                                    navController.navigate("list_detail_screen/${list.id}")
+                                }
+                            )
+                        }
                     }
                 }
             }
@@ -112,40 +143,16 @@ fun WordListsScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WordListsTopBar(
-    isSearchActive: Boolean,
-    searchQuery: String,
-    onSearchQueryChange: (String) -> Unit,
     onToggleSearch: () -> Unit
 ) {
-    TopAppBar(
+    CenterAlignedTopAppBar(
         title = {
-            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                // Arama aktif değilse başlığı göster
-                AnimatedVisibility(visible = !isSearchActive, enter = fadeIn(), exit = fadeOut()) {
-                    Text("Word Dictionary", fontWeight = FontWeight.Bold)
-                }
-                // Arama aktifse arama çubuğunu göster
-                AnimatedVisibility(visible = isSearchActive, enter = fadeIn(), exit = fadeOut()) {
-                    TextField(
-                        value = searchQuery,
-                        onValueChange = onSearchQueryChange,
-                        placeholder = { Text("Search lists...") },
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color.Transparent,
-                            unfocusedContainerColor = Color.Transparent,
-                            disabledContainerColor = Color.Transparent,
-                            focusedIndicatorColor = BrandYellow,
-                            unfocusedIndicatorColor = Color.LightGray,
-                        ),
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-            }
+            Text("Word Dictionary", fontWeight = FontWeight.Bold)
         },
         actions = {
             IconButton(onClick = onToggleSearch) {
                 Icon(
-                    imageVector = if (isSearchActive) Icons.Default.Close else Icons.Default.Search,
+                    imageVector = Icons.Default.Search,
                     contentDescription = "Search lists"
                 )
             }
