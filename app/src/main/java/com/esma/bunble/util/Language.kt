@@ -17,3 +17,7 @@ val supportedLanguages = listOf(
 // İhtiyacına göre daha fazla dil ekleyebilirsin
 ).distinctBy { it.code }.sortedBy { it.name } // Tekrarları sil ve alfabetik sırala
 
+// Bu yardımcı fonksiyon, bayrakları bulmak için gerekli.
+fun findLanguageByCode(code: String): Language? {
+    return supportedLanguages.find { it.code.equals(code, ignoreCase = true) }
+}

@@ -51,11 +51,16 @@ class WordListsViewModel @Inject constructor(
             }
         }
     }
+
+    fun deleteList(listId: String) {
+        viewModelScope.launch {
+            try {
+                repository.deleteList(listId)
+            } catch (e: Exception) {
+                _uiState.update { it.copy(error = "Failed to delete list: ${e.localizedMessage}") }
+            }
+        }
+    }
 }
 
-// ViewModel'in durumunu (state) temsil eden bir data class
-data class WordListsUiState(
-    val isLoading: Boolean = false,
-    val lists: List<WordList> = emptyList(),
-    val error: String? = null
-)
+

@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
@@ -19,7 +20,6 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
@@ -39,10 +39,12 @@ import androidx.navigation.NavController
 import com.esma.bunble.domain.model.Word
 import com.esma.bunble.domain.model.WordList
 import com.esma.bunble.presentation.theme.ui.BrandBlack
+import com.esma.bunble.presentation.theme.ui.BrandWhite
 import com.esma.bunble.presentation.theme.ui.BrandYellow
 import com.esma.bunble.presentation.theme.ui.GrayText
 import com.esma.bunble.presentation.theme.ui.SurfaceLight
 import com.esma.bunble.presentation.viewmodel.my_lists.ListDetailViewModel
+import com.esma.bunble.util.findLanguageByCode
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -159,7 +161,8 @@ fun ListDetailScreen(
                         NewWordItemCard(
                             word = word,
                             onUpdateLearnedStatus = { viewModel.updateWordLearnedStatus(it) },
-                            onDelete = { viewModel.deleteWord(it) }
+                            onDelete = { viewModel.deleteWord(it)},
+                            onSpeak = { viewModel.speakWord(it) }
                         )
                     }
                 }
@@ -284,7 +287,8 @@ fun AddWordInput(
 fun NewWordItemCard(
     word: Word,
     onUpdateLearnedStatus: (Word) -> Unit,
-    onDelete : (Word) -> Unit
+    onDelete : (Word) -> Unit,
+    onSpeak: (Word) -> Unit
 ) {
 
     var menuExpanded by remember { mutableStateOf(false) } // Menü durumunu tutar
@@ -319,17 +323,18 @@ fun NewWordItemCard(
                         tint = if (word.isLearned) BrandYellow else Color.LightGray
                     )
                 }
-                IconButton(onClick = { /* TODO: TTS (Text-to-Speech) */ }, modifier = Modifier.size(28.dp)) {
-                    Icon(Icons.Default.VolumeUp, contentDescription = "Listen", tint = Color.Gray)
+                IconButton(onClick = { onSpeak(word) }, modifier = Modifier.size(28.dp)) {
+                    Icon(Icons.AutoMirrored.Filled.VolumeUp, contentDescription = "Listen", tint = Color.Gray)
                 }
-                Box { // DropdownMenu'yü doğru konumlandırmak için Box kullan
+                Box { // DropdownMenu'yü doğru konumlandırmak için
                     IconButton(onClick = { menuExpanded = true }, modifier = Modifier.size(28.dp)) {
                         Icon(Icons.Default.MoreVert, contentDescription = "More options", tint = Color.Gray)
                     }
 
                     DropdownMenu(
                         expanded = menuExpanded,
-                        onDismissRequest = { menuExpanded = false }
+                        onDismissRequest = { menuExpanded = false },
+                        modifier = Modifier.background(BrandWhite)
                     ) {
                         // DÜZENLE SEÇENEĞİ
                         DropdownMenuItem(
@@ -342,6 +347,9 @@ fun NewWordItemCard(
                                 Icon(Icons.Default.Edit, contentDescription = "Edit")
                             }
                         )
+
+                        HorizontalDivider(
+                            color = Color.LightGray.copy(alpha = 0.5f))
                         // SİLME SEÇENEĞİ
                         DropdownMenuItem(
                             text = { Text("Delete", color = Color.Red) },
@@ -378,7 +386,7 @@ fun NewWordItemCard(
 
             // Alt Bölüm: Örnek Cümleler
             if (word.examples.isNotEmpty()) {
-                Divider(modifier = Modifier.padding(vertical = 6.dp)) // Ayırıcı çizgi
+                HorizontalDivider(modifier = Modifier.padding(vertical = 6.dp)) // Ayırıcı çizgi
                 Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     word.examples.forEach { example ->
                         Text(

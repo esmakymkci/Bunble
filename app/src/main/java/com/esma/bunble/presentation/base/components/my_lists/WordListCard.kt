@@ -38,7 +38,7 @@ import com.esma.bunble.presentation.theme.ui.BrandDarkGray
 import com.esma.bunble.presentation.theme.ui.BrandWhite
 import com.esma.bunble.presentation.theme.ui.BrandYellow
 import com.esma.bunble.presentation.theme.ui.GrayText
-import com.esma.bunble.presentation.ui.my_lists.findLanguageByCode
+import com.esma.bunble.util.findLanguageByCode
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

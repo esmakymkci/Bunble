@@ -87,6 +87,7 @@ dependencies {
     implementation("com.airbnb.android:lottie-compose:6.6.6")
 
     implementation("androidx.compose.material:material-icons-extended")
+    implementation("androidx.compose.material3:material3:1.2.1")
 
     implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
     implementation("com.google.firebase:firebase-analytics")
@@ -105,6 +106,7 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.1.1")
 
     implementation("com.google.mlkit:translate:17.0.2")
+    implementation("com.google.mlkit:language-id:17.0.5")
 
     //implementation("com.google.mlkit:google-ai-mlkit:1.0.0-beta03") // Modern MLKit temeli
     //implementation("com.google.android.gms:play-services-mlkit-translate:17.0.2") // Bu, translate modelini sağlar.

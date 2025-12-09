@@ -1,5 +1,6 @@
 package com.esma.bunble.data.repository
 
+import android.util.Log
 import com.esma.bunble.domain.model.Word
 import com.esma.bunble.domain.model.WordList
 import com.esma.bunble.domain.repository.IWordListRepository
@@ -127,8 +128,7 @@ class WordListRepositoryImpl @Inject constructor(
             }.await() // Transaction'ın bitmesini bekle
 
         } catch (e: Exception) {
-            // Olası bir hata durumunda burada loglama yapabilirsin.
-            // Log.e("Firestore", "Add word transaction failed: ${e.message}")
+            Log.e("Firestore", "Add word transaction failed: ${e.message}")
         }
     }
 
@@ -190,12 +190,30 @@ class WordListRepositoryImpl @Inject constructor(
 
 
     override suspend fun deleteList(listId: String) {
-        val listDocument = listsCollection?.document(listId) ?: return
+        val listDocRef = listsCollection?.document(listId) ?: return
+        val wordsCollectionRef = listDocRef.collection("words")
+
         try {
-            listDocument.delete().await()
+            // Alt koleksiyondaki (words) tüm dokümanları al.
+            val wordsSnapshot = wordsCollectionRef.get().await()
+
+            // Bir toplu yazma işlemi (Batched Write) başlat.
+            // Bu, tüm silme işlemlerini tek bir atomik istek olarak gönderir.
+            val batch = firestore.batch()
+
+            // Alınan her bir kelime dokümanı için batch'e bir silme komutu ekle.
+            for (document in wordsSnapshot.documents) {
+                batch.delete(document.reference)
+            }
+
+            // Ana liste dokümanını da silmek için batch'e ekle.
+            batch.delete(listDocRef)
+
+            //  Tüm silme komutlarını içeren batch'i sunucuya gönder ve çalıştır.
+            batch.commit().await()
 
         } catch (e: Exception) {
-            // Hata yönetimi
+            Log.e("Firestore", "Failed to delete list and its words: ${e.message}")
         }
     }
 }
