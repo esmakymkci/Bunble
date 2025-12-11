@@ -13,6 +13,9 @@ import com.esma.bunble.presentation.ui.category_detail.CategoryDetailScreen
 import com.esma.bunble.presentation.ui.home.HomeScreen
 import com.esma.bunble.presentation.ui.language_selection.LanguageSelectionScreen
 import com.esma.bunble.presentation.ui.learn.LearningScreen
+import com.esma.bunble.presentation.ui.stories.StoriesScreen
+import com.esma.bunble.presentation.ui.stories.StoryDetailScreen
+
 
 @Composable
 fun Navigation(){
@@ -63,19 +66,23 @@ fun Navigation(){
 
 
         composable("stories_screen"){
-            //StoriesScreen(navController = navController)
+            StoriesScreen(navController = navController)
+        }
+
+        composable(
+            route = "story_detail_screen/{storyId}", // Rota adı ve beklenen argüman
+            arguments = listOf(navArgument("storyId") { type = NavType.StringType })
+        ) {
+            StoryDetailScreen(navController = navController)
         }
 
         composable("lists_screen"){
             //ListsScreen(navController = navController)
         }
 
-        /*composable(
-            route = "quiz_screen/{categoryId}",
-            arguments = listOf(navArgument("categoryId") { type = NavType.StringType })
-        ) {
-            QuizScreen(navController = navController)
-        }*/
+        composable( "quiz_screen") {
+            //QuizScreen(navController = navController)
+        }
 
         composable("chat_screen"){
             //ChatScreen(navController = navController)

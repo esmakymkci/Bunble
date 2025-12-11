@@ -11,6 +11,8 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import android.app.Application
 import coil.ImageLoader
+import com.esma.bunble.data.repository.StoryRepositoryImpl
+import com.esma.bunble.domain.repository.IStoryRepository
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -42,6 +44,12 @@ object AppModule {
             .crossfade(true) // Resimler yüklenirken yumuşak bir geçiş efekti
             .respectCacheHeaders(false) // Önbellek kontrolünü basitleştirir
             .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideStoryRepository(firestore: FirebaseFirestore): IStoryRepository {
+        return StoryRepositoryImpl(firestore)
     }
 
 

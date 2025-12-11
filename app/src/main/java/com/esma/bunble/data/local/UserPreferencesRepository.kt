@@ -46,6 +46,16 @@ class UserPreferencesRepository @Inject constructor(@ApplicationContext private 
         }
     }
 
+    // Sadece kaynak dili (ana dil) Flow olarak al
+    val sourceLanguage: Flow<String?> = context.dataStore.data.map { preferences ->
+        preferences[Keys.SOURCE_LANGUAGE]
+    }
+
+    // Sadece hedef dili (öğrenilen dil) Flow olarak al
+    val targetLanguage: Flow<String?> = context.dataStore.data.map { preferences ->
+        preferences[Keys.TARGET_LANGUAGE]
+    }
+
 }
 
 /*

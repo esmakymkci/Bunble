@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.esma.bunble.presentation.theme.ui.BrandBlack
 import com.esma.bunble.presentation.theme.ui.BrandYellow
 import com.esma.bunble.presentation.theme.ui.BrandYellowLighter
@@ -21,17 +22,17 @@ import com.esma.bunble.presentation.theme.ui.BrandYellowLighter
 
 // Yatay Kaydırılabilir Butonlar
 @Composable
-fun ActionButtonsRow() {
+fun ActionButtonsRow(navController : NavController) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .horizontalScroll(rememberScrollState()),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        ActionButton(text = "Create List", isPrimary = true)
-        ActionButton(text = "Start Quiz")
-        ActionButton(text = "Stories")
-        ActionButton(text = "Status")
+        ActionButton(text = "Create List", isPrimary = true, onClick = { navController.navigate("lists_screen") })
+        ActionButton(text = "Start Quiz", isPrimary = true, onClick = { navController.navigate("lists_screen") })
+        ActionButton(text = "Stories", isPrimary = true, onClick = { navController.navigate("stories_screen") })
+        ActionButton(text = "Status", isPrimary = true, onClick = { navController.navigate("profile_screen") })
     }
 }
 

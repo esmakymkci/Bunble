@@ -1,16 +1,21 @@
 package com.esma.bunble.presentation.viewmodel.home
 
-import androidx.annotation.StringRes
+import android.app.Application
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import coil.ImageLoader
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.esma.bunble.R
-import com.esma.bunble.domain.model.LearningCategory
 import com.esma.bunble.domain.repository.ILearningRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -19,7 +24,9 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val repository: ILearningRepository,
     private val firebaseAuth: FirebaseAuth,
-    private val firestore: FirebaseFirestore
+    private val firestore: FirebaseFirestore,
+    private val imageLoader: ImageLoader,
+    private val application: Application
 ) : ViewModel() {
 
     private val _state = mutableStateOf(HomeScreenState())
@@ -45,10 +52,23 @@ class HomeViewModel @Inject constructor(
                 val userNameFromFirestore = userDoc.getString("displayName")?.split(" ")?.firstOrNull() ?: "User"
                 val languagePath = userDoc.getString("languagePath")
 
-
-
                 if (languagePath != null) {
                     val categoriesResult = repository.getCategories(languagePath)
+
+                    //  Resimleri önceden yükle
+                    val imageJobs = categoriesResult.map { category ->
+                        // Her resim yüklemesini ayrı bir 'async' bloğuna al
+                        async(Dispatchers.IO) {
+                            val request = ImageRequest.Builder(application)
+                                .data(category.imageUrl)
+                                .memoryCachePolicy(CachePolicy.ENABLED) // Belleğe önbellekle
+                                .diskCachePolicy(CachePolicy.ENABLED)   // Diske önbellekle
+                                .build()
+                            imageLoader.execute(request) // Yüklemenin bitmesini bekle
+                        }
+                    }
+                    imageJobs.awaitAll() // Tüm resim yüklemelerinin bitmesini bekle
+
 
                     _state.value = _state.value.copy(
                         userName = userNameFromFirestore,

@@ -19,6 +19,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.esma.bunble.presentation.theme.ui.BrandBlack
 import com.esma.bunble.presentation.theme.ui.BrandWhite
@@ -36,21 +37,22 @@ fun HeaderSection(
             .height(250.dp),
         contentAlignment = Alignment.BottomStart
     ) {
-        Image(
-            // painter = painterResource(id = imageRes),
-            painter = rememberAsyncImagePainter(model = imageUrl),
-            contentDescription = title,
+        AsyncImage(
+            model = imageUrl,
+            contentDescription = title, // Erişilebilirlik için başlığı kullanmak mantıklı
             contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .fillMaxSize()
-            // .clip(RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)) // Alttan kavisli yapmak yerine tamamen kaplaması daha iyi olabilir
+            modifier = Modifier.fillMaxSize()
+            // Not: İstersen yüklenme ve hata durumları için placeholder/error da ekleyebilirsin:
+            // onLoading = { CircularProgressIndicator(modifier = Modifier.align(Alignment.Center)) },
+            // error = painterResource(id = R.drawable.placeholder_image), // Projende bir placeholder resim varsa
         )
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
                     Brush.verticalGradient(
-                        colors = listOf(Color.Transparent, BrandBlack.copy(alpha = 0.7f)),                         startY = 400f
+                        colors = listOf(Color.Transparent, BrandBlack.copy(alpha = 0.7f)),
+                        startY = 400f
                     )
                 )
         )
