@@ -10,13 +10,16 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import android.app.Application
+import android.content.Context
 import coil.ImageLoader
+import com.esma.bunble.data.local.UserPreferencesRepository
 import com.esma.bunble.data.remote.openai.OpenAIApi
 import com.esma.bunble.data.remote.openai.OpenAIRepository
 import com.esma.bunble.data.repository.StoryRepositoryImpl
 import com.esma.bunble.data.repository.WordListRepositoryImpl
 import com.esma.bunble.domain.repository.IStoryRepository
 import com.esma.bunble.domain.repository.IWordListRepository
+import dagger.hilt.android.qualifiers.ApplicationContext
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -51,11 +54,22 @@ object AppModule {
             .respectCacheHeaders(false) // Önbellek kontrolünü basitleştirir
             .build()
     }
+    @Provides
+    @Singleton
+    fun provideUserPreferencesRepository(
+        @ApplicationContext context: Context
+    ): UserPreferencesRepository {
+        return UserPreferencesRepository(context)
+    }
 
     @Provides
     @Singleton
-    fun provideStoryRepository(firestore: FirebaseFirestore): IStoryRepository {
-        return StoryRepositoryImpl(firestore)
+    fun provideStoryRepository(
+        firestore: FirebaseFirestore,
+        auth: FirebaseAuth,
+        userPrefs: UserPreferencesRepository
+    ): IStoryRepository {
+        return StoryRepositoryImpl(firestore, auth, userPrefs)
     }
 
     @Provides

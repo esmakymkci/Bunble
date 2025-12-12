@@ -1,7 +1,6 @@
 package com.esma.bunble.presentation.base.components.stories
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -16,21 +15,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.esma.bunble.domain.model.Story
+import com.esma.bunble.domain.model.PublicStory
 import com.esma.bunble.presentation.theme.ui.BrandBlack
 import com.esma.bunble.presentation.theme.ui.BrandWhite
 
 @Composable
 fun StoryCard(
-    story: Story,
-    onClick: () -> Unit
+    story: PublicStory,
+    modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .height(230.dp)
+            .height(220.dp)
             .clip(RoundedCornerShape(16.dp))
-            .clickable { onClick() }
+
     ) {
         // Arka plan resmi
         AsyncImage(

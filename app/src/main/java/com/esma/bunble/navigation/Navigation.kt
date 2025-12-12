@@ -16,6 +16,8 @@ import com.esma.bunble.presentation.ui.language_selection.LanguageSelectionScree
 import com.esma.bunble.presentation.ui.learn.LearningScreen
 import com.esma.bunble.presentation.ui.my_lists.ListDetailScreen
 import com.esma.bunble.presentation.ui.my_lists.WordListsScreen
+import com.esma.bunble.presentation.ui.stories.AddStoryScreen
+import com.esma.bunble.presentation.ui.stories.EditStoryScreen
 import com.esma.bunble.presentation.ui.stories.StoriesScreen
 import com.esma.bunble.presentation.ui.stories.StoryDetailScreen
 
@@ -54,6 +56,13 @@ fun Navigation(){
         }
 
         composable(
+            route = "edit_story_screen/{storyId}",
+            arguments = listOf(navArgument("storyId") { type = NavType.StringType })
+        ) {
+            EditStoryScreen(navController = navController)
+        }
+
+        composable(
             route = "learning_screen/{categoryId}?type={type}",
             arguments = listOf(
                 navArgument("categoryId") { type = NavType.StringType },
@@ -72,9 +81,20 @@ fun Navigation(){
             StoriesScreen(navController = navController)
         }
 
+        composable(route = "add_story_screen") {
+            AddStoryScreen(navController = navController)
+        }
+
         composable(
-            route = "story_detail_screen/{storyId}", // Rota adı ve beklenen argüman
-            arguments = listOf(navArgument("storyId") { type = NavType.StringType })
+            route = "story_detail_screen/{storyId}?title={title}",
+            arguments = listOf(
+                navArgument("storyId") { type = NavType.StringType },
+                navArgument("title") {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                }
+            )
         ) {
             StoryDetailScreen(navController = navController)
         }

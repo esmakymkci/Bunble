@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -84,7 +85,7 @@ fun TappableStoryText(
             }
         }
 
-        // Bu kısım, kelime bazında tıklamayı algılamak için.
+        // kelime bazında tıklamayı algılamak için.
         val wordRegex = "\\w+".toRegex()
         wordRegex.findAll(storyText).forEach { matchResult ->
             val word = matchResult.value
@@ -114,41 +115,45 @@ fun TappableStoryText(
                 rootCoordinates = coordinates
             }
             .pointerInput(Unit) {
-            detectTapGestures(
-                onTap = { offset ->
-                    // --- KELİME ÇEVİRİSİ (TIKLAMA)  ---
-                    textLayoutResult?.let { layout ->
-                        rootCoordinates?.let { root ->
-                            // Tıklanan X,Y pozisyonunu (Offset) doğru karakter indeksine çevir.
-                            val clickedCharIndex = layout.getOffsetForPosition(offset)
+                detectTapGestures(
+                    onTap = { offset ->
+                        // --- KELİME ÇEVİRİSİ (TIKLAMA)  ---
+                        textLayoutResult?.let { layout ->
+                            rootCoordinates?.let { root ->
+                                // Tıklanan X,Y pozisyonunu (Offset) doğru karakter indeksine çevir.
+                                val clickedCharIndex = layout.getOffsetForPosition(offset)
 
-                            // Bu indeksi kullanarak doğru kelimeyi (annotation) bul.
-                            annotatedString.getStringAnnotations("word_tap", clickedCharIndex, clickedCharIndex).firstOrNull()?.let { annotation ->
-                                // Kelimenin pozisyonunu hesapla ve ViewModel'e gönder.
-                                val boundingBox = layout.getBoundingBox(annotation.start)
-                                val globalPosition = root.localToWindow(boundingBox.topLeft)
-                                onWordClicked(annotation.item, globalPosition)
+                                // Bu indeksi kullanarak doğru kelimeyi (annotation) bul.
+                                annotatedString.getStringAnnotations(
+                                    "word_tap",
+                                    clickedCharIndex,
+                                    clickedCharIndex
+                                ).firstOrNull()?.let { annotation ->
+                                    // Kelimenin pozisyonunu hesapla ve ViewModel'e gönder.
+                                    val boundingBox = layout.getBoundingBox(annotation.start)
+                                    val globalPosition = root.localToWindow(boundingBox.topLeft)
+                                    onWordClicked(annotation.item, globalPosition)
+                                }
+                            }
+                        }
+                    },
+                    onLongPress = { offset ->
+                        // --- CÜMLE ÇEVİRİSİ (BASILI TUTMA) ---
+                        textLayoutResult?.let { layout ->
+                            rootCoordinates?.let { root ->
+                                val pressedCharIndex = layout.getOffsetForPosition(offset)
+                                // Basılan karakterin içinde bulunduğu cümleyi bul
+                                val sentence = storyText.findSentenceForChar(pressedCharIndex)
+                                if (sentence.isNotBlank()) {
+                                    // Pozisyon olarak tıklanan yerin pozisyonunu gönderelim
+                                    val globalPosition = root.localToWindow(offset)
+                                    // ViewModel'e bulunan cümleyi ve pozisyonu bildir
+                                    onSentenceSelected(sentence, globalPosition)
+                                }
                             }
                         }
                     }
-                },
-                onLongPress = { offset ->
-                    // --- CÜMLE ÇEVİRİSİ (BASILI TUTMA) ---
-                    textLayoutResult?.let { layout ->
-                        rootCoordinates?.let { root ->
-                            val pressedCharIndex = layout.getOffsetForPosition(offset)
-                            // Basılan karakterin içinde bulunduğu cümleyi bul
-                            val sentence = storyText.findSentenceForChar(pressedCharIndex)
-                            if (sentence.isNotBlank()) {
-                                // Pozisyon olarak tıklanan yerin pozisyonunu gönderelim
-                                val globalPosition = root.localToWindow(offset)
-                                // ViewModel'e bulunan cümleyi ve pozisyonu bildir
-                                onSentenceSelected(sentence, globalPosition)
-                            }
-                        }
-                    }
-                }
-            )
+                )
             }
     )
 }
@@ -162,6 +167,9 @@ fun StoryDetailScreen(
     navController: NavController,
     viewModel: StoryDetailViewModel = hiltViewModel()
 ) {
+    LaunchedEffect(key1 = Unit) {
+        viewModel.refreshStoryDetail()
+    }
 
     val state = viewModel.state.value
 
@@ -171,15 +179,40 @@ fun StoryDetailScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        text = state.storyDetail?.title ?: "Loading...",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp
-                    )
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = if (state.storyDetail != null) {
+                                if (state.storyDetail.isUserStory) "My Story" else "Story"
+                            } else {
+                                "Loading..."
+                            },
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 18.sp
+                        )
+                    }
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
+                    }
+                },
+                actions = {
+                    // Eğer hikaye detayı yüklendiyse VE bu bir kullanıcı hikayesi ise...
+                    if (state.storyDetail?.isUserStory == true) {
+                        TextButton(onClick = {
+                            val currentStoryId = state.storyDetail.id
+                            navController.navigate("edit_story_screen/$currentStoryId")
+                        }) {
+                            Text(
+                                "Edit",
+                                color = BrandYellow,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 16.sp
+                            )
+                        }
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
@@ -210,17 +243,37 @@ fun StoryDetailScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    AsyncImage(
-                        model = detail.imageUrl,
-                        contentDescription = detail.title,
-                        modifier = Modifier
-                            .fillMaxWidth(0.9f)
-                            // En-boy oranını daha dikdörtgen yapmak için (4:3)
-                            .aspectRatio(4f / 3f)
-                            .clip(RoundedCornerShape(16.dp)),
-                        contentScale = ContentScale.Crop
-                    )
-                    Spacer(modifier = Modifier.height(24.dp))
+                    val titleText = @Composable {
+                        Text(
+                            text = detail.title,
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(vertical = 8.dp)
+                        )
+                    }
+
+                    // Hikaye türüne göre yerleşimi değiştiriyoruz
+                    if (detail.isUserStory) {
+                        // KULLANICI HİKAYESİ (My Story Details)
+                        titleText()
+                        Spacer(modifier = Modifier.height(8.dp))
+                    } else {
+                        // HALKA AÇIK HİKAYE (Story Details)
+                        if (!detail.imageUrl.isNullOrBlank()) {
+                            AsyncImage(
+                                model = detail.imageUrl,
+                                contentDescription = detail.title,
+                                modifier = Modifier
+                                    .fillMaxWidth(0.9f)
+                                    .aspectRatio(4f / 3f)
+                                    .clip(RoundedCornerShape(16.dp)),
+                                contentScale = ContentScale.Crop
+                            )
+                            Spacer(modifier = Modifier.height(24.dp))
+                        }
+                        titleText()
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
 
                     TappableStoryText(
                         storyText = state.storyDetail.content,

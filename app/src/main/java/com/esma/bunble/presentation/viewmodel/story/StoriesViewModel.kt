@@ -1,22 +1,22 @@
 package com.esma.bunble.presentation.viewmodel.story
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.esma.bunble.data.local.UserPreferencesRepository
-import com.esma.bunble.domain.model.Story
-import com.google.firebase.firestore.FirebaseFirestore
+import com.esma.bunble.domain.repository.IStoryRepository
+import com.esma.bunble.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 @HiltViewModel
 class StoriesViewModel @Inject constructor(
-    private val firestore: FirebaseFirestore,
+    private val storyRepository: IStoryRepository,
     private val userPrefs: UserPreferencesRepository
 ) : ViewModel() {
 
@@ -24,75 +24,142 @@ class StoriesViewModel @Inject constructor(
     val state: State<StoriesState> = _state
 
     init {
-        loadStories()
+        loadAllStories()
     }
 
-    private fun loadStories() {
+    private fun loadAllStories() {
         viewModelScope.launch {
-            _state.value = StoriesState(isLoading = true)
+            val targetLang = userPrefs.targetLanguage.first()
+            if (targetLang == null) {
+                _state.value = state.value.copy(
+                    error = "Please select your languages first",
+                    isLoading = false
+                )
+                return@launch
+            }
 
-            try {
-                // Flow'lardan değerleri al (tek seferlik)
-                val sourceLang = userPrefs.sourceLanguage.first()
-                val targetLang = userPrefs.targetLanguage.first()
-
-                Log.d("StoriesViewModel", "Source: $sourceLang, Target: $targetLang")
-
-                if (sourceLang == null || targetLang == null) {
-                    Log.e("StoriesViewModel", "Language settings not found")
-                    _state.value = StoriesState(
-                        isLoading = false,
-                        error = "Please select your languages first"
-                    )
-                    return@launch
-                }
-
-                // Firestore'dan hikayeleri çek
-                Log.d("StoriesViewModel", "Fetching stories for language: $targetLang")
-
-                val snapshot = firestore.collection("stories")
-                    .whereArrayContains("available_languages", targetLang)
-                    .get()
-                    .await()
-
-                Log.d("StoriesViewModel", "Found ${snapshot.size()} documents")
-
-                val stories = snapshot.documents.mapNotNull { doc ->
-                    try {
-                        val titleKey = "title_$targetLang"
-                        val title = doc.getString(titleKey)
-                        val difficulty = doc.getString("difficulty")
-                        val imageUrl = doc.getString("imageUrl")
-
-                        Log.d("StoriesViewModel", "Story: ${doc.id}, title: $title, difficulty: $difficulty")
-
-                        Story(
-                            id = doc.id,
-                            title = title ?: "No title",
-                            difficulty = difficulty ?: "Beginner",
-                            imageUrl = imageUrl ?: ""
+            storyRepository.getPublicStories(targetLang).onEach { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        _state.value = state.value.copy(
+                            publicStories = result.data ?: emptyList(),
+                            isLoading = false
                         )
-                    } catch (e: Exception) {
-                        Log.e("StoriesViewModel", "Error parsing story ${doc.id}: ${e.message}")
-                        null
+                    }
+                    is Resource.Error -> {
+                        _state.value = state.value.copy(
+                            error = result.message,
+                            isLoading = false
+                        )
+                    }
+                    is Resource.Loading -> {
+                        _state.value = state.value.copy(isLoading = true)
                     }
                 }
+            }.launchIn(viewModelScope)
 
-                Log.d("StoriesViewModel", "Successfully parsed ${stories.size} stories")
-                _state.value = StoriesState(stories = stories, isLoading = false)
+            storyRepository.getUserStories().onEach { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        _state.value = state.value.copy(
+                            userStories = result.data ?: emptyList()
+                        )
+                    }
+                    is Resource.Error -> {
+                        _state.value = state.value.copy(error = result.message)
+                    }
+                    is Resource.Loading -> {  }
+                }
+            }.launchIn(viewModelScope)
+        }
+    }
 
-            } catch (e: Exception) {
-                Log.e("StoriesViewModel", "Error loading stories: ${e.message}", e)
-                _state.value = StoriesState(
-                    isLoading = false,
-                    error = "Failed to load stories: ${e.localizedMessage}"
-                )
+    fun deleteUserStory(storyId: String) {
+        viewModelScope.launch {
+            when (storyRepository.deleteUserStory(storyId)) {
+                is Resource.Success -> {
+                    _state.value = state.value.copy(
+                        userStories = state.value.userStories.filterNot { it.id == storyId }
+                    )
+                }
+                is Resource.Error -> { }
+                is Resource.Loading -> { }
             }
         }
     }
 
+    fun addUserStory(title: String, content: String) {
+        viewModelScope.launch {
+            _state.value = state.value.copy(
+                isAddingStory = true,
+                addStoryError = null,
+                addStorySuccess = false
+            )
+            // KULLANICININ HEDEF DİLİNİ AL
+            val targetLang = userPrefs.targetLanguage.first()
+            if (targetLang.isNullOrBlank()) {
+                _state.value = state.value.copy(
+                    isAddingStory = false,
+                    addStoryError = "Your target language is not set."
+                )
+                return@launch
+            }
+
+            // YAZILAN İÇERİĞİN DİLİNİ TESPİT ET
+            val detectedLang = storyRepository.detectLanguage(content)
+            if (detectedLang == null) {
+                _state.value = state.value.copy(
+                    isAddingStory = false,
+                    addStoryError = "Could not detect the language. Please write more."
+                )
+                return@launch
+            }
+
+            // DİLLERİ KARŞILAŞTIR
+            if (detectedLang != targetLang) {
+                _state.value = state.value.copy(
+                    isAddingStory = false,
+                    addStoryError = "Please write your story in your target language, ${targetLang.uppercase()}..We detected it as ${detectedLang.uppercase()}."
+                )
+                return@launch
+            }
+
+            when (val result = storyRepository.addUserStory(title, content)) {
+                is Resource.Success -> {
+                    _state.value = state.value.copy(
+                        isAddingStory = false,
+                        addStorySuccess = true
+                    )
+                    refreshStories()
+                }
+                is Resource.Error -> {
+                    _state.value = state.value.copy(
+                        isAddingStory = false,
+                        addStoryError = result.message
+                    )
+                }
+                is Resource.Loading -> {  }
+            }
+        }
+    }
+
+    fun resetAddStoryState() {
+        _state.value = state.value.copy(
+            isAddingStory = false,
+            addStoryError = null,
+            addStorySuccess = false
+        )
+    }
+
+
+
+    fun onTabSelected(index: Int) {
+        _state.value = state.value.copy(selectedTabIndex = index)
+    }
+
     // Dilleri değiştirme durumunda hikayeleri yeniden yükle
     fun refreshStories() {
-        loadStories()
+        loadAllStories()
+
     }
 }

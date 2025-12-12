@@ -6,15 +6,14 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.esma.bunble.data.local.UserPreferencesRepository
-import com.esma.bunble.domain.model.StoryDetail
 import com.esma.bunble.domain.repository.IStoryRepository
+import com.esma.bunble.util.Resource
 import com.google.mlkit.nl.translate.Translation
 import com.google.mlkit.nl.translate.TranslatorOptions
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
 
 @HiltViewModel
 class StoryDetailViewModel @Inject constructor(
@@ -26,137 +25,94 @@ class StoryDetailViewModel @Inject constructor(
     private val _state = mutableStateOf(StoryDetailState())
     val state: androidx.compose.runtime.State<StoryDetailState> = _state
 
-    val currentSourceLanguage = mutableStateOf<String?>(null)
-    val currentTargetLanguage = mutableStateOf<String?>(null)
-
+    private val storyId: String? = savedStateHandle["storyId"]
 
     init {
-        val storyId: String? = savedStateHandle.get("storyId")
-        if (storyId == null) {
-            _state.value = StoryDetailState(isLoading = false, error = "Story ID not found")
+        if (storyId != null) {
+            loadStoryDetail(storyId)
         } else {
+            _state.value = StoryDetailState(error = "Story ID not found.")
+        }
+    }
+
+    fun refreshStoryDetail() {
+        if (storyId != null) {
             loadStoryDetail(storyId)
         }
     }
 
+
     private fun loadStoryDetail(storyId: String) {
         viewModelScope.launch {
-            _state.value = StoryDetailState(isLoading = true)
-            // Dil tercihlerini dinle
-            combine(userPrefs.sourceLanguage, userPrefs.targetLanguage) { sourceLang, targetLang ->
-                currentSourceLanguage.value = sourceLang // ViewModel'da dili sakla
-                currentTargetLanguage.value = targetLang // ViewModel'da dili sakla
-                Pair(sourceLang, targetLang)
-            }.collect { (sourceLang, targetLang) ->
-                if (sourceLang == null || targetLang == null) {
-                    _state.value = StoryDetailState(isLoading = false, error = "Language settings not found.")
-                    return@collect
-                }
-
-                try {
-                    val docs = storyRepository.getStoryDetail(storyId)
-                    val storyDoc = docs["story"] as com.google.firebase.firestore.DocumentSnapshot
-                    val contentDoc = docs["content"] as com.google.firebase.firestore.DocumentSnapshot
-
-                    val titleKey = "title_$targetLang"
-                    val contentKey = "content.$targetLang" // Map içindeki alana erişim
-
-                    val storyDetail = StoryDetail(
-                        id = storyDoc.id,
-                        title = storyDoc.getString(titleKey) ?: "Title not found",
-                        imageUrl = storyDoc.getString("imageUrl") ?: "",
-                        content = contentDoc.getString(contentKey) ?: "Content not available in this language."
+            _state.value = _state.value.copy(isLoading = true)
+            when (val result = storyRepository.getStoryDetail(storyId)) {
+                is Resource.Success -> {
+                    _state.value = StoryDetailState(
+                        storyDetail = result.data,
+                        isLoading = false
                     )
-                    _state.value = StoryDetailState(storyDetail = storyDetail, isLoading = false)
-                } catch (e: Exception) {
-                    _state.value = StoryDetailState(isLoading = false, error = e.localizedMessage)
                 }
+                is Resource.Error -> {
+                    _state.value = StoryDetailState(
+                        isLoading = false,
+                        error = result.message ?: "An unknown error occurred"
+                    )
+                }
+                is Resource.Loading -> { /* Handled */ }
+            }
+        }
+    }
+
+    // Hem kelime hem cümle için kullanılacak ortak çeviri fonksiyonu
+    private fun translate(text: String, position: Offset) {
+        viewModelScope.launch {
+            val sourceLang = userPrefs.targetLanguage.first()
+            val targetLang = userPrefs.sourceLanguage.first()
+
+            if (sourceLang == null || targetLang == null) {
+                _state.value = _state.value.copy(translatedWord = "Language preferences not set")
+                return@launch
+            }
+
+            _state.value = _state.value.copy(
+                isSheetVisible = true,
+                selectedWord = text,
+                wordPosition = position,
+                translatedWord = "Translating..."
+            )
+
+            val options = TranslatorOptions.Builder()
+                .setSourceLanguage(sourceLang)
+                .setTargetLanguage(targetLang)
+                .build()
+            val translator = Translation.getClient(options)
+            translator.downloadModelIfNeeded().addOnSuccessListener {
+                translator.translate(text)
+                    .addOnSuccessListener { translation ->
+                        _state.value = _state.value.copy(translatedWord = translation)
+                    }
+                    .addOnFailureListener {
+                        _state.value = _state.value.copy(translatedWord = "Translation Error")
+                    }
+            }.addOnFailureListener {
+                _state.value = _state.value.copy(translatedWord = "Model download failed")
             }
         }
     }
 
     fun onWordClicked(word: String, position: Offset) {
-        val sourceLang = currentTargetLanguage.value ?: return
-        val targetLang = currentSourceLanguage.value ?: return
-
-        _state.value = _state.value.copy(
-            isSheetVisible = true,
-            selectedWord = word,
-            wordPosition = position,
-            translatedWord = "Translating..."
-        )
-
-        val options = TranslatorOptions.Builder()
-            .setSourceLanguage(sourceLang)
-            .setTargetLanguage(targetLang)
-            .build()
-        val translator = Translation.getClient(options)
-
-        translator.downloadModelIfNeeded().addOnSuccessListener {
-            translator.translate(word)
-                .addOnSuccessListener { translation ->
-                    _state.value = _state.value.copy(translatedWord = translation)
-                }
-                .addOnFailureListener {
-                    _state.value = _state.value.copy(translatedWord = "Error")
-                }
-        }.addOnFailureListener {
-            _state.value = _state.value.copy(translatedWord = "Model download failed")
-        }
+        translate(word, position)
     }
 
     fun onSentenceSelected(sentence: String, position: Offset) {
-        val sourceLang = currentTargetLanguage.value ?: return
-        val targetLang = currentSourceLanguage.value ?: return
-
-        // State'i güncelle, bu sefer seçilen metin bir cümle
-        _state.value = _state.value.copy(
-            isSheetVisible = true,
-            selectedWord = sentence, // 'selectedWord' alanı artık hem kelime hem cümle tutabilir
-            wordPosition = position, // Popup'ın nerede çıkacağını belirle
-            translatedWord = "Translating..."
-        )
-
-        // ML Kit çeviri mantığı (kelime yerine cümleyi çevir)
-        val options = TranslatorOptions.Builder()
-            .setSourceLanguage(sourceLang)
-            .setTargetLanguage(targetLang)
-            .build()
-        val translator = Translation.getClient(options)
-
-        translator.downloadModelIfNeeded().addOnSuccessListener {
-            translator.translate(sentence)
-                .addOnSuccessListener { translation ->
-                    _state.value = _state.value.copy(translatedWord = translation)
-                }
-                .addOnFailureListener {
-                    _state.value = _state.value.copy(translatedWord = "Error")
-                }
-        }.addOnFailureListener {
-            _state.value = _state.value.copy(translatedWord = "Model download failed")
-        }
+        translate(sentence, position)
     }
 
-    // onSheetDismiss fonksiyonu Popup'ı kapatmak için kullanılacak
     fun onSheetDismiss() {
         _state.value = _state.value.copy(
             isSheetVisible = false,
             selectedWord = "",
             translatedWord = "",
-            // wordPosition = Offset.Zero
         )
     }
 }
-
-/*
-
-combine: İki farklı akışı (kullanıcının kaynak ve hedef dil tercihleri) birleştirir.
-Bu akışlardan herhangi biri değiştiğinde, combine bloğu yeniden çalışır.
-
-collect: Bu birleştirilmiş akışı dinlemeye başlar. Dil ayarları geldiğinde, storyRepository aracılığıyla
-Firebase'den hikaye verisini çeker, StoryDetail modeline dönüştürür ve _state.value'yu güncelleyerek UI'ın yeniden çizilmesini tetikler.
-
-return@collect: collect fonksiyonu, bir veri akışını (flow) dinlerken kullanılır. Bu return@collect ifadesi, akışı daha fazla işlem yapmadan terk eder.
-Akışta bir hata durumu tespit edildiği için, bu noktada işlemin devam etmesi engellenir.
-
- */
