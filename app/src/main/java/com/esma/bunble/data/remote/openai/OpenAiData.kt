@@ -4,7 +4,7 @@ package com.esma.bunble.data.remote.openai
 data class OpenAIRequestBody(
     val model: String,
     val messages: List<Message>,
-    val response_format: ResponseFormat
+    val response_format: ResponseFormat?
 )
 
 data class Message(

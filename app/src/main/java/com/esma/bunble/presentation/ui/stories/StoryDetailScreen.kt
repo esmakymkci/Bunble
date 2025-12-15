@@ -177,7 +177,7 @@ fun StoryDetailScreen(
         modifier = Modifier.statusBarsPadding(),
         containerColor = SurfaceLight,
         topBar = {
-            TopAppBar(
+            CenterAlignedTopAppBar(
                 title = {
                     Box(
                         modifier = Modifier.fillMaxWidth(),

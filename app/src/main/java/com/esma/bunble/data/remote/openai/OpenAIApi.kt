@@ -13,4 +13,10 @@ interface OpenAIApi {
         @Header("Authorization") apiKey: String = "Bearer ${BuildConfig.OPENAI_API_KEY}",
         @Body requestBody: OpenAIRequestBody
     ): JsonObject
+
+    @POST("v1/chat/completions")
+    suspend fun getChatResponse(
+        @Header("Authorization") apiKey: String = "Bearer ${BuildConfig.OPENAI_API_KEY}",
+        @Body requestBody: OpenAIRequestBody
+    ): JsonObject
 }

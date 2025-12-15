@@ -30,7 +30,9 @@ import com.esma.bunble.presentation.viewmodel.home.HomeViewModel
 @Composable
 fun HomeScreen(
     navController: NavController,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(
+        navController.getBackStackEntry("main_graph")
+    )
 ) {
 
     val state = viewModel.state.value

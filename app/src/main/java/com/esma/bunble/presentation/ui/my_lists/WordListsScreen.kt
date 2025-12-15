@@ -108,7 +108,9 @@ fun SwipeToDeleteContainer(
 @Composable
 fun WordListsScreen(
     navController: NavController,
-    viewModel: WordListsViewModel = hiltViewModel()
+    viewModel: WordListsViewModel = hiltViewModel(
+        navController.getBackStackEntry("main_graph")
+    )
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var isSearchActive by remember { mutableStateOf(false) }

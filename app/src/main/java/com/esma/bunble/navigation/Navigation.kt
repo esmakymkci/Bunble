@@ -11,6 +11,7 @@ import com.esma.bunble.presentation.ui.auth.signin.SignInScreen
 import com.esma.bunble.presentation.ui.auth.signup.SignUpScreen
 import com.esma.bunble.presentation.ui.auth.splash.SplashScreen
 import com.esma.bunble.presentation.ui.category_detail.CategoryDetailScreen
+import com.esma.bunble.presentation.ui.chat.ChatScreen
 import com.esma.bunble.presentation.ui.home.HomeScreen
 import com.esma.bunble.presentation.ui.language_selection.LanguageSelectionScreen
 import com.esma.bunble.presentation.ui.learn.LearningScreen
@@ -20,6 +21,7 @@ import com.esma.bunble.presentation.ui.stories.AddStoryScreen
 import com.esma.bunble.presentation.ui.stories.EditStoryScreen
 import com.esma.bunble.presentation.ui.stories.StoriesScreen
 import com.esma.bunble.presentation.ui.stories.StoryDetailScreen
+import androidx.navigation.navigation
 
 
 @Composable
@@ -44,9 +46,34 @@ fun Navigation(){
             SignInScreen(navController = navController)
         }
 
-        composable("home_screen"){
-            HomeScreen(navController = navController)
+        navigation(startDestination = "home_screen", route = "main_graph"){
+
+            composable("home_screen"){
+                HomeScreen(navController = navController)
+            }
+
+            composable("stories_screen"){
+                StoriesScreen(navController = navController)
+            }
+
+            composable("lists_screen"){
+                WordListsScreen(navController = navController)
+            }
+
+            composable( "quiz_screen") {
+                //QuizScreen(navController = navController)
+            }
+
+            composable("chat_screen"){
+                ChatScreen(navController = navController)
+            }
+
+            composable("profile_screen"){
+                //ProfileScreen(navController = navController)
+            }
+
         }
+
 
         composable(
             route = "category_detail_screen/{categoryId}",
@@ -76,11 +103,6 @@ fun Navigation(){
             LearningScreen(navController = navController)
         }
 
-
-        composable("stories_screen"){
-            StoriesScreen(navController = navController)
-        }
-
         composable(route = "add_story_screen") {
             AddStoryScreen(navController = navController)
         }
@@ -99,10 +121,6 @@ fun Navigation(){
             StoryDetailScreen(navController = navController)
         }
 
-        composable("lists_screen"){
-            WordListsScreen(navController = navController)
-        }
-
         composable("create_list_screen") {
             CreateListScreen(navController = navController)
         }
@@ -113,19 +131,6 @@ fun Navigation(){
         ) {
             ListDetailScreen(navController = navController)
         }
-
-        composable( "quiz_screen") {
-            //QuizScreen(navController = navController)
-        }
-
-        composable("chat_screen"){
-            //ChatScreen(navController = navController)
-        }
-
-        composable("profile_screen"){
-            //ProfileScreen(navController = navController)
-        }
-
 
     }
 }

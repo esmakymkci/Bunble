@@ -60,7 +60,9 @@ import com.esma.bunble.presentation.viewmodel.story.StoriesViewModel
 @Composable
 fun StoriesScreen(
     navController: NavController,
-    viewModel: StoriesViewModel = hiltViewModel()
+    viewModel: StoriesViewModel = hiltViewModel(
+        navController.getBackStackEntry("main_graph")
+    )
 ) {
     val state = viewModel.state.value
 

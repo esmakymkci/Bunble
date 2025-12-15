@@ -1,5 +1,6 @@
 package com.esma.bunble.data.remote.openai
 
+import com.esma.bunble.BuildConfig
 import com.esma.bunble.domain.model.Word
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -29,8 +30,10 @@ class OpenAIRepository @Inject constructor(private val openAIApi: OpenAIApi) {
         )
 
         try {
-            val response = openAIApi.getWordDetails(requestBody = requestBody)
-
+            val response = openAIApi.getWordDetails(
+                apiKey = "Bearer ${BuildConfig.OPENAI_API_KEY}",
+                requestBody = requestBody
+            )
             // Gelen JSON'ı parse etme
             val content = response
                 .getAsJsonArray("choices")[0]
@@ -49,6 +52,32 @@ class OpenAIRepository @Inject constructor(private val openAIApi: OpenAIApi) {
 
         } catch (e: Exception) {
             throw Exception("Failed to get details from OpenAI: ${e.message}")
+        }
+    }
+
+    suspend fun getChatResponse(chatHistory: List<Message>): String {
+        val requestBody = OpenAIRequestBody(
+            model = "gpt-4o",
+            messages = chatHistory,
+            response_format = null
+        )
+
+        try {
+            val response = openAIApi.getChatResponse(
+                apiKey = "Bearer ${BuildConfig.OPENAI_API_KEY}",
+                requestBody = requestBody
+            )
+            // Gelen cevabın içindeki metni parse et
+            val content = response
+                .getAsJsonArray("choices")[0]
+                .asJsonObject.getAsJsonObject("message")
+                .get("content").asString
+
+            return content
+
+        } catch (e: Exception) {
+            // Hata durumunda anlamlı bir mesaj döndür
+            throw Exception("Failed to get chat response from OpenAI: ${e.message}")
         }
     }
 }
