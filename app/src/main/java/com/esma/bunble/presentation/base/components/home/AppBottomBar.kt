@@ -31,7 +31,6 @@ fun AppBottomBar(navController: NavController) {
         BottomNavItem("Lists", Icons.Default.Checklist, "lists_screen"),
         BottomNavItem("Quiz", Icons.Default.Quiz, "quiz_screen"),
         BottomNavItem("Chat", Icons.Default.Chat, "chat_screen"),
-        BottomNavItem("Profile", Icons.Default.Person, "profile_screen")
     )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()

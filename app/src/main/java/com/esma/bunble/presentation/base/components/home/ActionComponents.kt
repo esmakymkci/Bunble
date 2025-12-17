@@ -32,7 +32,7 @@ fun ActionButtonsRow(navController : NavController) {
         ActionButton(text = "Create List", isPrimary = true, onClick = { navController.navigate("lists_screen") })
         ActionButton(text = "Start Quiz", isPrimary = true, onClick = { navController.navigate("lists_screen") })
         ActionButton(text = "Stories", isPrimary = true, onClick = { navController.navigate("stories_screen") })
-        ActionButton(text = "Status", isPrimary = true, onClick = { navController.navigate("profile_screen") })
+        ActionButton(text = "Chat", isPrimary = true, onClick = { navController.navigate("chat_screen") })
     }
 }
 

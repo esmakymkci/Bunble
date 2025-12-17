@@ -22,6 +22,7 @@ import com.esma.bunble.presentation.ui.stories.EditStoryScreen
 import com.esma.bunble.presentation.ui.stories.StoriesScreen
 import com.esma.bunble.presentation.ui.stories.StoryDetailScreen
 import androidx.navigation.navigation
+import com.esma.bunble.presentation.ui.chat.ConversationScreen
 
 
 @Composable
@@ -68,8 +69,9 @@ fun Navigation(){
                 ChatScreen(navController = navController)
             }
 
-            composable("profile_screen"){
-                //ProfileScreen(navController = navController)
+
+            composable("conversation_screen") {
+                ConversationScreen(navController = navController)
             }
 
         }

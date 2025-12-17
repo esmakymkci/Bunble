@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.CompareArrows
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -60,8 +61,25 @@ fun ChatScreen(
             CenterAlignedTopAppBar(
                 title = { Text("Chat with AI", fontWeight = FontWeight.Bold) },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = {
+                        navController.navigate("home_screen") { // 'home_screen' rotasının doğru olduğundan emin ol
+                            popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                            launchSingleTop = true
+                        }
+                    }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
+                    }
+                },
+                actions = {
+                    IconButton(onClick = {
+                        navController.navigate("conversation_screen") {
+                            launchSingleTop = true
+                        }
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.CompareArrows,
+                            contentDescription = "Switch to Conversation Mode"
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
@@ -73,6 +91,7 @@ fun ChatScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(contentPadding)
+                .imePadding()
         ) {
             // Mesajların listelendiği alan
             LazyColumn(
