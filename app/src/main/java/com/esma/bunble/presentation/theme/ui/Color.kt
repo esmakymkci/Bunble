@@ -18,6 +18,7 @@ val BorderGray = Color.LightGray // Seçili olmayan kenarlıklar için
 val SurfaceLight = Color(0xFFF7F7F7) // TopAppBar arkaplanı, genel açık arkaplanlar
 val AuthFieldBackground = Color(0xFFFAF8F2) // TextField arkaplanları
 
+
 // --- Durum Renkleri (Quiz için) ---
 val CorrectGreen = Color(0xFF4CAF50)
 val IncorrectRed = Color(0xFFF44336)

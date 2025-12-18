@@ -3,6 +3,7 @@ package com.esma.bunble.presentation.ui.auth.splash
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.esma.bunble.data.local.UserPreferencesRepository
+import com.esma.bunble.domain.repository.IUserRepository
 import com.google.firebase.auth.FirebaseAuth // <-- 1. Firebase Auth'u import et
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SplashViewModel @Inject constructor(
     private val userPrefsRepo: UserPreferencesRepository,
-    private val firebaseAuth: FirebaseAuth
+    private val firebaseAuth: FirebaseAuth,
+    private val userRepository : IUserRepository
 ) : ViewModel() {
 
     private val _startDestination = MutableStateFlow<StartDestination?>(null)
@@ -38,6 +40,8 @@ class SplashViewModel @Inject constructor(
                     // Kullanıcı var, ama token'ı hala geçerli mi? Kontrol et.
                     try {
                         currentUser.getIdToken(true).await() // Token'ı yenilemeye zorla
+                        // Oturum geçerli olduğu için streak güncelleme fonksiyonunu çağırıyoruz.
+                        userRepository.updateUserStreak(currentUser.uid)
                         // Başarılı olursa: Token geçerli veya yenilendi. Ana ekrana git.
                         _startDestination.value = StartDestination.Home
                     } catch (e: Exception) {

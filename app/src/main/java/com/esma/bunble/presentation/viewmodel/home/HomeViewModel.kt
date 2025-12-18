@@ -10,6 +10,7 @@ import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.esma.bunble.R
 import com.esma.bunble.domain.repository.ILearningRepository
+import com.esma.bunble.domain.repository.IUserRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,6 +19,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.flow.launchIn // <-- 1. YENİ IMPORT
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,7 +29,8 @@ class HomeViewModel @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val firestore: FirebaseFirestore,
     private val imageLoader: ImageLoader,
-    private val application: Application
+    private val application: Application,
+    private val userRepository: IUserRepository
 ) : ViewModel() {
 
     private val _state = mutableStateOf(HomeScreenState())
@@ -34,6 +38,7 @@ class HomeViewModel @Inject constructor(
 
     init {
         loadData()
+        loadUserStats()
     }
 
     private fun loadData() {
@@ -86,5 +91,25 @@ class HomeViewModel @Inject constructor(
                 _state.value = _state.value.copy(isLoading = false, error = R.string.error_unknown)
             }
         }
+    }
+
+    private fun loadUserStats() {
+        val userId = firebaseAuth.currentUser?.uid
+        if (userId == null) {
+            // Kullanıcı yoksa bir şey yapma
+            return
+        }
+
+        // Tıpkı ProfileViewModel'de olduğu gibi, istatistikleri dinlemeye başla.
+        userRepository.getUserStats(userId)
+            .onEach { userStats ->
+                // Firestore'dan her yeni veri geldiğinde, state'i güncelle.
+                _state.value = _state.value.copy(
+                    streak = userStats.streak,
+                    totalTimeSpentMinutes = userStats.totalTimeSpentMinutes,
+                    learnedWords = userStats.learnedWords
+                )
+            }
+            .launchIn(viewModelScope) // Bu dinleyiciyi viewModelScope'ta başlat.
     }
 }

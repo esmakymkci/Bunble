@@ -18,6 +18,7 @@ import com.esma.bunble.data.remote.openai.OpenAIRepository
 import com.esma.bunble.data.repository.StoryRepositoryImpl
 import com.esma.bunble.data.repository.WordListRepositoryImpl
 import com.esma.bunble.domain.repository.IStoryRepository
+import com.esma.bunble.domain.repository.IUserRepository
 import com.esma.bunble.domain.repository.IWordListRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import retrofit2.Retrofit
@@ -45,6 +46,7 @@ object AppModule {
         firestore: FirebaseFirestore): ILearningRepository {
         return LearningRepositoryImpl(firestore)
     }
+
 
     @Provides
     @Singleton
@@ -76,9 +78,10 @@ object AppModule {
     @Singleton
     fun provideWordListRepository(
         firestore: FirebaseFirestore,
-        auth: FirebaseAuth
+        auth: FirebaseAuth,
+        userRepository: IUserRepository
     ): IWordListRepository {
-        return WordListRepositoryImpl(firestore, auth)
+        return WordListRepositoryImpl(firestore, auth, userRepository)
     }
 
 

@@ -72,7 +72,11 @@ fun HomeScreen(
                 }
 
                 item {
-                    StatsCard()
+                    StatsCard(
+                        streak = state.streak,
+                        totalTimeSpentMinutes = state.totalTimeSpentMinutes,
+                        learnedWords = state.learnedWords
+                    )
                     Spacer(modifier = Modifier.height(24.dp))
                 }
 

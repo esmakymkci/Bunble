@@ -89,7 +89,13 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun onSignOutClicked() {
+        // 1. Firebase'den çıkış yap
         auth.signOut()
+
+        // 2. (İyileştirme) State'i güncelle. Artık bir kullanıcı yok.
+        _state.update { it.copy(isUserLoggedIn = false, isLoading = false, email = "", statistics = emptyList()) }
+
+        // 3. Yönlendirme olayını gönder
         viewModelScope.launch {
             _navigationEvent.send(ProfileNavigationEvent.NavigateToSignIn)
         }

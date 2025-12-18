@@ -3,6 +3,7 @@ package com.esma.bunble.data.repository
 import android.util.Log
 import com.esma.bunble.domain.model.Word
 import com.esma.bunble.domain.model.WordList
+import com.esma.bunble.domain.repository.IUserRepository
 import com.esma.bunble.domain.repository.IWordListRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
@@ -18,7 +19,8 @@ import javax.inject.Inject
 
 class WordListRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore,
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    private val userRepository: IUserRepository
 ) : IWordListRepository {
 
     // Mevcut kullanıcının ID'sini almak için bir yardımcı özellik.
@@ -133,60 +135,68 @@ class WordListRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateWord(listId: String, card: Word) {
-        val collection = listsCollection ?: return
-        val listDocumentRef = collection.document(listId)
+        val userId = currentUserId ?: return // Kullanıcı ID'sini al
+        val listDocumentRef = listsCollection?.document(listId) ?: return
         val wordDocumentRef = listDocumentRef.collection("words").document(card.id)
 
         try {
             firestore.runTransaction { transaction ->
-                // Önce güncellenecek kelimenin mevcut durumunu transaction içinde oku.
-                // Bu, artırma mı azaltma mı yapacağımızı belirlemek için gereklidir.
                 val snapshot = transaction.get(wordDocumentRef)
                 val existingWord = snapshot.toObject(Word::class.java)
 
-                // Eğer kelime bulunamazsa veya öğrenilme durumu değişmemişse işlem yapma.
                 if (existingWord == null || existingWord.isLearned == card.isLearned) {
-                    // Sadece kelimenin diğer bilgilerini güncelle (belki metni değişti vs.)
                     transaction.set(wordDocumentRef, card)
-                    return@runTransaction null // Transaction'ı bitir
+                    return@runTransaction null
                 }
 
-                // 'learnedCount' için artış miktarını belirle.
-                // Yeni durum 'true' ise +1, 'false' ise -1 artır.
                 val increment = if (card.isLearned) 1L else -1L
 
-                // Ana liste dokümanındaki 'learnedCount' alanını atomik olarak güncelle.
-                transaction.update(listDocumentRef, "learnedCount",
-                    FieldValue.increment(increment))
-
-                // Kelime dokümanının kendisini yeni haliyle güncelle.
+                // Bu iki satır zaten vardı, liste içi sayaçları güncelliyor.
+                transaction.update(listDocumentRef, "learnedCount", FieldValue.increment(increment))
                 transaction.set(wordDocumentRef, card)
 
-                null // Transaction başarılı
-            }.await()
-        } catch (e: Exception) {
+                // --- 3. YENİ KOD ---
+                // Şimdi, genel kullanıcı istatistiklerini de güncelle.
+                // userRepository.updateTotalLearnedWords(userId, increment.toInt())
+                // NOT: Transaction içinde suspend fonksiyon çağıramayız. Bu yüzden bu işi dışarıda yapacağız.
 
+                null
+            }.await()
+            // --- 4. YENİ KOD ---
+            // Transaction başarılı olduktan sonra, genel sayacı güncelle.
+            val increment = if (card.isLearned) 1 else -1
+            updateTotalLearnedWords(userId, increment) // Ayrı bir suspend fonksiyona taşıdık.
+
+        } catch (e: Exception) {
+            // Hata yönetimi
         }
     }
 
+    private suspend fun updateTotalLearnedWords(userId: String, amount: Int) {
+        userRepository.updateTotalLearnedWords(userId, amount)
+    }
+
     override suspend fun deleteWord(listId: String, wordId: String, isLearned: Boolean) {
+        val userId = currentUserId ?: return // <-- Kullanıcı ID'sini fonksiyonun başında al
         val listDocRef = listsCollection?.document(listId) ?: return
         val wordDocRef = listDocRef.collection("words").document(wordId)
 
         firestore.runTransaction { transaction ->
-            // Kelimeyi direkt sil.
+            // ... transaction içeriği aynı kalacak ...
             transaction.delete(wordDocRef)
-
-            // Toplam kelime sayacını her zaman azalt.
             transaction.update(listDocRef, "wordCount", FieldValue.increment(-1))
-
-            // EĞER kelime öğrenilmişse (bu bilgi artık UI'dan geliyor),
-            // öğrenilmiş kelime sayacını azalt.
             if (isLearned) {
                 transaction.update(listDocRef, "learnedCount", FieldValue.increment(-1))
             }
         }.await()
+
+        // Eğer silinen kelime 'öğrenilmiş' olarak işaretlenmişse,
+        // genel kullanıcı istatistiklerindeki toplam sayacı da 1 azalt.
+        if (isLearned) {
+            updateTotalLearnedWords(userId, -1)
+        }
     }
+
 
 
     override suspend fun deleteList(listId: String) {

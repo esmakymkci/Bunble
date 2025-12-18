@@ -7,5 +7,8 @@ data class HomeScreenState(
     val categories: List<LearningCategory> = emptyList(),
     val isLoading: Boolean = false,
     val userName: String = "",
-    @StringRes val error: Int? = null
+    @StringRes val error: Int? = null,
+    val streak: Int = 0,
+    val totalTimeSpentMinutes: Long = 0,
+    val learnedWords: Int = 0
 )
