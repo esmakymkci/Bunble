@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 
@@ -29,10 +30,22 @@ class SplashViewModel @Inject constructor(
             if (isFirstLaunch) {
                 _startDestination.value = StartDestination.LanguageSelection
             } else {
-                if (firebaseAuth.currentUser != null) {
-                    _startDestination.value = StartDestination.Home
-                } else {
+                val currentUser = firebaseAuth.currentUser
+                if (currentUser == null) {
+                    // Kullanıcı hiç yok, giriş ekranına yönlendir.
                     _startDestination.value = StartDestination.Authentication
+                } else {
+                    // Kullanıcı var, ama token'ı hala geçerli mi? Kontrol et.
+                    try {
+                        currentUser.getIdToken(true).await() // Token'ı yenilemeye zorla
+                        // Başarılı olursa: Token geçerli veya yenilendi. Ana ekrana git.
+                        _startDestination.value = StartDestination.Home
+                    } catch (e: Exception) {
+                        // Başarısız olursa: Oturum geçersiz (şifre değişmiş, kullanıcı silinmiş vb.)
+                        // Güvenli çıkış yap ve giriş ekranına yönlendir.
+                        firebaseAuth.signOut()
+                        _startDestination.value = StartDestination.Authentication
+                    }
                 }
             }
         }

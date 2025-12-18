@@ -23,12 +23,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.esma.bunble.R
 import com.esma.bunble.presentation.theme.ui.SurfaceLight
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeTopBar() {
+fun HomeTopBar(navController: NavController ) {
     TopAppBar(
         title = {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -46,7 +47,7 @@ fun HomeTopBar() {
             }
         },
         actions = {  //Sağ tarafta yer alan ikonlar
-            IconButton(onClick = {  }) {
+            IconButton(onClick = { navController.navigate("profile_screen") }) {
                 Icon(
                     imageVector = Icons.Default.Settings,
                     contentDescription = "Settings"

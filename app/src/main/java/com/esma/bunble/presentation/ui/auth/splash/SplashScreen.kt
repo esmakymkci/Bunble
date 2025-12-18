@@ -50,9 +50,9 @@ fun SplashScreen(
         if (progress == 1f) {
             startDestination?.let { destination ->
                 val route = when (destination) {
+                    is StartDestination.Home -> "main_graph"
+                    is StartDestination.Authentication -> "signin_screen"
                     is StartDestination.LanguageSelection -> "language_selection_screen"
-                    is StartDestination.Authentication -> "authentication_screen"
-                    is StartDestination.Home -> "home_screen"
                 }
                 navController.navigate(route) {
                     popUpTo("splash_screen") { inclusive = true }

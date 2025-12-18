@@ -16,9 +16,12 @@ import com.esma.bunble.data.local.UserPreferencesRepository
 import com.esma.bunble.data.remote.openai.OpenAIApi
 import com.esma.bunble.data.remote.openai.OpenAIRepository
 import com.esma.bunble.data.repository.StoryRepositoryImpl
+import com.esma.bunble.data.repository.UserRepositoryImpl
 import com.esma.bunble.data.repository.WordListRepositoryImpl
 import com.esma.bunble.domain.repository.IStoryRepository
+import com.esma.bunble.domain.repository.IUserRepository
 import com.esma.bunble.domain.repository.IWordListRepository
+import dagger.Binds
 import dagger.hilt.android.qualifiers.ApplicationContext
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -97,6 +100,7 @@ object AppModule {
     fun provideOpenAIRepository(api: OpenAIApi): OpenAIRepository {
         return OpenAIRepository(api)
     }
+
 
 
 }

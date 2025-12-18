@@ -23,6 +23,8 @@ import com.esma.bunble.presentation.ui.stories.StoriesScreen
 import com.esma.bunble.presentation.ui.stories.StoryDetailScreen
 import androidx.navigation.navigation
 import com.esma.bunble.presentation.ui.chat.ConversationScreen
+import com.esma.bunble.presentation.ui.profile.ChangePasswordScreen
+import com.esma.bunble.presentation.ui.profile.ProfileScreen
 
 
 @Composable
@@ -132,6 +134,14 @@ fun Navigation(){
             arguments = listOf(navArgument("listId") { type = NavType.StringType })
         ) {
             ListDetailScreen(navController = navController)
+        }
+
+        composable("profile_screen") {
+            ProfileScreen(navController = navController)
+        }
+
+        composable("change_password_screen") {
+            ChangePasswordScreen(navController = navController)
         }
 
     }

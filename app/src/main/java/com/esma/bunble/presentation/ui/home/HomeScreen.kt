@@ -48,7 +48,7 @@ fun HomeScreen(
 
     Scaffold(
         containerColor = SurfaceLight,
-        topBar = { HomeTopBar() },
+        topBar = { HomeTopBar(navController = navController) },
         bottomBar = { AppBottomBar(navController = navController) }
     ) { innerPadding ->
 
