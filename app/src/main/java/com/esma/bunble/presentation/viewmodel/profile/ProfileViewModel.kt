@@ -9,6 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.launchIn
@@ -55,14 +56,55 @@ class ProfileViewModel @Inject constructor(
                 // Firestore'dan her yeni veri geldiğinde bu blok çalışacak.
                 val dynamicStatistics = mapUserStatsToUI(userStats)
 
-                _state.update {
-                    it.copy(
+                // Kullanıcı adını al, eğer null veya boş ise "User" kullan.
+                val username = if (userStats.displayName.isNullOrBlank()) "User" else userStats.displayName
+
+                // Dil yolunu ("tr-de") alıp "🇹🇷 → 🇩🇪" formatına çevir.
+                val languageDescription = formatLanguagePath(userStats.languagePath)
+
+
+                _state.update { currentState ->
+                    currentState.copy(
+                        userName = username,
+                        email = currentUser.email ?: "",
+                        isUserLoggedIn = true,
+                        currentLanguage = languageDescription,
                         statistics = dynamicStatistics,
                         isLoading = false
                     )
                 }
             }
+            .catch { exception ->
+                _state.update { it.copy(isLoading = false, isUserLoggedIn = false) }
+            }
             .launchIn(viewModelScope)
+    }
+
+    private fun getFlagEmojiForLanguage(code: String): String {
+        return when (code.lowercase()) {
+            "tr" -> "🇹🇷"
+            "en" -> "🇬🇧"
+            "de" -> "🇩🇪"
+            "es" -> "🇪🇸"
+            "fr" -> "🇫🇷"
+            "it" -> "🇮🇹"
+            else -> "🏳️"
+        }
+    }
+
+
+    // "tr-en" gibi bir dil yolunu "🇹🇷 → 🇬🇧" formatına çevirir.
+    private fun formatLanguagePath(languagePath: String?): String {
+        if (languagePath.isNullOrBlank() || !languagePath.contains("-")) {
+            return "Language Not Set"
+        }
+        val parts = languagePath.split("-")
+        if (parts.size < 2) return "Invalid Format"
+
+        val sourceFlag = getFlagEmojiForLanguage(parts[0])
+        val targetFlag = getFlagEmojiForLanguage(parts[1])
+
+        return "$sourceFlag → $targetFlag"
     }
 
     // Veri modelini UI'da gösterilecek listeye çeviren yardımcı fonksiyon
@@ -89,13 +131,9 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun onSignOutClicked() {
-        // 1. Firebase'den çıkış yap
         auth.signOut()
-
-        // 2. (İyileştirme) State'i güncelle. Artık bir kullanıcı yok.
+        // State'i güncelle. Artık bir kullanıcı yok.
         _state.update { it.copy(isUserLoggedIn = false, isLoading = false, email = "", statistics = emptyList()) }
-
-        // 3. Yönlendirme olayını gönder
         viewModelScope.launch {
             _navigationEvent.send(ProfileNavigationEvent.NavigateToSignIn)
         }

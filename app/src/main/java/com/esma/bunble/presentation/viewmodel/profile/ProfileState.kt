@@ -9,10 +9,9 @@ data class Statistic(
 
 // Profil ekranının anlık durumunu tutar
 data class ProfileState(
-    val userName: String = "Alex Johnson",
-    val userEmail: String = "",
+    val userName: String = "",
     val currentLanguage: String = "Learning Spanish",
-    val level: Int = 12,
+    val level: Int = 1,
     val levelName: String = "Intermediate Scholar",
     val currentXp: Int = 750,
     val totalXp: Int = 1000,

@@ -150,11 +150,11 @@ fun ProfileHeader(state: ProfileState) {
         Spacer(modifier = Modifier.height(16.dp))
         Text(state.userName, fontSize = 22.sp, fontWeight = FontWeight.Bold, color = BrandBlack)
         Spacer(modifier = Modifier.height(4.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Image(painter = painterResource(id = R.drawable.bunble_yazi), contentDescription = "Spanish Flag", modifier = Modifier.size(16.dp))
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(state.currentLanguage, color = GrayText)
-        }
+        Text(
+            text = state.currentLanguage,
+            color = GrayText,
+            fontSize = 16.sp
+        )
     }
 }
 
@@ -275,7 +275,7 @@ fun GeneralSettingsCard(
                     )
                 }
             )
-            Divider(color = Color.LightGray.copy(alpha = 0.5f), modifier = Modifier.padding(horizontal = 16.dp))
+            HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f), modifier = Modifier.padding(horizontal = 16.dp))
             SettingsRow(
                 icon = Icons.Default.Notifications,
                 title = "Notifications",
@@ -304,7 +304,7 @@ fun AccountSettingsCard(
     ) {
         Column {
             SettingsRow(icon = Icons.Default.Lock, title = "Change Password", onClick = onChangePassword )
-            Divider(color = Color.LightGray.copy(alpha = 0.5f), modifier = Modifier.padding(horizontal = 16.dp))
+            HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f), modifier = Modifier.padding(horizontal = 16.dp))
             SettingsRow(
                 icon = Icons.AutoMirrored.Filled.ExitToApp,
                 title = "Sign Out",
