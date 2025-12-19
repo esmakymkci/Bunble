@@ -12,7 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -242,7 +242,7 @@ fun StatCardFromData(statistic: Statistic, modifier: Modifier = Modifier) {
     // Renk ve ikonları başlığa göre belirleyebiliriz
     val (icon, color, iconColor) = when (statistic.title) {
         "STREAK" -> Triple(Icons.Default.LocalFireDepartment, Color(0xFFFFF4E0), Color(0xFFFFA726))
-        "LEARNED" -> Triple(Icons.Default.MenuBook, Color(0xFFE3F2FD), Color(0xFF42A5F5))
+        "LEARNED" -> Triple(Icons.AutoMirrored.Filled.MenuBook, Color(0xFFE3F2FD), Color(0xFF42A5F5))
         "TIME" -> Triple(Icons.Default.Timer, Color(0xFFF3E5F5), Color(0xFFAB47BC))
         "DAILY" -> Triple(Icons.Default.CalendarMonth, Color(0xFFE0F7F4), Color(0xFF26A69A))
         else -> Triple(Icons.Default.Help, Color.LightGray, Color.DarkGray)

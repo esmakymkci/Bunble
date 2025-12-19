@@ -35,7 +35,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.esma.bunble.presentation.theme.ui.BrandBlack
 import com.esma.bunble.presentation.theme.ui.BrandWhite
@@ -46,12 +46,11 @@ import com.esma.bunble.presentation.viewmodel.chat.ConversationState
 import com.esma.bunble.presentation.viewmodel.chat.ConversationViewModel
 import com.esma.bunble.presentation.viewmodel.chat.Language
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConversationScreen(
     navController: NavController,
-    viewModel: ConversationViewModel = viewModel(
+    viewModel: ConversationViewModel = hiltViewModel(
         navController.getBackStackEntry("main_graph")
     )
 ) {
@@ -211,17 +210,26 @@ private fun LanguageDropDown(
 ) {
     Box {
         OutlinedButton(onClick = onClick, border = BorderStroke(1.dp, BrandYellow)) {
-            Text(language.displayName, color = BrandBlack)
+            val flagEmoji = getFlagEmojiForLanguage(language.code)
+            Text(text = "$flagEmoji ${language.displayName}", color = BrandBlack)
             Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = BrandBlack)
         }
         DropdownMenu(
             expanded = isOpen,
-            onDismissRequest = onDismiss
+            onDismissRequest = onDismiss,
+            modifier = Modifier.background(BrandWhite)
         ) {
             availableLanguages.forEach { lang ->
                 DropdownMenuItem(
-                    text = { Text(lang.displayName) },
-                    onClick = { onSelect(lang) }
+                    text = {
+                        // Metnin yanına bayrak emojisini ekle
+                        val itemFlagEmoji = getFlagEmojiForLanguage(lang.code)
+                        Text("$itemFlagEmoji ${lang.displayName}")
+                    },
+                    onClick = {
+                        onSelect(lang)
+                        onDismiss() // Seçim yapıldıktan sonra menüyü kapat
+                    }
                 )
             }
         }
@@ -341,5 +349,17 @@ private fun MicButton(isListening: Boolean, onClick: () -> Unit) {
             if (isListening) "Listening..." else "Tap to speak",
             color = GrayText
         )
+    }
+}
+
+private fun getFlagEmojiForLanguage(languageCode: String): String {
+    return when (languageCode) {
+        "en" -> "🇬🇧" // veya "🇺🇸"
+        "tr" -> "🇹🇷"
+        "es" -> "🇪🇸"
+        "de" -> "🇩🇪"
+        "fr" -> "🇫🇷"
+        "it" -> "🇮🇹"
+        else -> "🏳️"
     }
 }
