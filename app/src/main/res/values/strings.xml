@@ -1,5 +1,277 @@
 <resources>
     <string name="app_name">Bunble</string>
+
+    <!-- HomeScreen Metinleri -->
+    <string name="home_greeting">Hello, %1$s!</string>
+    <string name="home_subtitle">Let\'s learn something new today!</string>
+    <string name="home_learning_categories">Learning Categories</string>
+    <!-- Buton Metinleri -->
+    <string name="action_create_list">Create List</string>
+    <string name="action_start_quiz">Start Quiz</string>
+    <string name="action_stories">Stories</string>
+    <string name="action_chat">Chat</string>
+    <!-- Alt Navigasyon Metinleri ▼▼▼ -->
+    <string name="bottom_nav_home">Home</string>
+    <string name="bottom_nav_stories">Stories</string>
+    <string name="bottom_nav_lists">Lists</string>
+    <string name="bottom_nav_quiz">Quiz</string>
+    <string name="bottom_nav_chat">Chat</string>
+    <!-- İstatistik Metinleri ▼▼▼ -->
+    <string name="stats_level">Level %1$d</string>
+    <string name="stats_xp">%1$s XP</string>
+    <string name="stats_streak">Streak</string>
+    <string name="stats_streak_value">%1$d days</string>
+    <string name="stats_total_time">Total Time</string>
+    <string name="stats_learned">Learned</string>
+    <string name="stats_learned_value">%1$d words</string>
+    <!-- SIGN EKRANI METİNLERİ -->
+    <!-- Etiketler ve İpuçları -->
+    <string name="auth_label_email">Email</string>
+    <string name="auth_label_fullname">Full Name</string>
+    <string name="auth_label_confirm_password">Confirm Password</string>
+    <string name="auth_label_password">Password</string>
+    <string name="auth_logo_content_description">Bunble Logo</string>
+    <string name="auth_toggle_password_visibility">Toggle password visibility</string>
+    <!-- Butonlar ve Linkler -->
+    <string name="auth_button_signin">Sign In</string>
+    <string name="auth_forgot_password">Forgot Password?</string>
+    <string name="auth_dont_have_account">Don\'t have an account? </string>
+    <string name="auth_link_signup">Sign Up</string>
+    <string name="auth_button_signup">Sign Up</string>
+    <string name="auth_already_have_account">Already have an account? </string>
+    <string name="auth_link_signin">Sign In</string>
+    <!-- KATEGORİ DETAY METİNLERİ -->
+    <!-- Genel Buton Metinleri -->
+    <string name="common_view">View</string>
+    <string name="common_start_quiz">Start Quiz</string>
+    <!-- Kelime Bölümü -->
+    <string name="detail_section_frequent_words">Frequently Used Words</string>
+    <string name="detail_card_common_words">Common Words</string>
+    <string name="detail_card_common_words_desc">Learn essential words for this topic.</string>
+    <!-- Cümle Kalıpları Bölümü -->
+    <string name="detail_section_frequent_phrases">Frequently Used Phrases</string>
+    <string name="detail_card_common_phrases">Common Phrases</string>
+    <string name="detail_card_common_phrases_desc">Learn essential phrases for this topic.</string>
+    <!-- Quiz Bölümü -->
+    <string name="detail_section_quiz">Quiz</string>
+    <string name="detail_card_dialogue_quiz">Dialogue Quiz</string>
+    <string name="detail_card_dialogue_quiz_desc">Test your knowledge with a dialogue-based quiz.</string>
+    <!-- SOHBET EKRANI METİNLERİ -->
+    <!-- Top Bar -->
+    <string name="chat_title">Chat with AI</string>
+    <string name="chat_back_button_desc">Back</string>
+    <string name="chat_switch_to_conversation_desc">Switch to Conversation Mode</string>
+    <!-- Mesaj Alanı -->
+    <string name="chat_author_user">You</string>
+    <string name="chat_author_ai">Bunble AI</string>
+    <string name="chat_ai_avatar_desc">AI Avatar</string>
+    <string name="chat_user_avatar_desc">User Avatar</string>
+    <!-- Giriş Alanı -->
+    <string name="chat_input_placeholder">Type a message...</string>
+    <string name="chat_send_button_desc">Send</string>
+    <!-- SESLİ SOHBET EKRANI METİNLERİ -->
+    <!-- Top Bar -->
+    <string name="conversation_title">Conversation Mode</string>
+    <string name="conversation_back_button_desc">Back to Chat</string>
+    <string name="conversation_switch_to_chat_desc">Switch to Chat Mode</string>
+    <!-- Dil Seçimi -->
+    <string name="conversation_swap_languages_desc">Swap Languages</string>
+    <string name="conversation_language_dropdown_desc">Select language</string>
+    <string name="conversation_language_display">%1$s %2$s</string> <!-- %1$s: bayrak, %2$s: dil adı -->
+    <!-- Çeviri İçeriği -->
+    <string name="conversation_you_said">YOU SAID</string>
+    <string name="conversation_translation_label">%1$s TRANSLATION</string> <!-- %1$s: dil adı -->
+    <string name="conversation_translation_placeholder_desc">Translation result will appear here</string>
+    <!-- Aksiyon Butonları -->
+    <string name="conversation_action_listen">Listen</string>
+    <string name="conversation_action_copy">Copy</string>
+    <string name="conversation_action_save">Save</string>
+    <!-- DİL SEÇİM EKRANI METİNLERİ -->
+    <string name="lang_selection_title">Select Your Language</string>
+    <string name="lang_selection_your_language">Your language: %1$s</string> <!-- %1$s: Cihaz dili -->
+    <string name="lang_selection_i_want_to_learn">I want to learn...</string>
+    <string name="lang_selection_button_confirm">Confirm Selection</string>
+    <!-- ÖĞRENME/QUIZ EKRANI METİNLERİ -->
+    <!-- LearnContent -->
+    <string name="learn_title">Learning</string>
+    <string name="learn_button_continue">Continue</string>
+    <string name="learn_button_finish">Finish</string>
+    <string name="learn_help_button_desc">Help</string>
+    <string name="learn_back_button_desc">Back</string>
+    <string name="learn_no_content">No content found for this category.</string>
+    <string name="learn_pronounce_button_desc">Pronounce</string>
+    <string name="learn_phonetic_label">Phonetic</string>
+    <string name="learn_bookmark_button_desc">Bookmark</string>
+    <!-- QuizContent -->
+    <string name="quiz_close_button_desc">Close Quiz</string>
+    <string name="quiz_no_questions">There are no quiz questions for this category yet.</string>
+    <string name="quiz_unsupported_question">Error: This question type is not supported.</string>
+    <string name="quiz_button_check">Check</string>
+    <string name="quiz_button_next">Next</string>
+    <string name="quiz_image_choice_question">Which image represents</string>
+    <string name="quiz_image_choice_question_format">\'%1$s\'?</string> <!-- %1$s -> kelime -->
+    <string name="quiz_multiple_choice_question">What is the translation of\n\'%1$s\'?</string> <!-- %1$s -> kelime -->
+    <!-- TrueFalseQuestionUI -->
+    <string name="quiz_true_false_title">True or False?</string>
+    <string name="quiz_option_true">True</string>
+    <string name="quiz_option_false">False</string>
+    <!-- QuizResultScreen -->
+    <string name="quiz_result_background_desc">Quiz Result Background</string>
+    <string name="quiz_result_success_rate">%1$d%% Success</string> <!-- %1$d -> başarı yüzdesi -->
+    <string name="quiz_result_questions_correct">%1$d/%2$d Questions Correct</string> <!-- %1$d -> doğru, %2$d -> toplam -->
+    <string name="quiz_result_back_to_category">Back to Category</string>
+    <!-- QuizResultScreen -->
+    <string name="quiz_result_title">Quiz Completed!</string>
+    <string name="quiz_result_subtitle">Here is your score</string>
+    <string name="quiz_result_score_label">Your Score</string>
+    <string name="quiz_result_score_format">%1$d / %2$d</string> <!-- %1$d -> doğru, %2$d -> toplam -->
+    <string name="quiz_result_great_job">Great Job!</string>
+    <string name="quiz_result_finish_button">Finish</string>
+    <!-- LİSTE OLUŞTURMA EKRANI METİNLERİ -->
+    <!-- CreateListScreen -->
+    <string name="create_list_title">Create Word List</string>
+    <string name="create_list_back_button_desc">Back</string>
+    <string name="create_list_title_label">List Title</string>
+    <string name="create_list_title_placeholder">Enter a title for your word list</string>
+    <string name="create_list_languages_header">Languages</string>
+    <string name="create_list_source_language">Source Language</string>
+    <string name="create_list_target_language">Target Language</string>
+    <string name="create_list_button_cancel">Cancel</string>
+    <string name="create_list_button_create">Create</string>
+    <!-- LanguageSelectorSheetContent -->
+    <string name="language_sheet_title">Select Language</string>
+    <string name="language_sheet_close_button_desc">Close</string>
+    <string name="language_sheet_search_placeholder">Search languages...</string>
+    <!-- LİSTE DETAY EKRANI METİNLERİ -->
+    <!-- TopBar -->
+    <string name="list_detail_back_button_desc">Back</string>
+    <string name="list_detail_search_button_desc">Search</string>
+    <!-- Search Bar -->
+    <string name="list_detail_search_placeholder">Search in this list...</string>
+    <string name="list_detail_search_close_desc">Close search</string>
+    <!-- Progress Section -->
+    <string name="list_detail_progress">Progress</string>
+    <string name="list_detail_progress_learned_format">%1$d / %2$d learned</string> <!-- %1$d -> öğrenilen, %2$d -> toplam -->
+    <!-- Add Word Input -->
+    <string name="list_detail_add_word_placeholder">Add a new word...</string>
+    <string name="list_detail_add_word_button_desc">Add Word</string>
+    <!-- Word Item Card -->
+    <string name="list_detail_word_item_learned_desc">Mark as learned</string>
+    <string name="list_detail_word_item_listen_desc">Listen</string>
+    <string name="list_detail_word_item_more_options_desc">More options</string>
+    <string name="list_detail_word_item_edit">Edit</string>
+    <string name="list_detail_word_item_delete">Delete</string>
+    <!-- Hata Mesajı -->
+    <string name="list_detail_error_format">Error: %1$s</string> <!-- %1$s -> hata mesajı -->
+    <!-- KELİME LİSTELERİ EKRANI METİNLERİ -->
+    <!-- TopBar -->
+    <string name="word_lists_title">Word Dictionary</string>
+    <string name="word_lists_search_button_desc">Search lists</string>
+    <!-- Search Bar -->
+    <string name="word_lists_search_placeholder">Search in your lists...</string>
+    <string name="word_lists_search_close_desc">Close search</string>
+    <!-- Floating Action Button -->
+    <string name="word_lists_fab_create_desc">Create new list</string>
+    <!-- Swipe to Delete -->
+    <string name="word_lists_swipe_delete_desc">Delete List</string>
+    <!-- Delete Confirmation Dialog -->
+    <string name="dialog_delete_list_title">Delete List</string>
+    <string name="dialog_delete_list_text">Are you sure you want to delete this list? This action will also delete all the words inside it and cannot be undone.</string>
+    <string name="dialog_button_delete">Delete</string>
+    <string name="dialog_button_cancel">Cancel</string>
+    <!-- Hata Mesajı -->
+    <string name="word_lists_error_format">An error occurred: %1$s</string> <!-- %1$s -> hata mesajı -->
+    <!-- ŞİFRE DEĞİŞTİRME EKRANI METİNLERİ -->
+    <string name="change_password_title">Secure Account</string>
+    <string name="change_password_back_button_desc">Back</string>
+    <string name="change_password_image_desc">Security Check</string>
+    <string name="change_password_current_label">Current Password</string>
+    <string name="change_password_new_label">New Password</string>
+    <string name="change_password_confirm_new_label">Confirm New Password</string>
+    <string name="change_password_update_button">Update Password</string>
+    <!-- PROFİL EKRANI METİNLERİ -->
+    <!-- TopBar -->
+    <string name="profile_title">Profile</string>
+    <string name="profile_back_button_desc">Back</string>
+    <string name="profile_edit_button">Edit</string>
+    <!-- Profile Header -->
+    <string name="profile_picture_desc">Profile Picture</string>
+    <string name="profile_verified_desc">Verified</string>
+    <!-- Level Progress Card -->
+    <string name="profile_level">LEVEL %1$d</string> <!-- %1$d -> level -->
+    <string name="profile_level_title_placeholder">Intermediate Scholar</string> <!-- Placeholder,bu dinamik olabilir -->
+    <string name="profile_xp_format">⭐ %1$d/%2$d XP</string> <!-- %1$d -> mevcut, %2$d -> toplam -->
+    <string name="profile_xp_to_next_level">250 XP to next level reward! 🎁</string> <!-- Bu da dinamik olabilir -->
+    <!-- Section Titles -->
+    <string name="profile_section_statistics">Statistics</string>
+    <string name="profile_section_general_settings">General Settings</string>
+    <string name="profile_section_account">Account</string>
+    <!-- General Settings -->
+    <string name="settings_dark_mode">Dark Mode</string>
+    <string name="settings_notifications">Notifications</string>
+    <!-- Account Settings -->
+    <string name="settings_change_password">Change Password</string>
+    <string name="settings_sign_out">Sign Out</string>
+    <string name="settings_go_to_details">Go to details</string>
+    <!-- Statistics Card Titles (Dinamik olarak ViewModel'den geliyor ama fallback için eklenebilir) -->
+    <string name="stats_title_streak">STREAK</string>
+    <string name="stats_title_learned">LEARNED</string>
+    <string name="stats_title_time">TIME</string>
+    <string name="stats_title_daily">DAILY</string>
+    <!-- HİKAYE EKLEME EKRANI METİNLERİ  -->
+    <string name="add_story_title">Create My Story</string>
+    <string name="add_story_back_button_desc">Back</string>
+    <string name="add_story_title_placeholder">Give your story a title...</string>
+    <string name="add_story_content_placeholder">Once upon a time...</string>
+    <string name="add_story_error_dialog_title">Incorrect Language</string>
+    <string name="add_story_dialog_button_ok">OK</string>
+    <string name="add_story_publish_button">Publish</string>
+    <!-- HİKAYE DÜZENLEME EKRANI METİNLERİ -->
+    <string name="edit_story_title">Edit My Story</string>
+    <string name="edit_story_back_button_desc">Back</string>
+    <string name="edit_story_update_button">Update Story</string>
+    <!-- HİKAYELER EKRANI METİNLERİ -->
+    <!-- TopBar -->
+    <string name="stories_screen_title">Stories</string>
+    <!-- Floating Action Button -->
+    <string name="stories_fab_add_desc">Add Story</string>
+    <!-- Sekmeler (Tabs) -->
+    <string name="stories_tab_public">Stories</string>
+    <string name="stories_tab_my_stories">My Stories</string>
+    <!-- Zorluk Filtreleri -->
+    <string name="stories_difficulty_all">All</string>
+    <string name="stories_difficulty_beginner">Beginner</string>
+    <string name="stories_difficulty_intermediate">Intermediate</string>
+    <string name="stories_difficulty_difficult">Difficult</string>
+    <!-- Silme Onay Diyaloğu -->
+    <string name="dialog_delete_story_title">Delete Story</string>
+    <string name="dialog_delete_story_text">Are you sure you want to permanently delete this story?</string>
+    <!-- Hata ve Boş Durum Mesajları -->
+    <string name="stories_error_message">Error: %1$s</string> <!-- %1$s -> hata mesajı -->
+    <string name="stories_empty_user_list_title">You haven\'t added any stories yet.</string>
+    <string name="stories_empty_user_list_subtitle">Tap the \'+\' button to add your first story!</string>
+    <!-- HİKAYE DETAY EKRANI METİNLERİ -->
+    <!-- TopBar -->
+    <string name="story_detail_title_user">My Story</string>
+    <string name="story_detail_title_public">Story</string>
+    <string name="story_detail_title_loading">Loading...</string>
+    <string name="story_detail_back_button_desc">Back</string>
+    <string name="story_detail_edit_button">Edit</string>
+    <!-- Content -->
+    <string name="story_detail_image_desc">Story Image for %1$s</string> <!-- %1$s -> hikaye başlığı -->
+    <string name="story_detail_error_message">Error: %1$s</string> <!-- %1$s -> hata mesajı -->
+    <!-- KAYDIRARAK SİLME METNİ -->
+    <string name="swipe_to_delete_desc">Delete</string>
+    <!-- KELİME LİSTESİ KARTI METİNLERİ -->
+    <string name="word_list_card_details_format">%1$d words • %2$d%% complete</string> <!-- %1$d -> kelime sayısı, %2$d -> tamamlanma yüzdesi -->
+    <string name="word_list_card_quiz_button">Quiz</string>
+    <string name="word_list_card_quiz_button_desc">Start Quiz</string>
+    <string name="word_list_card_go_to_list_desc">Go to list details</string>
+    <!-- ChatViewModel Metinleri -->
+    <string name="chat_initial_greeting">Hello! I\'m your language learning assistant. How can I help you today?</string>
+    <string name="chat_error_message">Sorry, an error occurred. Please try again.</string>
+
+
     <!-- CategoryDetailViewModel Hataları -->
     <string name="error_category_id_not_found">Category ID not found.</string>
     <string name="error_user_not_logged_in">User not logged in. Please sign in again.</string>

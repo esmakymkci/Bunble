@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,6 +32,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
+import com.esma.bunble.R
+
 
 @Composable
 fun LanguageSelectionScreen(
@@ -55,11 +58,11 @@ fun LanguageSelectionScreen(
         verticalArrangement = Arrangement.Center
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
-            Text("Select Your Language", fontSize = 28.sp, fontWeight = FontWeight.Bold)
+            Text(stringResource(id = R.string.lang_selection_title), fontSize = 28.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(16.dp))
-            Text("Your language: $deviceLanguageName", color = GrayText)
+            Text(stringResource(id = R.string.lang_selection_your_language, deviceLanguageName), color = GrayText)
             Spacer(modifier = Modifier.height(32.dp))
-            Text("I want to learn...", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+            Text(stringResource(id = R.string.lang_selection_i_want_to_learn), fontSize = 22.sp, fontWeight = FontWeight.Bold)
         }
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -99,7 +102,7 @@ fun LanguageSelectionScreen(
             colors = ButtonDefaults.buttonColors(containerColor = BrandYellow),
             enabled = selectedLanguage != null
         ) {
-            Text("Confirm Selection", color = BrandBlack, fontWeight = FontWeight.Bold)
+            Text(stringResource(id = R.string.lang_selection_button_confirm), color = BrandBlack, fontWeight = FontWeight.Bold)
         }
     }
 }

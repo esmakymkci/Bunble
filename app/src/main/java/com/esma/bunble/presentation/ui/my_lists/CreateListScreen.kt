@@ -15,10 +15,12 @@ import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import com.esma.bunble.R
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -53,10 +55,10 @@ fun CreateListScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Create Word List") },
+                title = { Text(stringResource(id = R.string.create_list_title)) },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(id = R.string.create_list_back_button_desc))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = SurfaceLight)
@@ -80,17 +82,17 @@ fun CreateListScreen(
                     value = title,
                     onValueChange = { title = it },
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text("List Title") },
-                    placeholder = { Text("Enter a title for your word list") },
+                    label = { Text(stringResource(id = R.string.create_list_title_label)) },
+                    placeholder = { Text(stringResource(id = R.string.create_list_title_placeholder)) },
                     singleLine = true,
                     shape = RoundedCornerShape(12.dp),
                     colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = BrandYellow)
                 )
 
                 // Dil Seçiciler
-                Text("Languages", fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.titleMedium)
+                Text(stringResource(id = R.string.create_list_languages_header), fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.titleMedium)
                 LanguageSelectorRow(
-                    label = "Source Language",
+                    label = stringResource(id = R.string.create_list_source_language),
                     selectedLanguage = sourceLanguage,
                     onClick = {
                         languageSheetTarget = { lang -> sourceLanguage = lang }
@@ -98,8 +100,7 @@ fun CreateListScreen(
                     }
                 )
                 LanguageSelectorRow(
-                    label = "Target Language",
-                    selectedLanguage = targetLanguage,
+                    label = stringResource(id = R.string.create_list_target_language),                    selectedLanguage = targetLanguage,
                     onClick = {
                         languageSheetTarget = { lang -> targetLanguage = lang }
                         isLanguageSheetVisible = true
@@ -109,11 +110,13 @@ fun CreateListScreen(
 
             // Butonlar
             Row(
-                modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 OutlinedButton(onClick = { navController.navigateUp() }, modifier = Modifier.weight(1f)) {
-                    Text("Cancel")
+                    Text(stringResource(id = R.string.create_list_button_cancel))
                 }
                 Button(
                     onClick = {
@@ -128,7 +131,7 @@ fun CreateListScreen(
                         disabledContainerColor = Color.Gray
                     )
                 ) {
-                    Text("Create")
+                    Text(stringResource(id = R.string.create_list_button_create))
                 }
             }
         }
@@ -185,7 +188,7 @@ private fun LanguageSelectorRow(
                 Text(selectedLanguage.name, fontWeight = FontWeight.Medium, fontSize = 16.sp)
             }
         }
-        Icon(Icons.Default.ExpandMore, contentDescription = "Select Language")
+        Icon(Icons.Default.ExpandMore, contentDescription = stringResource(id = R.string.language_sheet_title))
     }
 }
 
@@ -202,21 +205,27 @@ private fun LanguageSelectorSheetContent(
         supportedLanguages.filter { it.name.contains(searchQuery, ignoreCase = true) }
     }
 
-    Column(modifier = Modifier.fillMaxWidth().navigationBarsPadding()) {
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .navigationBarsPadding()) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(start = 24.dp, end = 12.dp, top = 8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 24.dp, end = 12.dp, top = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text("Select Language", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-            IconButton(onClick = onDismiss) { Icon(Icons.Default.Close, contentDescription = "Close") }
+            Text(stringResource(id = R.string.language_sheet_title), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+            IconButton(onClick = onDismiss) { Icon(Icons.Default.Close, contentDescription = stringResource(id = R.string.language_sheet_close_button_desc)) }
         }
 
         OutlinedTextField(
             value = searchQuery,
             onValueChange = { searchQuery = it },
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 16.dp),
-            placeholder = { Text("Search languages...") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp, vertical = 16.dp),
+            placeholder = { Text(stringResource(id = R.string.language_sheet_search_placeholder)) },
             leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
             singleLine = true,
             shape = RoundedCornerShape(50),

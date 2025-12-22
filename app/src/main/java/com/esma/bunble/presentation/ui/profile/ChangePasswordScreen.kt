@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -80,10 +81,10 @@ fun ChangePasswordScreen(
             ) {
                 // Şeffaf AppBar
                 CenterAlignedTopAppBar(
-                    title = { Text("Secure Account", fontWeight = FontWeight.Bold) },
+                    title = { Text(stringResource(id = R.string.change_password_title), fontWeight = FontWeight.Bold) },
                     navigationIcon = {
                         IconButton(onClick = { navController.popBackStack() }) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(id = R.string.change_password_back_button_desc))
                         }
                     },
                     colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -93,7 +94,7 @@ fun ChangePasswordScreen(
 
                 Image(
                     painter = painterResource(id = R.drawable.police_rabbit),
-                    contentDescription = "Security Check",
+                    contentDescription = stringResource(id = R.string.change_password_image_desc),
                     modifier = Modifier
                         .size(280.dp)
                         .padding(bottom = 40.dp) // Resmin altına boşluk ekleyerek beyaz alanın başlangıcını ayarla
@@ -118,7 +119,7 @@ fun ChangePasswordScreen(
                 AuthTextField(
                     value = currentPassword,
                     onValueChange = { currentPassword = it },
-                    label = "Current Password",
+                    label = stringResource(id = R.string.change_password_current_label),
                     leadingIcon = Icons.Default.Lock,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
                     visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
@@ -126,7 +127,7 @@ fun ChangePasswordScreen(
                         IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
                             Icon(
                                 imageVector = if (isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                                contentDescription = "Toggle password visibility"
+                                contentDescription = stringResource(id = R.string.auth_toggle_password_visibility)
                             )
                         }
                     }
@@ -134,7 +135,7 @@ fun ChangePasswordScreen(
                 AuthTextField(
                     value = newPassword,
                     onValueChange = { newPassword = it },
-                    label = "New Password",
+                    label = stringResource(id = R.string.change_password_new_label),
                     leadingIcon = Icons.Default.Lock,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
                     visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
@@ -142,7 +143,7 @@ fun ChangePasswordScreen(
                         IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
                             Icon(
                                 imageVector = if (isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                                contentDescription = "Toggle password visibility"
+                                contentDescription = stringResource(id = R.string.auth_toggle_password_visibility)
                             )
                         }
                     }
@@ -150,7 +151,7 @@ fun ChangePasswordScreen(
                 AuthTextField(
                     value = confirmPassword,
                     onValueChange = { confirmPassword = it },
-                    label = "Confirm New Password",
+                    label = stringResource(id = R.string.change_password_confirm_new_label),
                     leadingIcon = Icons.Default.Lock,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
                     visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
@@ -158,7 +159,7 @@ fun ChangePasswordScreen(
                         IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
                             Icon(
                                 imageVector = if (isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                                contentDescription = "Toggle password visibility"
+                                contentDescription = stringResource(id = R.string.auth_toggle_password_visibility)
                             )
                         }
                     }
@@ -167,7 +168,7 @@ fun ChangePasswordScreen(
 
             Spacer(modifier = Modifier.weight(1f))
             AuthButton(
-                text = "Update Password",
+                text = stringResource(id = R.string.change_password_update_button),
                 onClick = { viewModel.changePassword(currentPassword, newPassword, confirmPassword) },
                 isLoading = state.isLoading
             )

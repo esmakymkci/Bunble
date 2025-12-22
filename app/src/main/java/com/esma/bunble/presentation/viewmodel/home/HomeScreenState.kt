@@ -10,5 +10,7 @@ data class HomeScreenState(
     @StringRes val error: Int? = null,
     val streak: Int = 0,
     val totalTimeSpentMinutes: Long = 0,
-    val learnedWords: Int = 0
+    val learnedWords: Int = 0,
+    val level: Int = 1,
+    val totalXp: Int = 0
 )

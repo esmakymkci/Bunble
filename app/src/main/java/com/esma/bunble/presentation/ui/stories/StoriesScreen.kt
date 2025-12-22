@@ -37,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -55,6 +56,7 @@ import com.esma.bunble.presentation.theme.ui.BrandYellow
 import com.esma.bunble.presentation.theme.ui.GrayText
 import com.esma.bunble.presentation.theme.ui.SurfaceLight
 import com.esma.bunble.presentation.viewmodel.story.StoriesViewModel
+import com.esma.bunble.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -70,9 +72,13 @@ fun StoriesScreen(
     val showDeleteDialog = storyToDelete != null
 
 
-    val difficulties = listOf("All", "Beginner", "Intermediate", "Difficult")
+    val difficulties = mapOf(
+        "All" to stringResource(id = R.string.stories_difficulty_all),
+        "Beginner" to stringResource(id = R.string.stories_difficulty_beginner),
+        "Intermediate" to stringResource(id = R.string.stories_difficulty_intermediate),
+        "Difficult" to stringResource(id = R.string.stories_difficulty_difficult)
+    )
     var selectedDifficulty by remember { mutableStateOf("All") }
-
     // Floating Action Button'un görünürlüğünü kontrol eder
     val isFabVisible = state.selectedTabIndex == 1 // 1: User Tab
 
@@ -99,18 +105,18 @@ fun StoriesScreen(
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { storyToDelete = null },
-            title = { Text("Delete Story") },
-            text = { Text("Are you sure you want to permanently delete this story?") },
+            title = { Text(stringResource(id = R.string.dialog_delete_story_title)) },
+            text = { Text(stringResource(id = R.string.dialog_delete_story_text)) },
             confirmButton = {
                 TextButton(
                     onClick = {
                         storyToDelete?.let { viewModel.deleteUserStory(it) }
                         storyToDelete = null
                     }
-                ) { Text("Delete", color = Color.Red) }
+                ) { Text(stringResource(id = R.string.dialog_button_delete), color = Color.Red) }
             },
             dismissButton = {
-                TextButton(onClick = { storyToDelete = null }) { Text("Cancel") }
+                TextButton(onClick = { storyToDelete = null }) { Text(stringResource(id = R.string.dialog_button_cancel)) }
             }
         )
     }
@@ -127,7 +133,7 @@ fun StoriesScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "Stories",
+                        text = stringResource(id = R.string.stories_screen_title),
                         fontSize = 28.sp,
                         fontWeight = FontWeight.Bold,
 
@@ -147,7 +153,7 @@ fun StoriesScreen(
                     containerColor = BrandYellow,
                     contentColor = BrandBlack
                 ){
-                    Icon(Icons.Default.Add, contentDescription = "Add Story")
+                    Icon(Icons.Default.Add, contentDescription = stringResource(id = R.string.stories_fab_add_desc))
                 }
             }
         }
@@ -195,7 +201,7 @@ fun StoriesScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Stories",
+                            text = stringResource(id = R.string.stories_tab_public),
                             fontWeight = FontWeight.Bold,
                             color = if (state.selectedTabIndex == 0) BrandBlack else GrayText
                         )
@@ -214,7 +220,7 @@ fun StoriesScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "My Stories",
+                            text = stringResource(id = R.string.stories_tab_my_stories),
                             fontWeight = FontWeight.Bold,
                             color = if (state.selectedTabIndex == 1) BrandBlack else GrayText
                         )
@@ -238,7 +244,7 @@ fun StoriesScreen(
                         .padding(top = 100.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text("Error: ${state.error}", color = Color.Red)
+                    Text(stringResource(id = R.string.stories_error_message, state.error!!), color = Color.Red)
                 }
             } else {
                 LazyColumn(
@@ -252,11 +258,11 @@ fun StoriesScreen(
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 contentPadding = PaddingValues(vertical = 8.dp)
                             ) {
-                                items(difficulties) { difficulty ->
+                                items(difficulties.keys.toList()) { key ->
                                     DifficultyChip(
-                                        text = difficulty,
-                                        isSelected = selectedDifficulty == difficulty,
-                                        onClick = { selectedDifficulty = difficulty }
+                                        text = difficulties[key] ?: key,
+                                        isSelected = selectedDifficulty == key,
+                                        onClick = { selectedDifficulty = key }
                                     )
                                 }
                             }
@@ -297,10 +303,10 @@ fun StoriesScreen(
                                 verticalArrangement = Arrangement.Center
                             ) {
                                 Text(
-                                    "You haven't added any stories yet.",
+                                    stringResource(id = R.string.stories_empty_user_list_title),
                                     fontWeight = FontWeight.Medium
                                 )
-                                Text("Tap the '+' button to add your first story!")
+                                Text(stringResource(id = R.string.stories_empty_user_list_subtitle))
                             }
                         }
                     }

@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,6 +40,7 @@ import com.esma.bunble.presentation.theme.ui.BrandWhite
 import com.esma.bunble.presentation.theme.ui.BrandYellow
 import com.esma.bunble.presentation.theme.ui.GrayText
 import com.esma.bunble.util.findLanguageByCode
+import com.esma.bunble.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,7 +83,7 @@ fun WordListCard(
             // Kelime Sayısı ve İlerleme
             Column {
                 Text(
-                    "${list.wordCount} words • ${list.completionPercentage}% complete",
+                    stringResource(id = R.string.word_list_card_details_format, list.wordCount, list.completionPercentage),
                     style = MaterialTheme.typography.bodySmall,
                     color = GrayText
                 )
@@ -116,17 +118,17 @@ fun WordListCard(
                 ) {
                     Icon(
                         Icons.Default.School,
-                        contentDescription = "Quiz",
+                        contentDescription = stringResource(id = R.string.word_list_card_quiz_button_desc),
                         tint = progressBarColor,
                         modifier = Modifier.size(18.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Quiz", fontWeight = FontWeight.SemiBold, color = Color.Black)
+                    Text(stringResource(id = R.string.word_list_card_quiz_button), fontWeight = FontWeight.SemiBold, color = Color.Black)
                 }
 
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
-                    contentDescription = "Go to list",
+                    contentDescription = stringResource(id = R.string.word_list_card_go_to_list_desc),
                     tint = Color.Gray,
                     modifier = Modifier.size(16.dp)
                 )

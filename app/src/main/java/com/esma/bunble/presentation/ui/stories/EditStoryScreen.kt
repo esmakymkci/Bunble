@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -23,6 +24,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.esma.bunble.presentation.theme.ui.BrandYellow
 import com.esma.bunble.presentation.viewmodel.story.EditStoryViewModel
+import com.esma.bunble.R
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,7 +58,7 @@ fun EditStoryScreen(
                 title = {
                     Box(modifier = Modifier.fillMaxWidth()) {
                         Text(
-                            text = "Edit My Story",
+                            text = stringResource(id = R.string.edit_story_title),
                             modifier = Modifier.align(Alignment.Center),
                             fontWeight = FontWeight.Bold
                         )
@@ -63,7 +66,9 @@ fun EditStoryScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(id = R.string.edit_story_back_button_desc)
+                        )
                     }
                 },
                 actions = {
@@ -93,7 +98,7 @@ fun EditStoryScreen(
                     modifier = Modifier.fillMaxWidth(),
                     placeholder = {
                         Text(
-                            "Give your story a title...",
+                            stringResource(id = R.string.add_story_title_placeholder),
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.Gray.copy(alpha = 0.5f)
@@ -120,7 +125,7 @@ fun EditStoryScreen(
                         .verticalScroll(contentScrollState),
                     placeholder = {
                         Text(
-                            "Once upon a time...",
+                            stringResource(id = R.string.add_story_content_placeholder),
                             fontSize = 16.sp,
                             color = Color.Gray.copy(alpha = 0.7f)
                         )
@@ -173,7 +178,9 @@ fun EditStoryScreen(
                         strokeWidth = 2.dp
                     )
                 } else {
-                    Text("Update Story", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                    Text(
+                        stringResource(id = R.string.edit_story_update_button),
+                        fontWeight = FontWeight.Bold, fontSize = 16.sp)
                 }
             }
         }

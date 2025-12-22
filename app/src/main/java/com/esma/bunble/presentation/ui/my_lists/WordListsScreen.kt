@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -35,6 +36,8 @@ import com.esma.bunble.presentation.theme.ui.SurfaceLight
 import com.esma.bunble.presentation.viewmodel.my_lists.WordListsViewModel
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
+import com.esma.bunble.R
+
 
 //  Kaydırılabilir Kart ===
 @OptIn(ExperimentalMaterial3Api::class)
@@ -68,7 +71,8 @@ fun SwipeToDeleteContainer(
                     onHorizontalDrag = { change, dragAmount ->
                         change.consume()
                         coroutineScope.launch {
-                            val newOffset = (offsetX.value + dragAmount).coerceIn(-deleteButtonWidthPx, 0f)
+                            val newOffset =
+                                (offsetX.value + dragAmount).coerceIn(-deleteButtonWidthPx, 0f)
                             offsetX.snapTo(newOffset)
                         }
                     }
@@ -86,7 +90,7 @@ fun SwipeToDeleteContainer(
             IconButton(onClick = onDelete, modifier = Modifier.padding(end= 20.dp)) {
                 Icon(
                     imageVector = Icons.Default.Delete,
-                    contentDescription = "Delete List",
+                    contentDescription = stringResource(id = R.string.word_lists_swipe_delete_desc),
                     tint = BrandWhite
                 )
             }
@@ -135,13 +139,15 @@ fun WordListsScreen(
                 contentColor = BrandBlack,
                 shape = RoundedCornerShape(16.dp)
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Create new list")
+                Icon(Icons.Default.Add, contentDescription = stringResource(id = R.string.word_lists_fab_create_desc))
             }
         },
         bottomBar = { AppBottomBar(navController = navController) },
         containerColor = SurfaceLight
     ) { innerPadding ->
-        Column(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)) {
             // Arama çubuğu
             AnimatedVisibility(
                 visible = isSearchActive,
@@ -151,14 +157,14 @@ fun WordListsScreen(
                 OutlinedTextField(
                     value = searchQuery,
                     onValueChange = { searchQuery = it },
-                    label = { Text("Search in your lists...") },
+                    label = { Text(stringResource(id = R.string.word_lists_search_placeholder)) },
                     leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                     trailingIcon = {
                         IconButton(onClick = {
                             isSearchActive = false
                             searchQuery = ""
                         }) {
-                            Icon(Icons.Default.Close, contentDescription = "Close search")
+                            Icon(Icons.Default.Close, contentDescription = stringResource(id = R.string.word_lists_search_close_desc))
                         }
                     },
                     colors = OutlinedTextFieldDefaults.colors(
@@ -180,8 +186,9 @@ fun WordListsScreen(
             if (showDeleteDialog) {
                 AlertDialog(
                     onDismissRequest = { listToDelete = null },
-                    title = { Text("Delete List") },
-                    text = { Text("Are you sure you want to delete this list? This action will also delete all the words inside it and cannot be undone.") },                    confirmButton = {
+                    title = { Text(stringResource(id = R.string.dialog_delete_list_title)) },
+                    text = { Text(stringResource(id = R.string.dialog_delete_list_text)) },
+                    confirmButton = {
                         TextButton(
                             onClick = {
                                 listToDelete?.let { viewModel.deleteList(it) }
@@ -190,7 +197,7 @@ fun WordListsScreen(
                         ) { Text("Delete", color = Color.Red) }
                     },
                     dismissButton = {
-                        TextButton(onClick = { listToDelete = null }) { Text("Cancel") }
+                        TextButton(onClick = { listToDelete = null }) { Text(stringResource(id = R.string.dialog_button_cancel)) }
                     }
                 )
             }
@@ -202,13 +209,15 @@ fun WordListsScreen(
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 } else if (uiState.error != null) {
                     Text(
-                        text = "An error occurred: ${uiState.error}",
+                        text = stringResource(id = R.string.word_lists_error_format, uiState.error!!),
                         color = Color.Red,
                         modifier = Modifier.align(Alignment.Center)
                     )
                 } else {
                     LazyColumn(
-                        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp),
                         contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
@@ -234,10 +243,10 @@ fun WordListsScreen(
 @Composable
 fun WordListsTopBar(onToggleSearch: () -> Unit) {
     CenterAlignedTopAppBar(
-        title = { Text("Word Dictionary", fontWeight = FontWeight.Bold) },
+        title = { Text(stringResource(id = R.string.word_lists_title), fontWeight = FontWeight.Bold) },
         actions = {
             IconButton(onClick = onToggleSearch) {
-                Icon(imageVector = Icons.Default.Search, contentDescription = "Search lists")
+                Icon(imageVector = Icons.Default.Search, contentDescription = stringResource(id = R.string.word_lists_search_button_desc))
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(containerColor = SurfaceLight)

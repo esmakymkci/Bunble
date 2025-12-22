@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Bunble</string>
+
+    <!-- HomeScreen Metinleri -->
+    <string name="home_greeting">Merhaba, %1$s!</string>
+    <string name="home_subtitle">Bugün yeni bir şeyler öğrenelim!</string>
+    <string name="home_learning_categories">Öğrenme Kategorileri</string>
+    <!-- Buton Metinleri -->
+    <string name="action_create_list">Liste Oluştur</string>
+    <string name="action_start_quiz">Testi Başlat</string>
+    <string name="action_stories">Hikayeler</string>
+    <string name="action_chat">Sohbet</string>
+    <!-- Alt Navigasyon Metinleri -->
+    <string name="bottom_nav_home">Anasayfa</string>
+    <string name="bottom_nav_stories">Hikayeler</string>
+    <string name="bottom_nav_lists">Listeler</string>
+    <string name="bottom_nav_quiz">Test</string>
+    <string name="bottom_nav_chat">Sohbet</string>
+    <!-- İstatistik Metinleri -->
+    <string name="stats_level">Seviye %1$d</string>
+    <string name="stats_xp">%1$s DP</string>
+    <string name="stats_streak">Seri</string>
+    <string name="stats_streak_value">%1$d gün</string>
+    <string name="stats_total_time">Toplam Süre</string>
+    <string name="stats_learned">Öğrenilen</string>
+    <string name="stats_learned_value">%1$d kelime</string>
+    <!-- GİRİŞ/KAYIT EKRANI METİNLERİ -->
+    <!-- Etiketler ve İpuçları -->
+    <string name="auth_label_email">E-posta</string>
+    <string name="auth_label_fullname">Tam Adınız</string>
+    <string name="auth_label_confirm_password">Şifreyi Onayla</string>
+    <string name="auth_label_password">Şifre</string>
+    <string name="auth_logo_content_description">Bunble Logosu</string>
+    <string name="auth_toggle_password_visibility">Şifre görünürlüğünü değiştir</string>
+    <!-- Butonlar ve Linkler -->
+    <string name="auth_button_signin">Giriş Yap</string>
+    <string name="auth_forgot_password">Şifremi Unuttum?</string>
+    <string name="auth_dont_have_account">Hesabın yok mu? </string>
+    <string name="auth_link_signup">Kayıt Ol</string>
+    <string name="auth_button_signup">Kayıt Ol</string>
+    <string name="auth_already_have_account">Zaten bir hesabın var mı? </string>
+    <string name="auth_link_signin">Giriş Yap</string>
+    <!-- KATEGORİ DETAY METİNLERİ -->
+    <!-- Genel Buton Metinleri -->
+    <string name="common_view">Görüntüle</string>
+    <string name="common_start_quiz">Testi Başlat</string>
+    <!-- Kelime Bölümü -->
+    <string name="detail_section_frequent_words">Sık Kullanılan Kelimeler</string>
+    <string name="detail_card_common_words">Genel Kelimeler</string>
+    <string name="detail_card_common_words_desc">Bu konu için temel kelimeleri öğren.</string>
+    <!-- Cümle Kalıpları Bölümü -->
+    <string name="detail_section_frequent_phrases">Sık Kullanılan Cümleler</string>
+    <string name="detail_card_common_phrases">Genel Cümleler</string>
+    <string name="detail_card_common_phrases_desc">Bu konu için temel cümleleri öğren.</string>
+    <!-- Quiz Bölümü -->
+    <string name="detail_section_quiz">Test</string>
+    <string name="detail_card_dialogue_quiz">Diyalog Testi</string>
+    <string name="detail_card_dialogue_quiz_desc">Bilgini diyalog tabanlı bir test ile sına.</string>
+    <!-- SOHBET EKRANI METİNLERİ -->
+    <!-- Top Bar -->
+    <string name="chat_title">Yapay Zeka ile Sohbet</string>
+    <string name="chat_back_button_desc">Geri</string>
+    <string name="chat_switch_to_conversation_desc">Konuşma Moduna Geç</string>
+    <!-- Mesaj Alanı -->
+    <string name="chat_author_user">Sen</string>
+    <string name="chat_author_ai">Bunble AI</string>
+    <string name="chat_ai_avatar_desc">Yapay Zeka Avatarı</string>
+    <string name="chat_user_avatar_desc">Kullanıcı Avatarı</string>
+    <!-- Giriş Alanı -->
+    <string name="chat_input_placeholder">Bir mesaj yaz...</string>
+    <string name="chat_send_button_desc">Gönder</string>
+    <!-- SESLİ SOHBET EKRANI METİNLERİ -->
+    <!-- Top Bar -->
+    <string name="conversation_title">Konuşma Modu</string>
+    <string name="conversation_back_button_desc">Sohbete Geri Dön</string>
+    <string name="conversation_switch_to_chat_desc">Sohbet Moduna Geç</string>
+    <!-- Dil Seçimi -->
+    <string name="conversation_swap_languages_desc">Dilleri Değiştir</string>
+    <string name="conversation_language_dropdown_desc">Dil seç</string>
+    <string name="conversation_language_display">%1$s %2$s</string>
+    <!-- Çeviri İçeriği -->
+    <string name="conversation_you_said">SÖYLEDİĞİN</string>
+    <string name="conversation_translation_label">%1$s ÇEVİRİSİ</string>
+    <string name="conversation_translation_placeholder_desc">Çeviri sonucu burada görünecek</string>
+    <!-- Aksiyon Butonları -->
+    <string name="conversation_action_listen">Dinle</string>
+    <string name="conversation_action_copy">Kopyala</string>
+    <string name="conversation_action_save">Kaydet</string>
+    <!-- DİL SEÇİM EKRANI METİNLERİ -->
+    <string name="lang_selection_title">Dilini Seç</string>
+    <string name="lang_selection_your_language">Senin dilin: %1$s</string>
+    <string name="lang_selection_i_want_to_learn">Öğrenmek istediğim dil...</string>
+    <string name="lang_selection_button_confirm">Seçimi Onayla</string>
+    <!-- ÖĞRENME/QUIZ EKRANI METİNLERİ -->
+    <!-- LearnContent -->
+    <string name="learn_title">Öğrenme</string>
+    <string name="learn_button_continue">Devam Et</string>
+    <string name="learn_button_finish">Bitir</string>
+    <string name="learn_help_button_desc">Yardım</string>
+    <string name="learn_back_button_desc">Geri</string>
+    <string name="learn_no_content">Bu kategori için içerik bulunamadı.</string>
+    <string name="learn_pronounce_button_desc">Telaffuz Et</string>
+    <string name="learn_phonetic_label">Fonetik</string>
+    <string name="learn_bookmark_button_desc">Kaydet</string>
+    <!-- QuizContent -->
+    <string name="quiz_close_button_desc">Testi Kapat</string>
+    <string name="quiz_no_questions">Bu kategori için henüz test sorusu yok.</string>
+    <string name="quiz_unsupported_question">Hata: Bu soru tipi desteklenmiyor.</string>
+    <string name="quiz_button_check">Kontrol Et</string>
+    <string name="quiz_button_next">İleri</string>
+    <string name="quiz_image_choice_question">Hangi görsel</string>
+    <string name="quiz_image_choice_question_format">\'%1$s\' kelimesini temsil ediyor?</string>
+    <string name="quiz_multiple_choice_question">\'%1$s\' kelimesinin çevirisi nedir?</string>
+    <!-- TrueFalseQuestionUI -->
+    <string name="quiz_true_false_title">Doğru mu Yanlış mı?</string>
+    <string name="quiz_option_true">Doğru</string>
+    <string name="quiz_option_false">Yanlış</string>
+    <!-- QuizResultScreen -->
+    <string name="quiz_result_background_desc">Test Sonucu Arka Planı</string>
+    <string name="quiz_result_success_rate">%% %1$d Başarı</string>
+    <string name="quiz_result_questions_correct">%1$d/%2$d Soru Doğru</string>
+    <string name="quiz_result_back_to_category">Kategoriye Geri Dön</string>
+    <string name="quiz_result_title">Test Tamamlandı!</string>
+    <string name="quiz_result_subtitle">İşte skorun</string>
+    <string name="quiz_result_score_label">Skorun</string>
+    <string name="quiz_result_score_format">%1$d / %2$d</string>
+    <string name="quiz_result_great_job">Harika İş!</string>
+    <string name="quiz_result_finish_button">Bitir</string>
+    <!-- LİSTE OLUŞTURMA EKRANI METİNLERİ -->
+    <!-- CreateListScreen -->
+    <string name="create_list_title">Kelime Listesi Oluştur</string>
+    <string name="create_list_back_button_desc">Geri</string>
+    <string name="create_list_title_label">Liste Başlığı</string>
+    <string name="create_list_title_placeholder">Kelime listen için bir başlık gir</string>
+    <string name="create_list_languages_header">Diller</string>
+    <string name="create_list_source_language">Kaynak Dil</string>
+    <string name="create_list_target_language">Hedef Dil</string>
+    <string name="create_list_button_cancel">İptal</string>
+    <string name="create_list_button_create">Oluştur</string>
+    <!-- LanguageSelectorSheetContent -->
+    <string name="language_sheet_title">Dil Seç</string>
+    <string name="language_sheet_close_button_desc">Kapat</string>
+    <string name="language_sheet_search_placeholder">Dil ara...</string>
+    <!-- LİSTE DETAY EKRANI METİNLERİ -->
+    <!-- TopBar -->
+    <string name="list_detail_back_button_desc">Geri</string>
+    <string name="list_detail_search_button_desc">Ara</string>
+    <!-- Search Bar -->
+    <string name="list_detail_search_placeholder">Bu listede ara...</string>
+    <string name="list_detail_search_close_desc">Aramayı kapat</string>
+    <!-- Progress Section -->
+    <string name="list_detail_progress">İlerleme</string>
+    <string name="list_detail_progress_learned_format">%1$d / %2$d öğrenildi</string>
+    <!-- Add Word Input -->
+    <string name="list_detail_add_word_placeholder">Yeni bir kelime ekle...</string>
+    <string name="list_detail_add_word_button_desc">Kelime Ekle</string>
+    <!-- Word Item Card -->
+    <string name="list_detail_word_item_learned_desc">Öğrenildi olarak işaretle</string>
+    <string name="list_detail_word_item_listen_desc">Dinle</string>
+    <string name="list_detail_word_item_more_options_desc">Daha fazla seçenek</string>
+    <string name="list_detail_word_item_edit">Düzenle</string>
+    <string name="list_detail_word_item_delete">Sil</string>
+    <!-- Hata Mesajı -->
+    <string name="list_detail_error_format">Hata: %1$s</string>
+    <!-- KELİME LİSTELERİ EKRANI METİNLERİ -->
+    <!-- TopBar -->
+    <string name="word_lists_title">Kelime Sözlüğü</string>
+    <string name="word_lists_search_button_desc">Listelerde ara</string>
+    <!-- Search Bar -->
+    <string name="word_lists_search_placeholder">Listelerinde ara...</string>
+    <string name="word_lists_search_close_desc">Aramayı kapat</string>
+    <!-- Floating Action Button -->
+    <string name="word_lists_fab_create_desc">Yeni liste oluştur</string>
+    <!-- Swipe to Delete -->
+    <string name="word_lists_swipe_delete_desc">Listeyi Sil</string>
+    <!-- Delete Confirmation Dialog -->
+    <string name="dialog_delete_list_title">Listeyi Sil</string>
+    <string name="dialog_delete_list_text">Bu listeyi silmek istediğinizden emin misiniz? Bu işlem içindeki tüm kelimeleri de silecek ve geri alınamaz.</string>
+    <string name="dialog_button_delete">Sil</string>
+    <string name="dialog_button_cancel">İptal</string>
+    <!-- Hata Mesajı -->
+    <string name="word_lists_error_format">Bir hata oluştu: %1$s</string>
+    <!-- ŞİFRE DEĞİŞTİRME EKRANI METİNLERİ -->
+    <string name="change_password_title">Hesabı Güvene Al</string>
+    <string name="change_password_back_button_desc">Geri</string>
+    <string name="change_password_image_desc">Güvenlik Kontrolü</string>
+    <string name="change_password_current_label">Mevcut Şifre</string>
+    <string name="change_password_new_label">Yeni Şifre</string>
+    <string name="change_password_confirm_new_label">Yeni Şifreyi Onayla</string>
+    <string name="change_password_update_button">Şifreyi Güncelle</string>
+    <!-- PROFİL EKRANI METİNLERİ -->
+    <!-- TopBar -->
+    <string name="profile_title">Profil</string>
+    <string name="profile_back_button_desc">Geri</string>
+    <string name="profile_edit_button">Düzenle</string>
+    <!-- Profile Header -->
+    <string name="profile_picture_desc">Profil Resmi</string>
+    <string name="profile_verified_desc">Doğrulandı</string>
+    <!-- Level Progress Card -->
+    <string name="profile_level">SEVİYE %1$d</string>
+    <string name="profile_level_title_placeholder">Orta Düzey Bilgin</string>
+    <string name="profile_xp_format">⭐ %1$d/%2$d DP</string>
+    <string name="profile_xp_to_next_level">Sonraki seviye ödülüne 250 DP kaldı! 🎁</string>
+    <!-- Section Titles -->
+    <string name="profile_section_statistics">İstatistikler</string>
+    <string name="profile_section_general_settings">Genel Ayarlar</string>
+    <string name="profile_section_account">Hesap</string>
+    <!-- General Settings -->
+    <string name="settings_dark_mode">Karanlık Mod</string>
+    <string name="settings_notifications">Bildirimler</string>
+    <!-- Account Settings -->
+    <string name="settings_change_password">Şifreyi Değiştir</string>
+    <string name="settings_sign_out">Çıkış Yap</string>
+    <string name="settings_go_to_details">Detaylara git</string>
+    <!-- Statistics Card Titles -->
+    <string name="stats_title_streak">SERİ</string>
+    <string name="stats_title_learned">ÖĞRENİLEN</string>
+    <string name="stats_title_time">SÜRE</string>
+    <string name="stats_title_daily">GÜNLÜK</string>
+    <!-- HİKAYE EKLEME EKRANI METİNLERİ -->
+    <string name="add_story_title">Hikayemi Oluştur</string>
+    <string name="add_story_back_button_desc">Geri</string>
+    <string name="add_story_title_placeholder">Hikayene bir başlık ver...</string>
+    <string name="add_story_content_placeholder">Bir varmış bir yokmuş...</string>
+    <string name="add_story_error_dialog_title">Hatalı Dil</string>
+    <string name="add_story_dialog_button_ok">TAMAM</string>
+    <string name="add_story_publish_button">Yayınla</string>
+    <!-- HİKAYE DÜZENLEME EKRANI METİNLERİ -->
+    <string name="edit_story_title">Hikayemi Düzenle</string>
+    <string name="edit_story_back_button_desc">Geri</string>
+    <string name="edit_story_update_button">Hikayeyi Güncelle</string>
+    <!-- HİKAYELER EKRANI METİNLERİ -->
+    <!-- TopBar -->
+    <string name="stories_screen_title">Hikayeler</string>
+    <!-- Floating Action Button -->
+    <string name="stories_fab_add_desc">Hikaye Ekle</string>
+    <!-- Sekmeler (Tabs) -->
+    <string name="stories_tab_public">Hikayeler</string>
+    <string name="stories_tab_my_stories">Hikayelerim</string>
+    <!-- Zorluk Filtreleri -->
+    <string name="stories_difficulty_all">Tümü</string>
+    <string name="stories_difficulty_beginner">Başlangıç</string>
+    <string name="stories_difficulty_intermediate">Orta</string>
+    <string name="stories_difficulty_difficult">Zor</string>
+    <!-- Silme Onay Diyaloğu -->
+    <string name="dialog_delete_story_title">Hikayeyi Sil</string>
+    <string name="dialog_delete_story_text">Bu hikayeyi kalıcı olarak silmek istediğinizden emin misiniz?</string>
+    <!-- Hata ve Boş Durum Mesajları -->
+    <string name="stories_error_message">Hata: %1$s</string>
+    <string name="stories_empty_user_list_title">Henüz hiç hikaye eklemedin.</string>
+    <string name="stories_empty_user_list_subtitle">İlk hikayeni eklemek için \'+\' butonuna dokun!</string>
+    <!-- HİKAYE DETAY EKRANI METİNLERİ -->
+    <!-- TopBar -->
+    <string name="story_detail_title_user">Hikayem</string>
+    <string name="story_detail_title_public">Hikaye</string>
+    <string name="story_detail_title_loading">Yükleniyor...</string>
+    <string name="story_detail_back_button_desc">Geri</string>
+    <string name="story_detail_edit_button">Düzenle</string>
+    <!-- Content -->
+    <string name="story_detail_image_desc">%1$s için Hikaye Görseli</string>
+    <string name="story_detail_error_message">Hata: %1$s</string>
+    <!-- KAYDIRARAK SİLME METNİ -->
+    <string name="swipe_to_delete_desc">Sil</string>
+    <!-- KELİME LİSTESİ KARTI METİNLERİ -->
+    <string name="word_list_card_details_format">%1$d kelime • %% %2$d tamamlandı</string>
+    <string name="word_list_card_quiz_button">Test</string>
+    <string name="word_list_card_quiz_button_desc">Testi Başlat</string>
+    <string name="word_list_card_go_to_list_desc">Liste detaylarına git</string>
+    <!-- ChatViewModel Metinleri -->
+    <string name="chat_initial_greeting">Merhaba! Ben senin dil öğrenme asistanınım. Bugün sana nasıl yardımcı olabilirim?</string>
+    <string name="chat_error_message">Üzgünüm, bir hata oluştu. Lütfen tekrar dene.</string>
+
+
+    <!-- ViewModel Hataları -->
+    <string name="error_category_id_not_found">Kategori ID\'si bulunamadı.</string>
+    <string name="error_user_not_logged_in">Kullanıcı giriş yapmamış. Lütfen tekrar giriş yapın.</string>
+    <string name="error_category_not_found">Kategori bulunamadı.</string>
+    <string name="error_language_path_not_found">Kullanıcı dil ayarları bulunamadı. Lütfen bir dil seçin.</string>
+    <string name="error_unknown">Beklenmedik bir hata oluştu.</string>
+    <string name="error_all_fields_required">Tüm alanlar zorunludur.</string>
+    <string name="error_passwords_do_not_match">Şifreler eşleşmiyor.</string>
+    <string name="error_user_creation_failed">Kullanıcı oluşturulamadı. Lütfen tekrar deneyin.</string>
+    <string name="error_email_password_empty">E-posta ve şifre boş olamaz.</string>
+    <string name="error_invalid_credentials">Geçersiz e-posta veya şifre. Lütfen tekrar deneyin.</string>
+
+</resources>

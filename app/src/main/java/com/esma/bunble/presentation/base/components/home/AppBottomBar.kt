@@ -8,6 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -16,6 +17,7 @@ import com.esma.bunble.presentation.theme.ui.BrandBlack
 import com.esma.bunble.presentation.theme.ui.BrandWhite
 import com.esma.bunble.presentation.theme.ui.BrandYellow
 import com.esma.bunble.presentation.theme.ui.GrayText
+import com.esma.bunble.R
 
 data class BottomNavItem(
     val label: String,
@@ -26,11 +28,11 @@ data class BottomNavItem(
 @Composable
 fun AppBottomBar(navController: NavController) {
     val navItems = listOf(
-        BottomNavItem("Home", Icons.Default.Home, "home_screen"),
-        BottomNavItem("Stories", Icons.Default.HistoryEdu, "stories_screen"),
-        BottomNavItem("Lists", Icons.Default.Checklist, "lists_screen"),
-        BottomNavItem("Quiz", Icons.Default.Quiz, "quiz_screen"),
-        BottomNavItem("Chat", Icons.Default.Chat, "chat_screen"),
+        BottomNavItem(stringResource(id = R.string.bottom_nav_home), Icons.Default.Home, "home_screen"),
+        BottomNavItem(stringResource(id = R.string.bottom_nav_stories), Icons.Default.HistoryEdu, "stories_screen"),
+        BottomNavItem(stringResource(id = R.string.bottom_nav_lists), Icons.Default.Checklist, "lists_screen"),
+        BottomNavItem(stringResource(id = R.string.bottom_nav_quiz), Icons.Default.Quiz, "quiz_screen"),
+        BottomNavItem(stringResource(id = R.string.bottom_nav_chat), Icons.Default.Chat, "chat_screen"),
     )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()

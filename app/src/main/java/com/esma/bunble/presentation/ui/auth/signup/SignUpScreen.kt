@@ -29,6 +29,7 @@ import com.esma.bunble.R
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.esma.bunble.presentation.base.components.auth.AuthButton
@@ -88,7 +89,7 @@ fun SignUpScreen(
         ) {
             Image(
                 painter = painterResource(id = R.drawable.logo_tras),
-                contentDescription = "Bunble Logo",
+                contentDescription = stringResource(id = R.string.auth_logo_content_description),
                 modifier = Modifier.size(150.dp)
             )
 
@@ -97,7 +98,7 @@ fun SignUpScreen(
             AuthTextField(
                 value = fullName,
                 onValueChange = { fullName = it },
-                label = "Full Name",
+                label = stringResource(id = R.string.auth_label_fullname),
                 leadingIcon = Icons.Default.Person,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Text,
@@ -113,7 +114,7 @@ fun SignUpScreen(
             AuthTextField(
                 value = email,
                 onValueChange = { email = it },
-                label = "Email",
+                label = stringResource(id = R.string.auth_label_email),
                 leadingIcon = Icons.Default.Email,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Email,
@@ -130,7 +131,7 @@ fun SignUpScreen(
             AuthTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = "Password",
+                label = stringResource(id = R.string.auth_label_password),
                 leadingIcon = Icons.Default.Lock,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password,
@@ -153,7 +154,7 @@ fun SignUpScreen(
             AuthTextField(
                 value = confirmPassword,
                 onValueChange = { confirmPassword = it },
-                label = "Confirm Password",
+                label = stringResource(id = R.string.auth_label_confirm_password),
                 leadingIcon = Icons.Default.Lock,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password,
@@ -166,7 +167,9 @@ fun SignUpScreen(
                 trailingIcon = {
                     val eyeIcon = if (isConfirmPasswordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility
                     IconButton(onClick = { isConfirmPasswordVisible = !isConfirmPasswordVisible }) {
-                        Icon(imageVector = eyeIcon, contentDescription = "Toggle password visibility")
+                        Icon(imageVector = eyeIcon,
+                            contentDescription = stringResource(id = R.string.auth_toggle_password_visibility)
+                        )
                     }
                 }
             )
@@ -174,7 +177,7 @@ fun SignUpScreen(
             Spacer(modifier = Modifier.height(32.dp))
 
             AuthButton(
-                text = "Sign Up",
+                text = stringResource(id = R.string.auth_button_signup),
                 onClick = {
                     viewModel.signUpUser(fullName, email, password, confirmPassword)
                 },
@@ -184,9 +187,9 @@ fun SignUpScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             Row {
-                Text(text = "Already have an account? ")
+                Text(text = stringResource(id = R.string.auth_already_have_account))
                 Text(
-                    text = "Sign In",
+                    text = stringResource(id = R.string.auth_link_signin),
                     color = BrandYellow,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.clickable {

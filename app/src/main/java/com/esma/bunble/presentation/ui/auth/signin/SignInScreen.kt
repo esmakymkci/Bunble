@@ -23,6 +23,7 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -93,8 +94,7 @@ fun SignInScreen(
 
             Image(
                 painter = painterResource(id = R.drawable.logo_tras),
-                contentDescription = "Bunble Logo",
-                modifier = Modifier.size(150.dp)
+                contentDescription = stringResource(id = R.string.auth_logo_content_description),                modifier = Modifier.size(150.dp)
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -103,7 +103,7 @@ fun SignInScreen(
             AuthTextField(
                 value = email,
                 onValueChange = { email = it },
-                label = "Email",
+                label = stringResource(id = R.string.auth_label_email),
                 leadingIcon = Icons.Default.Email,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Email,
@@ -119,7 +119,7 @@ fun SignInScreen(
             AuthTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = "Password",
+                label = stringResource(id = R.string.auth_label_password),
                 leadingIcon = Icons.Default.Lock,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password,
@@ -140,7 +140,7 @@ fun SignInScreen(
             Spacer(modifier = Modifier.height(32.dp))
 
             AuthButton(
-                text = "Sign In",
+                text = stringResource(id = R.string.auth_button_signin),
                 onClick = {
                     viewModel.signInUser(email, password)
                 },
@@ -152,7 +152,7 @@ fun SignInScreen(
 
             Text(text = buildAnnotatedString {
                 withStyle(style = SpanStyle(textDecoration = TextDecoration.Underline)) {
-                    append("Forgot Password?")
+                    append(stringResource(id = R.string.auth_forgot_password))
                 }
             },
                 fontSize = 12.sp,
@@ -165,9 +165,9 @@ fun SignInScreen(
 
 
             Row {
-                Text(text = "Don't have an account? ")
+                Text(text = stringResource(id = R.string.auth_dont_have_account))
                 Text(
-                    text = "Sign Up",
+                    text = stringResource(id = R.string.auth_link_signup),
                     color = BrandYellow,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.clickable {

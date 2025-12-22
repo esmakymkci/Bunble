@@ -21,11 +21,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.esma.bunble.presentation.theme.ui.BrandWhite
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
+import com.esma.bunble.R
+
 
 //  Kaydırılabilir Kart ===
 @OptIn(ExperimentalMaterial3Api::class)
@@ -59,7 +62,8 @@ fun SwipeToDeleteContainer(
                     onHorizontalDrag = { change, dragAmount ->
                         change.consume()
                         coroutineScope.launch {
-                            val newOffset = (offsetX.value + dragAmount).coerceIn(-deleteButtonWidthPx, 0f)
+                            val newOffset =
+                                (offsetX.value + dragAmount).coerceIn(-deleteButtonWidthPx, 0f)
                             offsetX.snapTo(newOffset)
                         }
                     }
@@ -77,7 +81,7 @@ fun SwipeToDeleteContainer(
             IconButton(onClick = onDelete, modifier = Modifier.padding(end= 20.dp)) {
                 Icon(
                     imageVector = Icons.Default.Delete,
-                    contentDescription = "Delete List",
+                    contentDescription = stringResource(id = R.string.swipe_to_delete_desc),
                     tint = BrandWhite
                 )
             }

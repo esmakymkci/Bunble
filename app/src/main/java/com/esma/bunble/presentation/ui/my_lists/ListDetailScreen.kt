@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -45,6 +46,7 @@ import com.esma.bunble.presentation.theme.ui.GrayText
 import com.esma.bunble.presentation.theme.ui.SurfaceLight
 import com.esma.bunble.presentation.viewmodel.my_lists.ListDetailViewModel
 import com.esma.bunble.util.findLanguageByCode
+import com.esma.bunble.R
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -95,14 +97,14 @@ fun ListDetailScreen(
                 OutlinedTextField(
                     value = searchQuery,
                     onValueChange = { searchQuery = it },
-                    label = { Text("Search in this list...") },
+                    label = { Text(stringResource(id = R.string.list_detail_search_placeholder)) },
                     leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                     trailingIcon = {
                         IconButton(onClick = {
                             isSearchActive = false
                             searchQuery = ""
                         }) {
-                            Icon(Icons.Default.Close, contentDescription = "Close search")
+                            Icon(Icons.Default.Close, contentDescription = stringResource(id = R.string.list_detail_search_close_desc))
                         }
                     },
                     colors = OutlinedTextFieldDefaults.colors(
@@ -149,7 +151,9 @@ fun ListDetailScreen(
                 }
             } else if (uiState.error != null) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("Error: ${uiState.error}", color = Color.Red, textAlign = TextAlign.Center)
+                    Text(
+                        stringResource(id = R.string.list_detail_error_format, uiState.error!!),
+                        color = Color.Red, textAlign = TextAlign.Center)
                 }
             } else {
                 LazyColumn(
@@ -181,7 +185,7 @@ fun ListDetailTopBar(
     CenterAlignedTopAppBar(
         navigationIcon = {
             IconButton(onClick = onNavigateUp) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(id = R.string.list_detail_back_button_desc))
             }
         },
         title = {
@@ -191,7 +195,7 @@ fun ListDetailTopBar(
             IconButton(onClick = onToggleSearch) {
                 Icon(
                     imageVector = Icons.Default.Search ,
-                    contentDescription = "Search"
+                    contentDescription = stringResource(id = R.string.list_detail_search_button_desc)
                 )
             }
         },
@@ -218,9 +222,11 @@ fun ProgressSection(list: WordList) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Progress", style = MaterialTheme.typography.bodySmall, color = GrayText)
             Text(
-                "${list.learnedCount} / ${list.wordCount} learned",
+                stringResource(id = R.string.list_detail_progress),
+                style = MaterialTheme.typography.bodySmall, color = GrayText)
+            Text(
+                stringResource(id = R.string.list_detail_progress_learned_format, list.learnedCount, list.wordCount),
                 style = MaterialTheme.typography.bodySmall,
                 color = GrayText,
                 fontWeight = FontWeight.SemiBold
@@ -260,7 +266,7 @@ fun AddWordInput(
             ) {
                 Box(modifier = Modifier.weight(1f)) {
                     if (text.isEmpty()) {
-                        Text("Add a new word...", color = Color.LightGray, fontSize = 16.sp)
+                        Text(stringResource(id = R.string.list_detail_add_word_placeholder), color = Color.LightGray, fontSize = 16.sp)
                     }
                     innerTextField()
                 }
@@ -274,7 +280,7 @@ fun AddWordInput(
                     if (isLoading) {
                         CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp, color = Color.Black)
                     } else {
-                        Icon(Icons.Default.Add, contentDescription = "Add Word", tint = Color.Black)
+                        Icon(Icons.Default.Add, contentDescription = stringResource(id = R.string.list_detail_add_word_button_desc), tint = Color.Black)
                     }
                 }
             }
@@ -319,16 +325,16 @@ fun NewWordItemCard(
                 IconButton(onClick = { onUpdateLearnedStatus(word) }, modifier = Modifier.size(28.dp)) {
                     Icon(
                         Icons.Default.Check,
-                        contentDescription = "Mark as learned",
+                        contentDescription = stringResource(id = R.string.list_detail_word_item_learned_desc),
                         tint = if (word.isLearned) BrandYellow else Color.LightGray
                     )
                 }
                 IconButton(onClick = { onSpeak(word) }, modifier = Modifier.size(28.dp)) {
-                    Icon(Icons.AutoMirrored.Filled.VolumeUp, contentDescription = "Listen", tint = Color.Gray)
+                    Icon(Icons.AutoMirrored.Filled.VolumeUp, contentDescription = stringResource(id = R.string.list_detail_word_item_listen_desc), tint = Color.Gray)
                 }
                 Box { // DropdownMenu'yü doğru konumlandırmak için
                     IconButton(onClick = { menuExpanded = true }, modifier = Modifier.size(28.dp)) {
-                        Icon(Icons.Default.MoreVert, contentDescription = "More options", tint = Color.Gray)
+                        Icon(Icons.Default.MoreVert, contentDescription = stringResource(id = R.string.list_detail_word_item_more_options_desc), tint = Color.Gray)
                     }
 
                     DropdownMenu(
@@ -338,27 +344,26 @@ fun NewWordItemCard(
                     ) {
                         // DÜZENLE SEÇENEĞİ
                         DropdownMenuItem(
-                            text = { Text("Edit") },
+                            text = { Text(stringResource(id = R.string.list_detail_word_item_edit)) },
                             onClick = {
                                 // TODO: Düzenleme ekranına git veya bir dialog aç
                                 menuExpanded = false
                             },
                             leadingIcon = {
-                                Icon(Icons.Default.Edit, contentDescription = "Edit")
+                                Icon(Icons.Default.Edit, contentDescription = stringResource(id = R.string.list_detail_word_item_edit))
                             }
                         )
 
-                        HorizontalDivider(
-                            color = Color.LightGray.copy(alpha = 0.5f))
+                        HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
                         // SİLME SEÇENEĞİ
                         DropdownMenuItem(
-                            text = { Text("Delete", color = Color.Red) },
+                            text = { Text(stringResource(id = R.string.list_detail_word_item_delete), color = Color.Red) },
                             onClick = {
                                 onDelete(word) // ViewModel'deki fonksiyonu çağır
                                 menuExpanded = false
                             },
                             leadingIcon = {
-                                Icon(Icons.Default.Delete, contentDescription = "Delete", tint = Color.Red)
+                                Icon(Icons.Default.Delete, contentDescription = stringResource(id = R.string.list_detail_word_item_delete), tint = Color.Red)
                             }
                         )
                     }

@@ -23,6 +23,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.buildAnnotatedString
@@ -37,7 +38,7 @@ import com.esma.bunble.presentation.base.extension.findSentenceForChar
 import com.esma.bunble.presentation.theme.ui.BrandYellow
 import com.esma.bunble.presentation.theme.ui.SurfaceLight
 import com.esma.bunble.presentation.viewmodel.story.StoryDetailViewModel
-
+import com.esma.bunble.R
 
 
 @Composable
@@ -185,9 +186,10 @@ fun StoryDetailScreen(
                     ) {
                         Text(
                             text = if (state.storyDetail != null) {
-                                if (state.storyDetail.isUserStory) "My Story" else "Story"
-                            } else {
-                                "Loading..."
+                                if (state.storyDetail.isUserStory) stringResource(id = R.string.story_detail_title_user)
+                                else stringResource(id = R.string.story_detail_title_public)                            } else {
+                                stringResource(id = R.string.story_detail_title_loading)
+
                             },
                             fontWeight = FontWeight.Bold,
                             fontSize = 18.sp
@@ -196,7 +198,7 @@ fun StoryDetailScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(id = R.string.story_detail_back_button_desc))
                     }
                 },
                 actions = {
@@ -207,7 +209,7 @@ fun StoryDetailScreen(
                             navController.navigate("edit_story_screen/$currentStoryId")
                         }) {
                             Text(
-                                "Edit",
+                                stringResource(id = R.string.story_detail_edit_button),
                                 color = BrandYellow,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 16.sp
@@ -227,7 +229,7 @@ fun StoryDetailScreen(
             }
             state.error != null -> {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(text = "Error: ${state.error}")
+                    Text(text = stringResource(id = R.string.story_detail_error_message, state.error!!))
                 }
             }
             state.storyDetail != null -> {
@@ -262,7 +264,7 @@ fun StoryDetailScreen(
                         if (!detail.imageUrl.isNullOrBlank()) {
                             AsyncImage(
                                 model = detail.imageUrl,
-                                contentDescription = detail.title,
+                                contentDescription = stringResource(id = R.string.story_detail_image_desc, detail.title),
                                 modifier = Modifier
                                     .fillMaxWidth(0.9f)
                                     .aspectRatio(4f / 3f)

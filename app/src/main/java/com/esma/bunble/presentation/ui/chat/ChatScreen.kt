@@ -20,6 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -41,7 +42,7 @@ fun ChatScreen(
         navController.getBackStackEntry("main_graph")
     )
 ) {
-    val chatState = viewModel.chatState.value
+    val chatState by viewModel.chatState
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -59,7 +60,7 @@ fun ChatScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Chat with AI", fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(id = R.string.chat_title), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = {
                         navController.navigate("home_screen") { // 'home_screen' rotasının doğru olduğundan emin ol
@@ -67,7 +68,7 @@ fun ChatScreen(
                             launchSingleTop = true
                         }
                     }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(id = R.string.chat_back_button_desc))
                     }
                 },
                 actions = {
@@ -78,7 +79,7 @@ fun ChatScreen(
                     }) {
                         Icon(
                             imageVector = Icons.Default.Mic,
-                            contentDescription = "Switch to Conversation Mode"
+                            contentDescription = stringResource(id = R.string.chat_switch_to_conversation_desc)
                         )
                     }
                 },
@@ -115,7 +116,7 @@ fun ChatScreen(
                     // Mesaj Balonunu ve Yazar Adını gruplayan bir Column
                     Column {
                         Text(
-                            text = if (message.author == Author.USER) "You" else "Bunble AI",
+                            text = if (message.author == Author.USER) stringResource(id = R.string.chat_author_user) else stringResource(id = R.string.chat_author_ai),
                             style = MaterialTheme.typography.labelSmall,
                             color = Color.Gray,
                             modifier = Modifier
@@ -146,7 +147,7 @@ fun ChatScreen(
                     value = chatState.textInput,
                     onValueChange = { viewModel.onTextInputChange(it) },
                     modifier = Modifier.weight(1f),
-                    placeholder = { Text("Type a message...") },
+                    placeholder = { Text(stringResource(id = R.string.chat_input_placeholder)) },
                     shape = RoundedCornerShape(24.dp)
                 )
                 Spacer(Modifier.width(8.dp))
@@ -160,7 +161,7 @@ fun ChatScreen(
                         .size(48.dp)
                         .background(BrandYellow, CircleShape)
                 ) {
-                    Icon(Icons.AutoMirrored.Filled.Send, contentDescription = "Send", tint = Color.Black)
+                    Icon(Icons.AutoMirrored.Filled.Send, contentDescription = stringResource(id = R.string.chat_send_button_desc), tint = Color.Black)
                 }
             }
         }
@@ -182,7 +183,7 @@ fun MessageBubble(message: ChatMessage) {
         if (!isFromUser) {
             Image(
                 painter = painterResource(id = R.drawable.ai_avatar),
-                contentDescription = "AI Avatar",
+                contentDescription = stringResource(id = R.string.chat_ai_avatar_desc),
                 modifier = Modifier
                     .size(48.dp)
                     .clip(CircleShape)
@@ -204,7 +205,7 @@ fun MessageBubble(message: ChatMessage) {
             Spacer(modifier = Modifier.width(8.dp))
             Image(
                 painter = painterResource(id = R.drawable.user_avatar),
-                contentDescription = "User Avatar",
+                contentDescription = stringResource(id = R.string.chat_user_avatar_desc),
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)

@@ -12,11 +12,13 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.esma.bunble.presentation.theme.ui.BrandBlack
 import com.esma.bunble.presentation.theme.ui.BrandYellow
 import com.esma.bunble.presentation.theme.ui.BrandYellowLighter
+import com.esma.bunble.R
 
 
 
@@ -29,10 +31,10 @@ fun ActionButtonsRow(navController : NavController) {
             .horizontalScroll(rememberScrollState()),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        ActionButton(text = "Create List", isPrimary = true, onClick = { navController.navigate("lists_screen") })
-        ActionButton(text = "Start Quiz", isPrimary = true, onClick = { navController.navigate("lists_screen") })
-        ActionButton(text = "Stories", isPrimary = true, onClick = { navController.navigate("stories_screen") })
-        ActionButton(text = "Chat", isPrimary = true, onClick = { navController.navigate("chat_screen") })
+        ActionButton(text = stringResource(id = R.string.action_create_list), isPrimary = true, onClick = { navController.navigate("lists_screen") })
+        ActionButton(text = stringResource(id = R.string.action_start_quiz), isPrimary = true, onClick = { navController.navigate("quiz_screen") }) // Rota adını düzelttim
+        ActionButton(text = stringResource(id = R.string.action_stories), isPrimary = true, onClick = { navController.navigate("stories_screen") })
+        ActionButton(text = stringResource(id = R.string.action_chat), isPrimary = true, onClick = { navController.navigate("chat_screen") })
     }
 }
 

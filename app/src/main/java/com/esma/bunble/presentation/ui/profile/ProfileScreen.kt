@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,7 +44,9 @@ import com.esma.bunble.presentation.viewmodel.profile.Statistic
 @Composable
 fun ProfileScreen(
     navController: NavController,
-    viewModel: ProfileViewModel = hiltViewModel()
+    viewModel: ProfileViewModel = hiltViewModel(
+        navController.getBackStackEntry("main_graph")
+    )
 ) {
     val state by viewModel.state.collectAsState()
 
@@ -67,15 +70,15 @@ fun ProfileScreen(
         containerColor = Color(0xFFF9F9F9), // Tasarımdaki hafif gri arka plan
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Profile", fontWeight = FontWeight.Bold, color = BrandBlack) },
+                title = { Text(stringResource(id = R.string.profile_title), fontWeight = FontWeight.Bold, color = BrandBlack) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = BrandBlack)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(id = R.string.profile_back_button_desc), tint = BrandBlack)
                     }
                 },
                 actions = {
                     TextButton(onClick = { /* TODO: Edit profiline git */ }) {
-                        Text("Edit", color = BrandYellow, fontWeight = FontWeight.Bold)
+                        Text(stringResource(id = R.string.profile_edit_button), color = BrandYellow, fontWeight = FontWeight.Bold)
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -101,11 +104,11 @@ fun ProfileScreen(
                 Spacer(modifier = Modifier.height(24.dp))
                 LevelProgressCard(state)
                 Spacer(modifier = Modifier.height(24.dp))
-                SectionTitle("Statistics")
+                SectionTitle(stringResource(id = R.string.profile_section_statistics))
                 Spacer(modifier = Modifier.height(16.dp))
                 StatisticsGrid(state)
                 Spacer(modifier = Modifier.height(24.dp))
-                SectionTitle("General Settings")
+                SectionTitle(stringResource(id = R.string.profile_section_general_settings))
                 Spacer(modifier = Modifier.height(16.dp))
                 GeneralSettingsCard(
                     state = state,
@@ -113,7 +116,7 @@ fun ProfileScreen(
                     onNotificationsChanged = viewModel::onNotificationsChanged
                 )
                 Spacer(modifier = Modifier.height(24.dp))
-                SectionTitle("Account")
+                SectionTitle(stringResource(id = R.string.profile_section_account))
                 Spacer(modifier = Modifier.height(16.dp))
                 AccountSettingsCard(
                     onChangePassword = { navController.navigate("change_password_screen") },
@@ -131,7 +134,7 @@ fun ProfileHeader(state: ProfileState) {
         Box {
             Image(
                 painter = painterResource(id = R.drawable.user_avatar),
-                contentDescription = "Profile Picture",
+                contentDescription = stringResource(id = R.string.profile_picture_desc),
                 modifier = Modifier
                     .size(100.dp)
                     .clip(CircleShape),
@@ -139,7 +142,7 @@ fun ProfileHeader(state: ProfileState) {
             )
             Icon(
                 imageVector = Icons.Default.CheckCircle,
-                contentDescription = "Verified",
+                contentDescription = stringResource(id = R.string.profile_verified_desc),
                 tint = Color(0xFF64B5F6),
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
@@ -166,11 +169,11 @@ fun LevelProgressCard(state: ProfileState) {
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text("LEVEL  ${state.level}", color = BrandYellow, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+            Text(stringResource(id = R.string.profile_level, state.level), color = BrandYellow, fontWeight = FontWeight.Bold, fontSize = 12.sp)
             Spacer(modifier = Modifier.height(4.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text("Intermediate Scholar", fontWeight = FontWeight.Bold, color = BrandBlack)
-                Text("⭐ ${state.currentXp}/${state.totalXp} XP", fontWeight = FontWeight.Bold, color = BrandBlack)
+                Text(stringResource(id = R.string.profile_level_title_placeholder), fontWeight = FontWeight.Bold, color = BrandBlack)
+                Text(stringResource(id = R.string.profile_xp_format, state.currentXp, state.totalXp), fontWeight = FontWeight.Bold, color = BrandBlack)
             }
             Spacer(modifier = Modifier.height(8.dp))
             LinearProgressIndicator(
@@ -183,8 +186,7 @@ fun LevelProgressCard(state: ProfileState) {
                 trackColor = BrandYellow.copy(alpha = 0.3f)
             )
             Spacer(modifier = Modifier.height(4.dp))
-            Text("250 XP to next level reward! 🎁", fontSize = 12.sp, color = GrayText)
-        }
+            Text(stringResource(id = R.string.profile_xp_to_next_level), fontSize = 12.sp, color = GrayText)        }
     }
 }
 
@@ -239,6 +241,14 @@ fun StatCard(icon: ImageVector, title: String, value: String, unit: String, colo
 
 @Composable
 fun StatCardFromData(statistic: Statistic, modifier: Modifier = Modifier) {
+    // ViewModel'den gelen veri hala İngilizce. Çeviriyi burada yapabiliriz.
+    val translatedTitle = when (statistic.title) {
+        "STREAK" -> stringResource(id = R.string.stats_title_streak)
+        "LEARNED" -> stringResource(id = R.string.stats_title_learned)
+        "TIME" -> stringResource(id = R.string.stats_title_time)
+        "DAILY" -> stringResource(id = R.string.stats_title_daily)
+        else -> statistic.title
+    }
     // Renk ve ikonları başlığa göre belirleyebiliriz
     val (icon, color, iconColor) = when (statistic.title) {
         "STREAK" -> Triple(Icons.Default.LocalFireDepartment, Color(0xFFFFF4E0), Color(0xFFFFA726))
@@ -247,8 +257,7 @@ fun StatCardFromData(statistic: Statistic, modifier: Modifier = Modifier) {
         "DAILY" -> Triple(Icons.Default.CalendarMonth, Color(0xFFE0F7F4), Color(0xFF26A69A))
         else -> Triple(Icons.Default.Help, Color.LightGray, Color.DarkGray)
     }
-    StatCard(icon, statistic.title, statistic.value, statistic.unit, color, iconColor, modifier)
-}
+    StatCard(icon, translatedTitle, statistic.value, statistic.unit, color, iconColor, modifier)}
 
 
 @Composable
@@ -265,7 +274,7 @@ fun GeneralSettingsCard(
         Column {
             SettingsRow(
                 icon = Icons.Default.NightsStay,
-                title = "Dark Mode",
+                title = stringResource(id = R.string.settings_dark_mode),
                 onClick = { onDarkModeChanged(!state.isDarkMode) },
                 trailingContent = {
                     Switch(
@@ -278,7 +287,7 @@ fun GeneralSettingsCard(
             HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f), modifier = Modifier.padding(horizontal = 16.dp))
             SettingsRow(
                 icon = Icons.Default.Notifications,
-                title = "Notifications",
+                title = stringResource(id = R.string.settings_notifications),
                 onClick = { onNotificationsChanged(!state.areNotificationsEnabled) },
                 trailingContent = {
                     Switch(
@@ -303,11 +312,11 @@ fun AccountSettingsCard(
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Column {
-            SettingsRow(icon = Icons.Default.Lock, title = "Change Password", onClick = onChangePassword )
+            SettingsRow(icon = Icons.Default.Lock, title = stringResource(id = R.string.settings_change_password), onClick = onChangePassword )
             HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f), modifier = Modifier.padding(horizontal = 16.dp))
             SettingsRow(
                 icon = Icons.AutoMirrored.Filled.ExitToApp,
-                title = "Sign Out",
+                title = stringResource(id = R.string.settings_sign_out),
                 onClick = onSignOut,
                 titleColor = Color.Red,
                 iconColor = Color.Red

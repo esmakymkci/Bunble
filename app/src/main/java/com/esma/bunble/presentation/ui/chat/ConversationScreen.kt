@@ -1,5 +1,6 @@
 package com.esma.bunble.presentation.ui.chat
 
+import com.esma.bunble.R
 import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -30,6 +31,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -69,7 +71,7 @@ fun ConversationScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Conversation Mode", fontWeight = FontWeight.Bold, fontSize = 18.sp, color = BrandBlack) },
+                title = { Text(stringResource(id = R.string.conversation_title), fontWeight = FontWeight.Bold, fontSize = 18.sp, color = BrandBlack) },
                 navigationIcon = {
                     IconButton(onClick = {
                         navController.navigate("chat_screen") {
@@ -81,7 +83,7 @@ fun ConversationScreen(
                             launchSingleTop = true
                         }
                     }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back to Chat", tint = BrandBlack)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(id = R.string.conversation_back_button_desc), tint = BrandBlack)
                     }
                 },
                 actions = {
@@ -93,7 +95,7 @@ fun ConversationScreen(
                     }) {
                         Icon(
                             imageVector = Icons.Default.Mic,
-                            contentDescription = "Switch to Chat Mode",
+                            contentDescription = stringResource(id = R.string.conversation_switch_to_chat_desc),
                             tint = BrandBlack
                         )
                     }
@@ -181,7 +183,7 @@ private fun LanguageSelector(
         IconButton(onClick = onSwapLanguages) {
             Icon(
                 imageVector = Icons.Default.SwapHoriz,
-                contentDescription = "Swap Languages",
+                contentDescription = stringResource(id = R.string.conversation_swap_languages_desc),
                 tint = BrandYellow
             )
         }
@@ -210,8 +212,8 @@ private fun LanguageDropDown(
     Box {
         OutlinedButton(onClick = onClick, border = BorderStroke(1.dp, BrandYellow)) {
             val flagEmoji = getFlagEmojiForLanguage(language.code)
-            Text(text = "$flagEmoji ${language.displayName}", color = BrandBlack)
-            Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = BrandBlack)
+            Text(text = stringResource(id = R.string.conversation_language_display, flagEmoji, language.displayName), color = BrandBlack)
+            Icon(Icons.Default.ArrowDropDown, contentDescription = stringResource(id = R.string.conversation_language_dropdown_desc), tint = BrandBlack)
         }
         DropdownMenu(
             expanded = isOpen,
@@ -223,7 +225,7 @@ private fun LanguageDropDown(
                     text = {
                         // Metnin yanına bayrak emojisini ekle
                         val itemFlagEmoji = getFlagEmojiForLanguage(lang.code)
-                        Text("$itemFlagEmoji ${lang.displayName}")
+                        Text(stringResource(id = R.string.conversation_language_display, itemFlagEmoji, lang.displayName))
                     },
                     onClick = {
                         onSelect(lang)
@@ -255,7 +257,7 @@ private fun TranslationContent(
         // Tanınan Metin
         AnimatedVisibility(visible = state.recognizedText.isNotBlank()) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("YOU SAID", fontSize = 12.sp, color = BrandYellow, fontWeight = FontWeight.Bold)
+                Text(stringResource(id = R.string.conversation_you_said), fontSize = 12.sp, color = BrandYellow, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = state.recognizedText,
@@ -264,7 +266,7 @@ private fun TranslationContent(
                     color = BrandBlack
                 )
                 Spacer(modifier = Modifier.height(24.dp))
-                Icon(Icons.Default.ArrowDownward, contentDescription = null, tint = GrayText)
+                Icon(Icons.Default.ArrowDownward, contentDescription = stringResource(id = R.string.conversation_translation_placeholder_desc), tint = GrayText)
                 Spacer(modifier = Modifier.height(24.dp))
             }
         }
@@ -281,7 +283,7 @@ private fun TranslationContent(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        "${state.targetLanguage.displayName.uppercase()} TRANSLATION",
+                        stringResource(id = R.string.conversation_translation_label, state.targetLanguage.displayName.uppercase()),
                         fontSize = 12.sp,
                         color = BrandYellow,
                         fontWeight = FontWeight.Bold
@@ -303,11 +305,11 @@ private fun TranslationContent(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceAround
                     ) {
-                        ActionButton(icon = Icons.Default.VolumeUp, text = "Listen", onClick = onListenClicked)
-                        ActionButton(icon = Icons.Default.ContentCopy, text = "Copy", onClick = {
+                        ActionButton(icon = Icons.Default.VolumeUp, text = stringResource(id = R.string.conversation_action_listen), onClick = onListenClicked)
+                        ActionButton(icon = Icons.Default.ContentCopy, text = stringResource(id = R.string.conversation_action_copy), onClick = {
                             clipboardManager.setText(AnnotatedString(state.translatedText))
                         })
-                        ActionButton(icon = Icons.Default.BookmarkBorder, text = "Save", onClick = onSaveClicked)
+                        ActionButton(icon = Icons.Default.BookmarkBorder, text = stringResource(id = R.string.conversation_action_save), onClick = { /* TODO */ })
                     }
                 }
             }

@@ -53,13 +53,13 @@ fun CategoryDetailScreen(
 
                 item {
                     DetailSection(
-                        title = "Frequently Used Words",
-                        cardTitle = "Common Words",
-                        cardDescription = "Learn essential words for this topic.",
-                        buttonText = "View",
-                        imageRes = R.drawable.sentence1, // Şimdilik statik kalabilir
+                        title = stringResource(id = R.string.detail_section_frequent_words),
+                        cardTitle = stringResource(id = R.string.detail_card_common_words),
+                        cardDescription = stringResource(id = R.string.detail_card_common_words_desc),
+                        buttonText = stringResource(id = R.string.common_view),
+                        imageRes = R.drawable.sentence1,
                         onButtonClick = {
-                            navController.navigate("learning_screen/${state.category.id}?type=words")
+                            navController.navigate("learning_screen/${state.category!!.id}?type=words")
                         }
                     )
                     Spacer(modifier = Modifier.height(16.dp))
@@ -67,14 +67,13 @@ fun CategoryDetailScreen(
 
                 item {
                     DetailSection(
-                        title = "Frequently Used Phrases",
-                        cardTitle = "Common Phrases",
-                        cardDescription = "Learn essential phrases for this topic.",
-                        buttonText = "View",
+                        title = stringResource(id = R.string.detail_section_frequent_phrases),
+                        cardTitle = stringResource(id = R.string.detail_card_common_phrases),
+                        cardDescription = stringResource(id = R.string.detail_card_common_phrases_desc),
+                        buttonText = stringResource(id = R.string.common_view),
                         imageRes = R.drawable.word,
                         onButtonClick = {
-                            navController.navigate("learning_screen/${state.category.id}?type=phrases")
-
+                            navController.navigate("learning_screen/${state.category!!.id}?type=phrases")
                         }
                     )
                     Spacer(modifier = Modifier.height(16.dp))
@@ -82,13 +81,14 @@ fun CategoryDetailScreen(
 
                 item {
                     DetailSection(
-                        title = "Quiz",
-                        cardTitle = "Dialogue Quiz",
-                        cardDescription = "Test your knowledge with a dialogue-based quiz.",
-                        buttonText = "Start Quiz",
+                        title = stringResource(id = R.string.detail_section_quiz),
+                        cardTitle = stringResource(id = R.string.detail_card_dialogue_quiz),
+                        cardDescription = stringResource(id = R.string.detail_card_dialogue_quiz_desc),
+                        buttonText = stringResource(id = R.string.common_start_quiz),
                         imageRes = R.drawable.quiz1,
                         onButtonClick = {
-                            navController.navigate("learning_screen/${state.category.id}?type=quiz")                        }
+                            navController.navigate("learning_screen/${state.category!!.id}?type=quiz")
+                        }
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                 }

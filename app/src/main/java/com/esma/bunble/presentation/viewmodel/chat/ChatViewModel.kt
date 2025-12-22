@@ -1,5 +1,6 @@
 package com.esma.bunble.presentation.viewmodel.chat
 
+import android.app.Application
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -9,6 +10,8 @@ import com.esma.bunble.data.remote.openai.OpenAIRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.esma.bunble.R
+
 
 // ViewModel'in tutacağı tüm ekran durumu (state)
 data class ChatState(
@@ -28,7 +31,8 @@ enum class Author { USER, AI }
 
 @HiltViewModel
 class ChatViewModel @Inject constructor(
-    private val openAIRepository: OpenAIRepository
+    private val openAIRepository: OpenAIRepository,
+    private val application: Application
 ) : ViewModel() {
 
     private val _chatState = mutableStateOf(ChatState())
@@ -40,7 +44,7 @@ class ChatViewModel @Inject constructor(
             _chatState.value = _chatState.value.copy(
                 messages = listOf(
                     ChatMessage(
-                        "Hello! I'm your language learning assistant. How can I help you today?",
+                        application.getString(R.string.chat_initial_greeting),
                         Author.AI
                     )
                 )
@@ -84,7 +88,7 @@ class ChatViewModel @Inject constructor(
 
             } catch (e: Exception) {
                 //  Hata durumunda UI'ı güncelle
-                val errorMessage = ChatMessage("Sorry, an error occurred. Please try again.", Author.AI)
+                val errorMessage = ChatMessage(application.getString(R.string.chat_error_message), Author.AI)
                 val currentMessages = _chatState.value.messages
                 _chatState.value = _chatState.value.copy(
                     messages = currentMessages + errorMessage,

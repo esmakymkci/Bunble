@@ -10,10 +10,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.esma.bunble.R
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -66,13 +68,20 @@ fun HomeScreen(
                     horizontal = 16.dp)
             )  {
                 item {
-                    Text(text = "Hello, ${state.userName}!", fontSize = 28.sp, fontWeight = FontWeight.Bold)
-                    Text(text = "Let's learn something new today!", color = GrayText)
+                    Text(
+                        text = stringResource(id = R.string.home_greeting, state.userName),
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold)
+                    Text(
+                        text = stringResource(id = R.string.home_subtitle),
+                        color = GrayText)
                     Spacer(modifier = Modifier.height(24.dp))
                 }
 
                 item {
                     StatsCard(
+                        level = state.level,
+                        currentXp = state.totalXp,
                         streak = state.streak,
                         totalTimeSpentMinutes = state.totalTimeSpentMinutes,
                         learnedWords = state.learnedWords
@@ -86,7 +95,10 @@ fun HomeScreen(
                 }
 
                 item {
-                    Text(text = "Learning Categories", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                    Text(
+                        text = stringResource(id = R.string.home_learning_categories),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(16.dp))
                 }
 

@@ -1,6 +1,6 @@
 package com.esma.bunble.presentation.ui.learn
 
-import androidx.compose.animation.core.copy
+import com.esma.bunble.R
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -34,7 +34,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-import com.esma.bunble.R
 import com.esma.bunble.domain.model.QuizItem
 import com.esma.bunble.presentation.theme.ui.BorderGray
 import com.esma.bunble.presentation.theme.ui.BrandBlack
@@ -95,15 +94,15 @@ fun LearnContent(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(text = "Learning", fontWeight = FontWeight.Bold) },
+                title = { Text(text = stringResource(id = R.string.learn_title), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(id = R.string.learn_back_button_desc))
                     }
                 },
                 actions = {
                     IconButton(onClick = { /* TODO: Help action */ }) {
-                        Icon(Icons.Default.HelpOutline, contentDescription = "Help")
+                        Icon(Icons.Default.HelpOutline, contentDescription = stringResource(id = R.string.learn_help_button_desc))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
@@ -128,7 +127,7 @@ fun LearnContent(
                 Box(modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp), contentAlignment = Alignment.Center) {
-                    Text(text = "Bu kategoride öğrenilecek içerik bulunamadı.", textAlign = TextAlign.Center)
+                    Text(text = stringResource(id = R.string.learn_no_content), textAlign = TextAlign.Center)
                 }
             }
             currentItem != null -> {
@@ -196,7 +195,7 @@ fun LearnContent(
                         colors = ButtonDefaults.buttonColors(containerColor = BrandYellow)
                     ) {
                         Text(
-                            text = if (!state.isFinished) "Continue" else "Finish",
+                            text = if (!state.isFinished) stringResource(id = R.string.learn_button_continue) else stringResource(id = R.string.learn_button_finish),
                             color = BrandBlack,
                             fontSize = 16.sp
                         )
@@ -235,7 +234,7 @@ fun TranslationCard(
                 ) {
                     Icon(
                         imageVector = Icons.Default.VolumeUp,
-                        contentDescription = "Pronounce",
+                        contentDescription = stringResource(id = R.string.learn_pronounce_button_desc),
                         modifier = Modifier
                             .size(40.dp)
                             .background(BrandYellowLight.copy(alpha = 0.2f), CircleShape)
@@ -246,11 +245,11 @@ fun TranslationCard(
                 Spacer(Modifier.width(16.dp))
                 Column {
                     Text(text = phonetic, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                    Text(text = "Phonetic", color = GrayText, fontSize = 12.sp)
+                    Text(text = stringResource(id = R.string.learn_phonetic_label), color = GrayText, fontSize = 12.sp)
                 }
             }
             IconButton(onClick = { /* TODO: Bookmark action */ }) {
-                Icon(Icons.Default.BookmarkBorder, contentDescription = "Bookmark", tint = GrayText)
+                Icon(Icons.Default.BookmarkBorder, contentDescription = stringResource(id = R.string.learn_bookmark_button_desc), tint = GrayText)
             }
         }
     }
@@ -310,12 +309,11 @@ fun QuizContent(
                                     state = state,
                                     onAnswerSelected = { viewModel.onAnswerSelected(it) }
                                 )
-                                is QuizItem.Unsupported -> Text("Error: This question type is not supported.")
+                                is QuizItem.Unsupported -> Text(stringResource(id = R.string.quiz_unsupported_question))
                             }
                         }
                     } else if (state.error == null) {
-                        Text(text = "Bu kategori için henüz quiz sorusu bulunmuyor.")
-                    } else {
+                        Text(text = stringResource(id = R.string.quiz_no_questions))                    } else {
                         Text(text = stringResource(id = state.error))
                     }
                 }
@@ -338,7 +336,7 @@ fun QuizTopAppBar(current: Int, total: Int, onClose: () -> Unit) {
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(Icons.Default.Close, contentDescription = "Close Quiz", modifier = Modifier.clickable(onClick = onClose))
+        Icon(Icons.Default.Close, contentDescription = stringResource(id = R.string.quiz_close_button_desc), modifier = Modifier.clickable(onClick = onClose))
         Spacer(Modifier.width(16.dp))
         val progress = if (total > 0) current.toFloat() / total.toFloat() else 0f
         LinearProgressIndicator(
@@ -383,9 +381,9 @@ fun QuizBottomBar(
         ) {
             Text(
                 text = when {
-                    answerState == AnswerState.UNANSWERED -> "Check"
-                    isLastQuestion -> "Finish"
-                    else -> "Next"
+                    answerState == AnswerState.UNANSWERED -> stringResource(id = R.string.quiz_button_check)
+                    isLastQuestion -> stringResource(id = R.string.learn_button_finish) // "Finish"i tekrar kullanabiliriz
+                    else -> stringResource(id = R.string.quiz_button_next)
                 },
                 fontWeight = FontWeight.Bold,
                 color = BrandBlack
@@ -397,9 +395,9 @@ fun QuizBottomBar(
 @Composable
 fun ImageChoiceQuestionUI(question: QuizItem.ImageChoice, state: QuizState, onAnswerSelected: (String) -> Unit) {
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-        Text("Which image represents", fontSize = 20.sp, color = GrayText)
+        Text(stringResource(id = R.string.quiz_image_choice_question), fontSize = 20.sp, color = GrayText)
         Spacer(Modifier.height(8.dp))
-        Text("'${question.questionText}'?", fontSize = 28.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+        Text(stringResource(id = R.string.quiz_image_choice_question_format, question.questionText), fontSize = 28.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
         Spacer(Modifier.height(32.dp))
         LazyVerticalGrid(columns = GridCells.Fixed(2), verticalArrangement = Arrangement.spacedBy(12.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             items(question.options) { imageUrl ->
@@ -427,7 +425,7 @@ fun ImageChoiceQuestionUI(question: QuizItem.ImageChoice, state: QuizState, onAn
 @Composable
 fun MultipleChoiceQuestionUI(question: QuizItem.MultipleChoice, state: QuizState, onAnswerSelected: (String) -> Unit) {
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-        Text("What is the translation of\n'${question.questionText}'?", fontSize = 24.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+        Text(stringResource(id = R.string.quiz_multiple_choice_question, question.questionText), fontSize = 24.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
         Spacer(Modifier.height(32.dp))
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             question.options.forEach { option ->
@@ -440,13 +438,13 @@ fun MultipleChoiceQuestionUI(question: QuizItem.MultipleChoice, state: QuizState
 @Composable
 fun TrueFalseQuestionUI(question: QuizItem.TrueFalse, state: QuizState, onAnswerSelected: (Boolean) -> Unit) {
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-        Text("True or False?", fontSize = 20.sp, color = GrayText)
+        Text(stringResource(id = R.string.quiz_true_false_title), fontSize = 20.sp, color = GrayText)
         Spacer(Modifier.height(16.dp))
         Text(question.questionText, fontSize = 24.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
         Spacer(Modifier.height(48.dp))
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            OptionRow(text = "True", isSelected = state.selectedAnswer == true, answerState = state.answerState, isCorrect = question.correctAnswer, onClick = { onAnswerSelected(true) })
-            OptionRow(text = "False", isSelected = state.selectedAnswer == false, answerState = state.answerState, isCorrect = !question.correctAnswer, onClick = { onAnswerSelected(false) })
+            OptionRow(text = stringResource(id = R.string.quiz_option_true), isSelected = state.selectedAnswer == true, answerState = state.answerState, isCorrect = question.correctAnswer, onClick = { onAnswerSelected(true) })
+            OptionRow(text = stringResource(id = R.string.quiz_option_false), isSelected = state.selectedAnswer == false, answerState = state.answerState, isCorrect = !question.correctAnswer, onClick = { onAnswerSelected(false) })
         }
     }
 }
@@ -496,7 +494,7 @@ fun QuizResultScreen(
     ) {
         Image(
             painter = painterResource(id = bunnyImageRes),
-            contentDescription = "Quiz Result Background",
+            contentDescription = stringResource(id = R.string.quiz_result_background_desc),
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
         )
@@ -510,21 +508,21 @@ fun QuizResultScreen(
             Spacer(modifier = Modifier.height(48.dp))
 
             Text(
-                text = "Quiz Completed!",
+                text = stringResource(id = R.string.quiz_result_title),
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
                 color = titleColor
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "$successRate% Success",
+                text = stringResource(id = R.string.quiz_result_success_rate, successRate),
                 fontSize = 40.sp,
                 fontWeight = FontWeight.Bold,
                 color = successColor
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "$score/$totalQuestions Questions Correct",
+                text = stringResource(id = R.string.quiz_result_questions_correct, score, totalQuestions),
                 fontSize = 16.sp,
                 color = GrayText
             )
@@ -553,7 +551,7 @@ fun QuizResultScreen(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        "Back to Category",
+                        text = stringResource(id = R.string.quiz_result_back_to_category),
                         color = BrandBlack,
                         modifier = Modifier.padding(vertical = 8.dp),
                         fontSize = 16.sp,
