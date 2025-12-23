@@ -2,41 +2,56 @@ package com.esma.bunble.data.repository
 
 import com.esma.bunble.domain.model.UserStats
 import com.esma.bunble.domain.repository.IUserRepository
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import java.util.Calendar
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class UserRepositoryImpl @Inject constructor(
-    private val firestore: FirebaseFirestore
+    private val firestore: FirebaseFirestore,
+    private val auth: FirebaseAuth
 ) : IUserRepository {
+
+    private val activeListeners = mutableListOf<ListenerRegistration>()
 
     override fun getUserStats(userId: String): Flow<UserStats> =
         callbackFlow {
             val userDocumentRef = firestore.collection("users").document(userId)
+
             val listener = userDocumentRef.addSnapshotListener { snapshot, error ->
                 if (error != null) {
                     close(error)
                     return@addSnapshotListener
                 }
-
                 if (snapshot != null && snapshot.exists()) {
                     val stats = snapshot.toObject(UserStats::class.java)
-                    if (stats != null) {
-                        trySend(stats)
-                    } else {
-                        trySend(UserStats())
-                    }
+                    trySend(stats ?: UserStats())
                 } else {
                     trySend(UserStats())
                 }
             }
-            awaitClose { listener.remove() }
+
+            activeListeners.add(listener)
+
+            awaitClose {
+                listener.remove()
+                activeListeners.remove(listener)
+            }
         }
+    override fun cleanupListeners() {
+        // Listedeki her bir dinleyiciyi güvenli bir şekilde kapatın.
+        activeListeners.forEach { it.remove() }
+        // Listeyi tamamen temizleyin.
+        activeListeners.clear()
+    }
 
     override suspend fun updateUserStreak(userId: String) {
         val userDocRef = firestore.collection("users").document(userId)

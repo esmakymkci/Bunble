@@ -116,5 +116,12 @@ class ChatViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
+        // ViewModel yok edilirken, repository'nin kullandığı kaynakları serbest bırak.
+        // Bu, ağ bağlantılarını kapatır ve "ManagedChannel" hatasını önler.
+        try {
+            openAIRepository.close()
+        } catch (e: Exception) {
+            // Log.e("ChatViewModel", "openAIRepository kapatılamadı", e)
+        }
     }
 }

@@ -12,5 +12,5 @@ data class HomeScreenState(
     val totalTimeSpentMinutes: Long = 0,
     val learnedWords: Int = 0,
     val level: Int = 1,
-    val totalXp: Int = 0
+    val totalXp: Int = 750
 )

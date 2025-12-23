@@ -42,11 +42,26 @@ class ConversationViewModel @Inject constructor(
     // Dil değiştiğinde translator'ı yeniden oluşturan fonksiyon
     private fun recreateTranslator() {
         translator?.close() // Önceki translator'ı kapat
-        val options = TranslatorOptions.Builder()
-            .setSourceLanguage(state.value.sourceLanguage.code)
-            .setTargetLanguage(state.value.targetLanguage.code)
-            .build()
-        translator = Translation.getClient(options)
+        val sourceCode = state.value.sourceLanguage.code
+        val targetCode = state.value.targetLanguage.code
+
+        if (sourceCode.isBlank() || targetCode.isBlank()) {
+            // Eğer kodlar geçerli değilse, translator'ı oluşturma ve işlemi durdur.
+            translator = null
+            return
+        }
+
+        try {
+            val options = TranslatorOptions.Builder()
+                .setSourceLanguage(sourceCode)
+                .setTargetLanguage(targetCode)
+                .build()
+            translator = Translation.getClient(options)
+        } catch (e: Exception) {
+            translator = null
+            // Log.e("TranslatorError", "Translator oluşturulamadı", e)
+            _state.update { it.copy(error = "Çevirmen başlatılamadı.") }
+        }
     }
 
 

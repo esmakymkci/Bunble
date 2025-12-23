@@ -6,6 +6,7 @@ import com.esma.bunble.domain.model.UserStats
 import com.esma.bunble.domain.repository.IUserRepository
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -36,12 +37,17 @@ class ProfileViewModel @Inject constructor(
     private val _navigationEvent = Channel<ProfileNavigationEvent>()
     val navigationEvent = _navigationEvent.receiveAsFlow()
 
+    private var userProfileJob: Job? = null
+
 
     init {
         loadUserProfile()
     }
 
     private fun loadUserProfile() {
+        // Mevcut Job'u iptal et (eğer varsa, yeniden çağırmalara karşı önlem)
+        userProfileJob?.cancel()
+
         val currentUser = auth.currentUser
         if (currentUser == null) {
             _state.update { it.copy(isLoading = false, isUserLoggedIn = false) }
@@ -50,23 +56,16 @@ class ProfileViewModel @Inject constructor(
 
         _state.update { it.copy(email = currentUser.email ?: "", isUserLoggedIn = true) }
 
-        // UserRepository'den gelen istatistik akışını dinlemeye başla.
-        userRepository.getUserStats(currentUser.uid)
+        userProfileJob = userRepository.getUserStats(currentUser.uid)
             .onEach { userStats ->
-                // Firestore'dan her yeni veri geldiğinde bu blok çalışacak.
+                // Her yeni veri geldiğinde bu blok çalışır.
                 val dynamicStatistics = mapUserStatsToUI(userStats)
-
-                // Kullanıcı adını al, eğer null veya boş ise "User" kullan.
                 val username = if (userStats.displayName.isNullOrBlank()) "User" else userStats.displayName
-
-                // Dil yolunu ("tr-de") alıp "🇹🇷 → 🇩🇪" formatına çevir.
                 val languageDescription = formatLanguagePath(userStats.languagePath)
-
 
                 _state.update { currentState ->
                     currentState.copy(
                         userName = username,
-                        email = currentUser.email ?: "",
                         isUserLoggedIn = true,
                         currentLanguage = languageDescription,
                         statistics = dynamicStatistics,
@@ -75,9 +74,10 @@ class ProfileViewModel @Inject constructor(
                 }
             }
             .catch { exception ->
-                _state.update { it.copy(isLoading = false, isUserLoggedIn = false) }
+                // PERMISSION_DENIED gibi hataları burada yakala ve state'i güncelle.
+                _state.update { it.copy(isLoading = false, error = exception.message, isUserLoggedIn = false) }
             }
-            .launchIn(viewModelScope)
+            .launchIn(viewModelScope) // Flow'u viewModelScope'ta başlat ve Job'u al.
     }
 
     private fun getFlagEmojiForLanguage(code: String): String {
@@ -131,12 +131,22 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun onSignOutClicked() {
+        userProfileJob?.cancel()
+        userProfileJob = null
+        userRepository.cleanupListeners()
         auth.signOut()
         // State'i güncelle. Artık bir kullanıcı yok.
-        _state.update { it.copy(isUserLoggedIn = false, isLoading = false, email = "", statistics = emptyList()) }
+        _state.update { it.copy(isUserLoggedIn = false, isLoading = false, email = "", userName = "",statistics = emptyList()) }
         viewModelScope.launch {
             _navigationEvent.send(ProfileNavigationEvent.NavigateToSignIn)
         }
+    }
+
+    override fun onCleared() {
+        // ViewModel yok edilirken tüm kaynakları temizlediğimizden emin ol.
+        userProfileJob?.cancel()
+        userRepository.cleanupListeners()
+        super.onCleared()
     }
 
 }

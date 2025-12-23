@@ -13,10 +13,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.HelpOutline
 import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -98,11 +96,6 @@ fun LearnContent(
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(id = R.string.learn_back_button_desc))
-                    }
-                },
-                actions = {
-                    IconButton(onClick = { /* TODO: Help action */ }) {
-                        Icon(Icons.Default.HelpOutline, contentDescription = stringResource(id = R.string.learn_help_button_desc))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
@@ -247,9 +240,6 @@ fun TranslationCard(
                     Text(text = phonetic, fontWeight = FontWeight.Bold, fontSize = 16.sp)
                     Text(text = stringResource(id = R.string.learn_phonetic_label), color = GrayText, fontSize = 12.sp)
                 }
-            }
-            IconButton(onClick = { /* TODO: Bookmark action */ }) {
-                Icon(Icons.Default.BookmarkBorder, contentDescription = stringResource(id = R.string.learn_bookmark_button_desc), tint = GrayText)
             }
         }
     }

@@ -8,4 +8,5 @@ interface IUserRepository {
     suspend fun updateUserStreak(userId: String)
     suspend fun incrementTotalTimeSpent(userId: String, minutes: Long)
     suspend fun updateTotalLearnedWords(userId: String, amount: Int)
+    fun cleanupListeners()
 }

@@ -1,12 +1,10 @@
 package com.esma.bunble.presentation.base.components.category_detail
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.HelpOutline
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -20,7 +18,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
 import com.esma.bunble.presentation.theme.ui.BrandBlack
 import com.esma.bunble.presentation.theme.ui.BrandWhite
 
@@ -76,13 +73,6 @@ fun HeaderSection(
                     .background(BrandWhite.copy(alpha = 0.7f), CircleShape)
             ) {
                 Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-            }
-            IconButton(
-                onClick = { /* TODO: Yardım butonu işlevi */ },
-                modifier = Modifier
-                    .background(Color.White.copy(alpha = 0.7f), CircleShape)
-            ) {
-                Icon(Icons.Default.HelpOutline, contentDescription = "Help")
             }
         }
     }

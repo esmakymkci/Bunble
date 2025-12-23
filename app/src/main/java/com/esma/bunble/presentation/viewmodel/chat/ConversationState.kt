@@ -15,6 +15,7 @@ data class ConversationState(
     // Dropdown menülerin açık/kapalı durumunu yönetmek için
     val isSourceMenuVisible: Boolean = false,
     val isTargetMenuVisible: Boolean = false,
+    val error: String? = null,
 
     // Desteklenen dillerin tam listesi
     val availableLanguages: List<Language> = listOf(

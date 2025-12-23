@@ -19,7 +19,7 @@
     <string name="bottom_nav_chat">Sohbet</string>
     <!-- İstatistik Metinleri -->
     <string name="stats_level">Seviye %1$d</string>
-    <string name="stats_xp">%1$s DP</string>
+    <string name="stats_xp">%1$s XP</string>
     <string name="stats_streak">Seri</string>
     <string name="stats_streak_value">%1$d gün</string>
     <string name="stats_total_time">Toplam Süre</string>
@@ -200,8 +200,8 @@
     <!-- Level Progress Card -->
     <string name="profile_level">SEVİYE %1$d</string>
     <string name="profile_level_title_placeholder">Orta Düzey Bilgin</string>
-    <string name="profile_xp_format">⭐ %1$d/%2$d DP</string>
-    <string name="profile_xp_to_next_level">Sonraki seviye ödülüne 250 DP kaldı! 🎁</string>
+    <string name="profile_xp_format">⭐ %1$d/%2$d XP</string>
+    <string name="profile_xp_to_next_level">Sonraki seviye ödülüne 250 XP kaldı! 🎁</string>
     <!-- Section Titles -->
     <string name="profile_section_statistics">İstatistikler</string>
     <string name="profile_section_general_settings">Genel Ayarlar</string>

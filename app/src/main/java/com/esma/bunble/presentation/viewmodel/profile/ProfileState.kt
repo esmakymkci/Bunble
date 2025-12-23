@@ -21,5 +21,6 @@ data class ProfileState(
     val email: String = "",
     val areNotificationsEnabled: Boolean = false,
     val isLoading: Boolean = true,
+    val error: String? = null
 
 )

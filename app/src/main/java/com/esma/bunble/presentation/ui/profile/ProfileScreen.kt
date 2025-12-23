@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.esma.bunble.R
 import com.esma.bunble.presentation.theme.ui.BrandBlack
 import com.esma.bunble.presentation.theme.ui.BrandYellow
@@ -44,20 +45,20 @@ import com.esma.bunble.presentation.viewmodel.profile.Statistic
 @Composable
 fun ProfileScreen(
     navController: NavController,
-    viewModel: ProfileViewModel = hiltViewModel(
-        navController.getBackStackEntry("main_graph")
-    )
+    viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
 
     // NAVİGASYON SİNYALİNİ DİNLE
-    LaunchedEffect(key1 = true) { // key1=true efekti bir kere çalıştırır.
+    LaunchedEffect(Unit) { // Unit, bu bloğun ekranda bir kez çalışmasını sağlar.
         viewModel.navigationEvent.collect { event ->
             when (event) {
                 is ProfileNavigationEvent.NavigateToSignIn -> {
                     // Tüm geri yığınını temizle ve signin_screen'e git
                     navController.navigate("signin_screen") {
-                        popUpTo(navController.graph.startDestinationId) {
+                        // Geri tuşuna basıldığında uygulamanın kapanması için
+                        // "main_graph" dahil tüm geçmişi temizle.
+                        popUpTo(navController.graph.findStartDestination().id) {
                             inclusive = true
                         }
                     }

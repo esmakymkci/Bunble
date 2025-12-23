@@ -21,8 +21,10 @@ import com.esma.bunble.domain.repository.IStoryRepository
 import com.esma.bunble.domain.repository.IUserRepository
 import com.esma.bunble.domain.repository.IWordListRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -87,18 +89,37 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideOpenAIApi(): OpenAIApi {
-        return Retrofit.Builder()
-            .baseUrl("https://api.openai.com/")
-            .addConverterFactory(GsonConverterFactory.create())
+    fun provideOkHttpClient(): OkHttpClient {
+        return OkHttpClient.Builder()
+            .connectTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(60, TimeUnit.SECONDS)
             .build()
-            .create(OpenAIApi::class.java)
     }
 
     @Provides
     @Singleton
-    fun provideOpenAIRepository(api: OpenAIApi): OpenAIRepository {
-        return OpenAIRepository(api)
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://api.openai.com/")
+            .client(okHttpClient) // <-- Artık özel istemcimizi kullanıyor
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideOpenAIApi(retrofit: Retrofit): OpenAIApi {
+        return retrofit.create(OpenAIApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideOpenAIRepository(
+        api: OpenAIApi,
+        okHttpClient: OkHttpClient
+    ): OpenAIRepository {
+        return OpenAIRepository(api, okHttpClient)
     }
 
 

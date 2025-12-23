@@ -4,11 +4,15 @@ import com.esma.bunble.BuildConfig
 import com.esma.bunble.domain.model.Word
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import okhttp3.OkHttpClient
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class OpenAIRepository @Inject constructor(private val openAIApi: OpenAIApi) {
+class OpenAIRepository @Inject constructor(
+    private val openAIApi: OpenAIApi,
+    private val okHttpClient: OkHttpClient
+) {
 
     suspend fun getWordDetails(
         sourceText: String,
@@ -79,5 +83,10 @@ class OpenAIRepository @Inject constructor(private val openAIApi: OpenAIApi) {
             // Hata durumunda anlamlı bir mesaj döndür
             throw Exception("Failed to get chat response from OpenAI: ${e.message}")
         }
+    }
+
+    fun close() {
+        okHttpClient.dispatcher.executorService.shutdown()
+        okHttpClient.connectionPool.evictAll()
     }
 }
