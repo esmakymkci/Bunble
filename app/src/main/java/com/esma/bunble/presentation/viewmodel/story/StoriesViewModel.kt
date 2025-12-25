@@ -1,5 +1,6 @@
 package com.esma.bunble.presentation.viewmodel.story
 
+import android.app.Application
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -13,11 +14,14 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.esma.bunble.R
+import java.util.Locale
 
 @HiltViewModel
 class StoriesViewModel @Inject constructor(
     private val storyRepository: IStoryRepository,
-    private val userPrefs: UserPreferencesRepository
+    private val userPrefs: UserPreferencesRepository,
+    private val application: Application
 ) : ViewModel() {
 
     private val _state = mutableStateOf(StoriesState())
@@ -32,7 +36,7 @@ class StoriesViewModel @Inject constructor(
             val targetLang = userPrefs.targetLanguage.first()
             if (targetLang == null) {
                 _state.value = state.value.copy(
-                    error = "Please select your languages first",
+                    error = application.getString(R.string.error_language_not_selected),
                     isLoading = false
                 )
                 return@launch
@@ -100,7 +104,7 @@ class StoriesViewModel @Inject constructor(
             if (targetLang.isNullOrBlank()) {
                 _state.value = state.value.copy(
                     isAddingStory = false,
-                    addStoryError = "Your target language is not set."
+                    addStoryError = application.getString(R.string.error_target_language_not_set)
                 )
                 return@launch
             }
@@ -110,7 +114,7 @@ class StoriesViewModel @Inject constructor(
             if (detectedLang == null) {
                 _state.value = state.value.copy(
                     isAddingStory = false,
-                    addStoryError = "Could not detect the language. Please write more."
+                    addStoryError = application.getString(R.string.error_language_detection_failed)
                 )
                 return@launch
             }
@@ -119,7 +123,11 @@ class StoriesViewModel @Inject constructor(
             if (detectedLang != targetLang) {
                 _state.value = state.value.copy(
                     isAddingStory = false,
-                    addStoryError = "Please write your story in your target language, ${targetLang.uppercase()}..We detected it as ${detectedLang.uppercase()}."
+                    addStoryError = application.getString(
+                        R.string.error_story_wrong_language,
+                        targetLang.uppercase(Locale.ROOT),
+                        detectedLang.uppercase(Locale.ROOT)
+                    )
                 )
                 return@launch
             }

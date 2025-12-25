@@ -271,6 +271,12 @@
     <string name="chat_initial_greeting">Merhaba! Ben senin dil öğrenme asistanınım. Bugün sana nasıl yardımcı olabilirim?</string>
     <string name="chat_error_message">Üzgünüm, bir hata oluştu. Lütfen tekrar dene.</string>
 
+    <!-- StoriesViewModel için yeni string'ler -->
+    <string name="error_language_not_selected">Lütfen önce dil seçimi yapınız.</string>
+    <string name="error_language_detection_failed">Dil tespit edilemedi. Lütfen daha uzun yazmayı deneyin.</string>
+    <string name="error_story_wrong_language">Lütfen hikayenizi hedef diliniz olan %1$s dilinde yazın. Yazdığınız dil %2$s olarak tespit edildi.</string>
+    <string name="error_target_language_not_set">Hedef diliniz ayarlanmamış.</string>
+
 
     <!-- ViewModel Hataları -->
     <string name="error_category_id_not_found">Kategori ID\'si bulunamadı.</string>

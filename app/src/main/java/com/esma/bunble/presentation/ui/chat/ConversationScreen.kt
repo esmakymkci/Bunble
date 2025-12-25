@@ -17,6 +17,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.BookmarkBorder
+import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.SwapHoriz
@@ -94,7 +95,7 @@ fun ConversationScreen(
                         }
                     }) {
                         Icon(
-                            imageVector = Icons.Default.Mic,
+                            imageVector = Icons.Default.Chat,
                             contentDescription = stringResource(id = R.string.conversation_switch_to_chat_desc),
                             tint = BrandBlack
                         )

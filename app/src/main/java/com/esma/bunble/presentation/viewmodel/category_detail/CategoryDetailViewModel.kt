@@ -1,13 +1,11 @@
 package com.esma.bunble.presentation.viewmodel.category_detail
 
-import androidx.annotation.StringRes
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.esma.bunble.R
-import com.esma.bunble.domain.model.LearningCategory
 import com.esma.bunble.domain.repository.ILearningRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore

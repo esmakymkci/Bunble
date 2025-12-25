@@ -19,7 +19,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.flow.launchIn // <-- 1. YENİ IMPORT
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
@@ -72,7 +72,7 @@ class HomeViewModel @Inject constructor(
                             imageLoader.execute(request) // Yüklemenin bitmesini bekle
                         }
                     }
-                    imageJobs.awaitAll() // Tüm resim yüklemelerinin bitmesini bekle
+                    imageJobs.awaitAll()
 
 
                     _state.value = _state.value.copy(
@@ -96,20 +96,17 @@ class HomeViewModel @Inject constructor(
     private fun loadUserStats() {
         val userId = firebaseAuth.currentUser?.uid
         if (userId == null) {
-            // Kullanıcı yoksa bir şey yapma
             return
         }
 
-        // Tıpkı ProfileViewModel'de olduğu gibi, istatistikleri dinlemeye başla.
         userRepository.getUserStats(userId)
             .onEach { userStats ->
-                // Firestore'dan her yeni veri geldiğinde, state'i güncelle.
                 _state.value = _state.value.copy(
                     streak = userStats.streak,
                     totalTimeSpentMinutes = userStats.totalTimeSpentMinutes,
                     learnedWords = userStats.learnedWords
                 )
             }
-            .launchIn(viewModelScope) // Bu dinleyiciyi viewModelScope'ta başlat.
+            .launchIn(viewModelScope)
     }
 }

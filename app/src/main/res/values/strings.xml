@@ -270,6 +270,11 @@
     <!-- ChatViewModel Metinleri -->
     <string name="chat_initial_greeting">Hello! I\'m your language learning assistant. How can I help you today?</string>
     <string name="chat_error_message">Sorry, an error occurred. Please try again.</string>
+    <!-- StoriesViewModel için yeni string'ler -->
+    <string name="error_language_not_selected">Please select a language first.</string>
+    <string name="error_language_detection_failed">Language could not be detected. Please try writing a longer text.</string>
+    <string name="error_story_wrong_language">Please write your story in your target language, which is %1$s. The language detected is %2$s.</string>
+    <string name="error_target_language_not_set">Your target language is not set.</string>
 
 
     <!-- CategoryDetailViewModel Hataları -->

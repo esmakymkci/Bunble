@@ -33,12 +33,8 @@ class MainActivity : ComponentActivity() {
     private var timeUpdateJob: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        /*enableEdgeToEdge(
-            // Durum çubuğu ikonlarını KOYU yap
-            statusBarStyle = SystemBarStyle.dark(
-                scrim = Color.TRANSPARENT,
-            )
-        )*/
+        //enableEdgeToEdge()
+        //WindowCompat.setDecorFitsSystemWindows(window, false)
         super.onCreate(savedInstanceState)
         setContent {
             BunbleTheme {

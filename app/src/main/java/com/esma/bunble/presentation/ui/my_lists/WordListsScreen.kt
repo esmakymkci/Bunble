@@ -108,7 +108,7 @@ fun SwipeToDeleteContainer(
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun WordListsScreen(
     navController: NavController,
@@ -131,6 +131,7 @@ fun WordListsScreen(
     }
 
     Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = { WordListsTopBar(onToggleSearch = { isSearchActive = !isSearchActive }) },
         floatingActionButton = {
             FloatingActionButton(
@@ -147,7 +148,9 @@ fun WordListsScreen(
     ) { innerPadding ->
         Column(modifier = Modifier
             .fillMaxSize()
-            .padding(innerPadding)) {
+            .padding(innerPadding)
+            //.imePadding()
+        ) {
             // Arama çubuğu
             AnimatedVisibility(
                 visible = isSearchActive,
@@ -203,7 +206,7 @@ fun WordListsScreen(
             }
 
             Box(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize().imePadding()
             ) {
                 if (uiState.isLoading) {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
