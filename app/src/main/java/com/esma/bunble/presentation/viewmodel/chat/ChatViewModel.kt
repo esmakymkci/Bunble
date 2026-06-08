@@ -87,6 +87,7 @@ class ChatViewModel @Inject constructor(
                 )
 
             } catch (e: Exception) {
+                e.printStackTrace()
                 //  Hata durumunda UI'ı güncelle
                 val errorMessage = ChatMessage(application.getString(R.string.chat_error_message), Author.AI)
                 val currentMessages = _chatState.value.messages

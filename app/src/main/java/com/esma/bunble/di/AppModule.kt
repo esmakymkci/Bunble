@@ -55,7 +55,7 @@ object AppModule {
     fun provideImageLoader(app: Application): ImageLoader {
         return ImageLoader.Builder(app)
             .crossfade(true) // Resimler yüklenirken yumuşak bir geçiş efekti
-            .respectCacheHeaders(false) // Önbellek kontrolünü basitleştirir
+            .respectCacheHeaders(false) // Önbellek kontrolünü basitleştirme
             .build()
     }
     @Provides
@@ -102,7 +102,7 @@ object AppModule {
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .baseUrl("https://api.openai.com/")
-            .client(okHttpClient) // <-- Artık özel istemcimizi kullanıyor
+            .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
